@@ -1,0 +1,58 @@
+<?php
+// modules/admin/mantencion/index.php
+session_start();
+require_once '../../../config/db.php';
+include '../../../includes/header.php';
+
+// Validar Admin
+if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
+    header("Location: " . BASE_URL . "modules/auth/login.php");
+    exit;
+}
+?>
+
+<?php include '../../../includes/admin_navbar.php'; ?>
+
+<div class="min-h-screen bg-background flex pt-16">
+    
+    <?php include '../../../includes/admin_sidebar.php'; ?>
+
+    <main class="w-full md:ml-64 p-8">
+        <header class="mb-10">
+            <h2 class="text-3xl font-black text-primary uppercase tracking-tight mb-2">
+                Mantención de Tablas Básicas
+            </h2>
+            <p class="text-secondary text-sm">Seleccione la tabla maestra que desea administrar.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <a href="../games/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-zinc-50 transition-all hover:-translate-y-1 shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]">
+                <div class="mb-4 text-primary group-hover:scale-110 transition-transform origin-left">
+                    <i data-lucide="gamepad-2" class="w-10 h-10"></i>
+                </div>
+                <h3 class="text-xl font-black uppercase text-primary mb-2">1. Juegos</h3>
+                <p class="text-xs text-secondary font-medium">Ver listado, crear y editar.</p>
+            </a>
+
+            <a href="../roles/index.php" class="group block bg-surface border-2 border-zinc-200 p-8 hover:border-primary transition-all">
+                <div class="mb-4 text-zinc-400 group-hover:text-primary transition-colors">
+                    <i data-lucide="shield" class="w-10 h-10"></i>
+                </div>
+                <h3 class="text-xl font-black uppercase text-zinc-400 group-hover:text-primary mb-2">2. Roles</h3>
+                <p class="text-xs text-zinc-400 font-medium">Roles predefinidos por juego</p>
+            </a>
+
+            <div class="opacity-50 border-2 border-dashed border-zinc-300 p-8 cursor-not-allowed">
+                <div class="mb-4 text-zinc-300">
+                    <i data-lucide="tags" class="w-10 h-10"></i>
+                </div>
+                <h3 class="text-xl font-black uppercase text-zinc-300 mb-2">3. Géneros</h3>
+                <p class="text-xs text-zinc-300 font-medium">Gestionar desde BD</p>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<?php include '../../../includes/footer.php'; ?>

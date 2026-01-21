@@ -1,0 +1,12 @@
+# Archivos de sistema basura
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Carpetas de configuración de editores
+.vscode/
+.idea/
+
+# Si usas node_modules en el futuro para Tailwind
+node_modules/
+
