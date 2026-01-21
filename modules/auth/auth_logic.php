@@ -8,19 +8,19 @@ function Autenticar_Usuario($conn, $p_credencial) {
 
     // SQL: Seleccionar password y tipo (y otros datos necesarios para la sesión)
     $sql = "SELECT usu_id, usu_username, usu_password, usu_tipo, usu_alias FROM usuario WHERE usu_username = ?";
-    
+
     if ($stmt = mysqli_prepare($conn, $sql)) {
         mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        
+
         if ($row = mysqli_fetch_assoc($result)) {
             $hash_bd = $row['usu_password'];
-            
+
             // Verificación del hash
             if (password_verify($password_input, $hash_bd)) {
                 // Retorna los datos del usuario (equivalente a retornar tipo_usuario)
-                return $row; 
+                return $row;
             }
         }
         mysqli_stmt_close($stmt);
@@ -36,7 +36,7 @@ function Registro_Usuario($conn, $p_usuario) {
     $tipo      = 1; // 1 = Jugador por defecto
 
     $sql = "INSERT INTO usuario (usu_username, usu_password, usu_email, usu_alias, usu_tipo) VALUES (?, ?, ?, ?, ?)";
-    
+
     if ($stmt = mysqli_prepare($conn, $sql)) {
         mysqli_stmt_bind_param($stmt, "ssssi", $username, $password, $email, $alias, $tipo);
         $resultado = mysqli_stmt_execute($stmt);

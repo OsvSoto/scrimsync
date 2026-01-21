@@ -1,5 +1,5 @@
 <?php
-// modules/admin/games/index.php
+// modules/admin/roles/index.php
 session_start();
 require_once '../../../config/db.php';
 
@@ -10,7 +10,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
 }
 
 // CONSULTA
-$sql = "SELECT * FROM juego ORDER BY jue_id DESC";
+$sql = "SELECT r.rol_id, r.rol_nombre, j.jue_nombre
+        FROM rol_predefinido r
+        INNER JOIN juego j ON r.jue_id = j.jue_id
+        ORDER BY r.rol_id DESC";
 $result = mysqli_query($conn, $sql);
 
 include '../../../includes/header.php';
@@ -19,7 +22,7 @@ include '../../../includes/header.php';
 <?php include '../../../includes/admin_navbar.php'; ?>
 
 <div class="min-h-screen bg-background flex pt-16">
-    
+
     <?php include '../../../includes/admin_sidebar.php'; ?>
 
     <main class="w-full md:ml-64 p-8">
@@ -31,14 +34,14 @@ include '../../../includes/header.php';
             <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                 <div>
                     <h2 class="text-3xl font-black text-primary uppercase tracking-tight mb-2">
-                        Juegos Registrados
+                        Roles Registrados
                     </h2>
-                    <p class="text-secondary text-sm">Administra los títulos del sistema.</p>
+                    <p class="text-secondary text-sm">Administra los roles de juego del sistema.</p>
                 </div>
-                
+
                 <a href="form.php" class="bg-primary text-white px-6 py-3 font-bold text-sm uppercase tracking-widest hover:bg-zinc-800 transition-colors flex items-center gap-2 self-start md:self-end">
                     <i data-lucide="plus" class="w-4 h-4"></i>
-                    Nuevo Juego
+                    Nuevo Rol
                 </a>
             </div>
 
@@ -47,7 +50,8 @@ include '../../../includes/header.php';
                 <thead>
                     <tr class="bg-zinc-50 border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary">
                         <th class="p-4 font-black">ID</th>
-                        <th class="p-4 font-black">Nombre</th>
+                        <th class="p-4 font-black">Rol</th>
+                        <th class="p-4 font-black">Juego Asociado</th>
                         <th class="p-4 font-black text-right">Acciones</th>
                     </tr>
                 </thead>
@@ -55,16 +59,21 @@ include '../../../includes/header.php';
                     <?php if (mysqli_num_rows($result) > 0): ?>
                         <?php while($row = mysqli_fetch_assoc($result)): ?>
                             <tr class="hover:bg-zinc-50 transition-colors">
-                                <td class="p-4 font-mono text-xs text-zinc-400">#<?php echo $row['jue_id']; ?></td>
-                                <td class="p-4 font-bold text-primary"><?php echo $row['jue_nombre']; ?></td>
+                                <td class="p-4 font-mono text-xs text-zinc-400">#<?php echo $row['rol_id']; ?></td>
+                                <td class="p-4 font-bold text-primary"><?php echo $row['rol_nombre']; ?></td>
+                                <td class="p-4 text-sm text-secondary">
+                                    <span class="bg-zinc-100 px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">
+                                        <?php echo $row['jue_nombre']; ?>
+                                    </span>
+                                </td>
                                 <td class="p-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
-                                        <a href="form.php?id=<?php echo $row['jue_id']; ?>" class="p-2 text-secondary hover:text-primary transition-colors">
+                                        <a href="form.php?id=<?php echo $row['rol_id']; ?>" class="p-2 text-secondary hover:text-primary transition-colors">
                                             <i data-lucide="pencil" class="w-4 h-4"></i>
                                         </a>
-                                        <form action="controller_juego.php" method="POST" onsubmit="return confirm('¿Eliminar este juego?');">
+                                        <form action="controller_roles.php" method="POST" onsubmit="return confirm('¿Eliminar este rol?');">
                                             <input type="hidden" name="p_op" value="E">
-                                            <input type="hidden" name="jue_id" value="<?php echo $row['jue_id']; ?>">
+                                            <input type="hidden" name="rol_id" value="<?php echo $row['rol_id']; ?>">
                                             <button type="submit" class="p-2 text-secondary hover:text-rose-600 transition-colors">
                                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                                             </button>
@@ -74,7 +83,7 @@ include '../../../includes/header.php';
                             </tr>
                         <?php endwhile; ?>
                     <?php else: ?>
-                        <tr><td colspan="3" class="p-8 text-center text-secondary">No hay juegos aún.</td></tr>
+                        <tr><td colspan="4" class="p-8 text-center text-secondary">No hay roles definidos aún.</td></tr>
                     <?php endif; ?>
                 </tbody>
             </table>
