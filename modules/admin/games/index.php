@@ -10,7 +10,9 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
 }
 
 // CONSULTA
-$sql = "SELECT * FROM juego ORDER BY jue_id DESC";
+$sql = "SELECT j.*, g.gen_nombre 
+        FROM juego j 
+        INNER JOIN genero g ON j.gen_id = g.gen_id";
 $result = mysqli_query($conn, $sql);
 
 include '../../../includes/header.php';
@@ -48,6 +50,7 @@ include '../../../includes/header.php';
                     <tr class="bg-zinc-50 border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary">
                         <th class="p-4 font-black">ID</th>
                         <th class="p-4 font-black">Nombre</th>
+                        <th class="p-4 font-black">Género</th>
                         <th class="p-4 font-black text-right">Acciones</th>
                     </tr>
                 </thead>
@@ -57,6 +60,7 @@ include '../../../includes/header.php';
                             <tr class="hover:bg-zinc-50 transition-colors">
                                 <td class="p-4 font-mono text-xs text-zinc-400">#<?php echo $row['jue_id']; ?></td>
                                 <td class="p-4 font-bold text-primary"><?php echo $row['jue_nombre']; ?></td>
+                                <td class="p-4 font-bold text-primary"><?php echo $row['gen_nombre']; ?></td>
                                 <td class="p-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <a href="form.php?id=<?php echo $row['jue_id']; ?>" class="p-2 text-secondary hover:text-primary transition-colors">
