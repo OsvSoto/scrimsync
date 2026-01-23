@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // MÓDULO: Control_Acceso
     switch ($p_op) {
-        
         // Case: Login
         case 'Login':
             // Preparar p_credencial
@@ -35,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($_SESSION['rol'] == 0) {
                     header("Location: ../admin/dashboard.php");
                 } else {
-                    header("Location: ../../index.php"); 
+                    header("Location: ../../index.php");
                 }
                 exit;
             } else {
@@ -46,7 +45,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Case: Registro
         case 'Registro':
-            // Preparar p_usuario
             $p_usuario = [
                 'username' => trim($_POST['username']),
                 'password' => trim($_POST['password']),
@@ -54,7 +52,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'alias'    => trim($_POST['alias'])
             ];
 
-            // Llamada al módulo inferior: Registro_Usuario
             if (Registro_Usuario($conn, $p_usuario)) {
                 header("Location: login.php?msg=registered");
             } else {
@@ -62,16 +59,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
             break;
 
-        // Case: Recuperar 
-        // case 'Recuperar':
-        //     Recuperacion_Credenciales(...);
-        //     break;
+        // Case: Recuperar Credenciales
+        case 'Recuperar':
+            $p_correo_recup = trim($_POST['email']);
+            Recuperacion_Credenciales($conn, $p_correo_recup);
+            header("Location: recover.php?msg=email_sent");
+            break;
 
         default:
             header("Location: login.php?error=unknown_op");
             break;
     }
-    
     mysqli_close($conn);
 
 } else {
