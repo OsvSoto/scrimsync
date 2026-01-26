@@ -96,7 +96,7 @@ include 'includes/header.php';
           <p class="text-sm text-secondary">Encuentra rivales de tu mismo nivel.</p>
         </div>
       </a>
-      <a>
+      <a href="modules/team/profile/index.php">
         <div class="bg-surface p-6 rounded-xl border border-gray-200 hover:border-black transition-colors cursor-pointer group text-left shadow-sm hover:shadow-md">
           <h3 class="font-bold text-lg mb-2 group-hover:underline">Mi Equipo</h3>
           <p class="text-sm text-secondary">Gestiona roster y estrategias.</p>
