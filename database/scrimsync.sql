@@ -11,7 +11,6 @@ SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -283,7 +282,7 @@ ALTER TABLE `estado_scrim`
 -- AUTO_INCREMENT de la tabla `genero`
 --
 ALTER TABLE `genero`
-  MODIFY `id_genero` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `gen_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `juego`
@@ -342,7 +341,7 @@ ALTER TABLE `equipo`
 -- Filtros para la tabla `juego`
 --
 ALTER TABLE `juego`
-  ADD CONSTRAINT `fk_juego_genero` FOREIGN KEY (`gen_id`) REFERENCES `genero` (`id_genero`);
+  ADD CONSTRAINT `fk_juego_genero` FOREIGN KEY (`gen_id`) REFERENCES `genero` (`gen_id`);
 
 --
 -- Filtros para la tabla `notificacion`

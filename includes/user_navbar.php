@@ -5,16 +5,16 @@
       <i data-lucide="menu" class="w-6 h-6"></i>
     </button>
 
-    <div class="flex items-center gap-2">
-      <h1 class="text-xl sm:text-2xl font-black text-primary tracking-tighter">SCRIMSYNC</h1>
-      <span class="bg-primary text-white text-[10px] px-2 py-0.5 font-bold uppercase tracking-widest hidden sm:inline-block">Admin</span>
-    </div>
+    <a href="../../../index.php" class="flex items-center gap-2">
+      <span class="font-black text-xl sm:text-2xl tracking-tighter text-primary">SCRIMSYNC</span>
+    </a>
   </div>
-  <div class="flex items-center gap-4">
-    <span class="text-xs sm:text-sm font-bold text-secondary hidden sm:inline-block">
-      Hola, <?php echo isset($_SESSION['alias']) ? htmlspecialchars($_SESSION['alias']) : 'Admin'; ?>
-    </span>
-    <a href="<?php echo BASE_URL; ?>modules/auth/logout.php"
+  <div class="flex items-center gap-6">
+    <a href="../../../index.php" class="text-xs font-black text-secondary hover:text-primary transition-colors uppercase tracking-widest flex items-center gap-2">
+      <i data-lucide="home" class="w-4 h-4"></i>
+      <span class="hidden md:inline">Inicio</span>
+    </a>
+    <a href="../../../modules/auth/logout.php"
       class="text-xs font-black text-secondary hover:text-rose-600 transition-colors uppercase tracking-widest flex items-center gap-2">
       <i data-lucide="log-out" class="w-4 h-4"></i>
       <span class="hidden md:inline">SALIR</span>
