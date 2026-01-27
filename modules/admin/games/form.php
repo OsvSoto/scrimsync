@@ -1,27 +1,23 @@
 <?php
-// modules/admin/games/form.php
 session_start();
 require_once '../../../config/db.php';
 include '../../../includes/header.php';
 
-// Variables por defecto (Modo Crear)
-$p_op = 'C'; 
+$p_op = 'C';
 $titulo = "Nuevo Juego";
 $jue_id = '';
 $jue_nombre = '';
 $current_gen_id = '';
 
-// 1. CARGAR GÉNEROS
 $sql_generos = "SELECT * FROM genero ORDER BY gen_nombre ASC";
 $result_generos = mysqli_query($conn, $sql_generos);
 
-// 2. MODO EDICIÓN
 if (isset($_GET['id'])) {
     $p_op = 'M';
     $titulo = "Modificar Juego";
     $id = $_GET['id'];
-    
     $sql = "SELECT jue_id, jue_nombre, gen_id FROM juego WHERE jue_id = ?";
+
     if ($stmt = mysqli_prepare($conn, $sql)) {
         mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
@@ -38,43 +34,38 @@ if (isset($_GET['id'])) {
 
 <?php include '../../../includes/admin_navbar.php'; ?>
 
-<div class="min-h-screen bg-background flex pt-16">
-    
+<div class="min-h-screen bg-background pt-16">
+
     <?php include '../../../includes/admin_sidebar.php'; ?>
 
-    <main class="w-full md:ml-64 p-8 flex justify-center">
+    <main class="md:ml-64 p-8 flex justify-center">
         <div class="w-full max-w-lg">
-            
             <a href="index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-6 inline-block">
                 <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver al listado
             </a>
-
             <div class="bg-surface border-2 border-primary p-8 shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]">
                 <h2 class="text-2xl font-black text-primary uppercase tracking-tight mb-8">
                     <?php echo $titulo; ?>
                 </h2>
-
                 <form action="controller_juego.php" method="POST" class="space-y-6">
                     <input type="hidden" name="p_op" value="<?php echo $p_op; ?>">
                     <?php if ($p_op == 'M'): ?>
                         <input type="hidden" name="jue_id" value="<?php echo $jue_id; ?>">
                     <?php endif; ?>
-
                     <div>
                         <label class="block text-[10px] font-black uppercase text-secondary mb-2 tracking-widest">Nombre del Juego</label>
                         <input type="text" name="jue_nombre" value="<?php echo htmlspecialchars($jue_nombre); ?>" required
                                class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
                     </div>
-
                     <div>
                         <label class="block text-[10px] font-black uppercase text-secondary mb-2 tracking-widest">Género</label>
                         <div class="relative">
                             <select name="gen_id" required class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none appearance-none">
                                 <option value="" disabled <?php echo empty($current_gen_id) ? 'selected' : ''; ?>>Seleccione un género...</option>
-                                <?php 
+                                <?php
                                 if(mysqli_num_rows($result_generos) > 0) {
                                     mysqli_data_seek($result_generos, 0);
-                                    while($gen = mysqli_fetch_assoc($result_generos)): 
+                                    while($gen = mysqli_fetch_assoc($result_generos)):
                                         $selected = ($gen['gen_id'] == $current_gen_id) ? 'selected' : '';
                                 ?>
                                     <option value="<?php echo $gen['gen_id']; ?>" <?php echo $selected; ?>>
@@ -85,7 +76,6 @@ if (isset($_GET['id'])) {
                             <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-secondary pointer-events-none"></i>
                         </div>
                     </div>
-
                     <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-zinc-800 transition-all">
                         Guardar Cambios
                     </button>
