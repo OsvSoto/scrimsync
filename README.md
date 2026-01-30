@@ -1,0 +1,29 @@
+# Modulos por hacer
+- [x] Control de Acceso
+    - [x] Login
+    - [x] Registro
+    - [x] Recuperacion
+- [x] Mantencion Tablas Basicas
+    - [x] Rol
+    - [x] Juego
+    - [x] Genero
+- [ ] Gestion de Usuario
+    - [ ] Area Notificaciones
+        manejar solicitudes scrim -> aceptar/rechazar
+    - [x] Gestion de Perfil
+    - [x] Gestion de Credenciales
+    - [x] Asignacion Tipo Usuario
+- [ ] Gestion de Equipo
+    - [ ] Abandonar Equipo
+    - [ ] Invitar Miembro
+    - [x] Crear Equipo
+    - [x] Mantenedor Perfil Equipo
+    - [ ] Gestion de Miembros
+    - [x] Gestionar Rol
+- [ ] Coordinacion de Scrim
+    - [ ] Enviar Solicitud
+    - [ ] Responder Solicitud
+    - [ ] Cancelar Scrim
+- [ ] Gestion Disponibilidad
+- [ ] Busqueda de Equipo
+- [ ] Vista Calendario
