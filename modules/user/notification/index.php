@@ -37,10 +37,10 @@ include '../../../includes/user_navbar.php';
 ?>
 
 <div class="flex min-h-screen bg-background">
-  <?php include '../../../includes/user_sidebar.php'; ?>
+  <?php # include '../../../includes/user_sidebar.php'; ?>
 
-  <main class="flex-1 w-full md:ml-64 p-4 pt-24 md:p-8 md:pt-24">
-    <div class="max-w-6xl mx-auto">
+  <main class="flex-1 w-full pt-16 pb-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <?php if (isset($_SESSION['flash_msg'])): ?>
         <div class="mb-6 bg-success-light border-2 border-success-border p-4 text-success-text font-bold text-sm uppercase tracking-widest flex justify-between items-center shadow-hard-success">
           <div class="flex items-center gap-3">
@@ -75,7 +75,8 @@ include '../../../includes/user_navbar.php';
           <?php if ($hasUnread): ?>
             <form action="controller_notification.php" method="POST">
               <input type="hidden" name="action" value="mark_all_read">
-              <button type="submit" class="flex items-center gap-2 px-4 py-2 border-2 border-primary text-primary text-xs font-black uppercase tracking-widest hover:bg-primary hover:text-white transition-all cursor-pointer whitespace-nowrap">
+              <button type="submit"
+                class="bg-primary transition-all hover:bg-primary-hover text-xs text-surface font-black uppercase tracking-widest px-3 py-3 flex items-center gap-1">
                 <i data-lucide="check-check" class="w-4 h-4"></i>
                 Marcar leídos
               </button>
@@ -86,9 +87,9 @@ include '../../../includes/user_navbar.php';
             <form action="controller_notification.php" method="POST">
               <input type="hidden" name="action" value="clear_notifications">
               <button type="submit"
-                class="flex items-center gap-2 px-4 py-2 border-2 border-error-light text-error-text text-xs font-black uppercase tracking-widest hover:bg-error-text hover:text-background transition-colors whitespace-nowrap">
+                class="transition-all text-xs text-secondary font-black uppercase tracking-widest px-3 py-3 hover:bg-error-text hover:text-surface flex items-center"
+                title="Eliminar Todo">
                 <i data-lucide="trash" class="w-4 h-4"></i>
-                Borrar todo
               </button>
             </form>
           <?php endif; ?>
@@ -150,7 +151,8 @@ include '../../../includes/user_navbar.php';
                       <form action="controller_notification.php" method="POST">
                         <input type="hidden" name="action" value="mark_as_read">
                         <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
-                        <button type="submit" class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">
+                        <button type="submit"
+                          class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">
                           Marcar leído
                         </button>
                       </form>

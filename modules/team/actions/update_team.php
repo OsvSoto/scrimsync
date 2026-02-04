@@ -1,58 +1,96 @@
-    <?php
+<?php
 // modules/team/actions/update_team.php
 session_start();
 require_once '../../../config/db.php';
 
-//SEGURIDAD: Solo aceptamos POST
+if (!isset($_SESSION['loggedin'])) {
+  header("Location: " . BASE_URL . "modules/auth/login.php");
+  exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header("Location: ../profile/index.php");
-    exit;
+  header("Location: ../profile/index.php");
+  exit;
 }
 
-//RECIBIR DATOS
-$equ_id = (int)$_POST['equ_id'];
+$equ_id = isset($_POST['equ_id']) ? (int)$_POST['equ_id'] : 0;
 $nombre = trim($_POST['nombre']);
-$jue_id = (int)$_POST['jue_id'];
-$usu_id = $_SESSION['usu_id']; // El usuario que intenta hacer el cambio
+$jue_id = isset($_POST['jue_id']) ? (int)$_POST['jue_id'] : 0;
+$usu_id = $_SESSION['usu_id'];
 
-//VERIFICAR PERMISOS 
-$check_sql = "SELECT * FROM permiso_equipo 
-              WHERE usu_id = '$usu_id' AND equ_id = '$equ_id' 
+if ($equ_id <= 0) {
+  $_SESSION['flash_error'] = 'invalid_request';
+  header("Location: ../profile/index.php");
+  exit;
+}
+
+// Verificar Permisos (Capitán)
+$check_sql = "SELECT * FROM permiso_equipo
+              WHERE usu_id = ? AND equ_id = ?
               AND (per_modif_horario = 1 OR per_elim_miembro = 1)";
-$check_res = mysqli_query($conn, $check_sql);
+$stmt_check = mysqli_prepare($conn, $check_sql);
+mysqli_stmt_bind_param($stmt_check, "ii", $usu_id, $equ_id);
+mysqli_stmt_execute($stmt_check);
+$res_check = mysqli_stmt_get_result($stmt_check);
 
-if (mysqli_num_rows($check_res) == 0) {
-    die("No tienes permisos para editar este equipo.");
+if (mysqli_num_rows($res_check) == 0) {
+  $_SESSION['flash_error'] = 'no_permission';
+  header("Location: ../profile/view.php?id=$equ_id");
+  exit;
 }
 
-// PROCESAR LOGO 
-$campo_logo = ""; 
-if (isset($_FILES['logo']) && $_FILES['logo']['error'] === 0) {
-    $directorio = '../../../uploads/teams/';
-    if (!file_exists($directorio)) mkdir($directorio, 0777, true);
-    
-    $ext = pathinfo($_FILES['logo']['name'], PATHINFO_EXTENSION);
-    $nuevo_nombre = 'team_' . $equ_id . '_' . time() . '.' . $ext;
-    $ruta_final = $directorio . $nuevo_nombre;
-    
-    if (move_uploaded_file($_FILES['logo']['tmp_name'], $ruta_final)) {
-        // Guardamos la ruta relativa para la BD
-        $ruta_bd = 'uploads/teams/' . $nuevo_nombre;
-        $campo_logo = ", equ_logo = '$ruta_bd'";
+// Manejo de la Imagen (Logo)
+require_once '../../functions/process_image.php';
+
+$campo_logo = "";
+$params_types = "ssi"; // nombre, jue_id, equ_id (default)
+$params_values = [$nombre, $jue_id, $equ_id];
+
+if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
+  $uploadResult = uploadImage($_FILES['logo'], 'teams', 'team', $usu_id);
+
+  if ($uploadResult['success']) {
+    $ruta_bd = $uploadResult['path'];
+    $campo_logo = ", equ_logo = ?";
+
+    $params_types = "sssi";
+    $params_values = [$nombre, $jue_id, $ruta_bd, $equ_id];
+
+    $sql_old = "SELECT equ_logo FROM equipo WHERE equ_id = ?";
+    $stmt_old = mysqli_prepare($conn, $sql_old);
+    mysqli_stmt_bind_param($stmt_old, "i", $equ_id);
+    mysqli_stmt_execute($stmt_old);
+    mysqli_stmt_bind_result($stmt_old, $old_logo);
+    if (mysqli_stmt_fetch($stmt_old)) {
+      if ($old_logo && file_exists(__DIR__ . '/../../../' . $old_logo)) {
+        unlink(__DIR__ . '/../../../' . $old_logo);
+      }
     }
+    mysqli_stmt_close($stmt_old);
+
+  } else {
+    $_SESSION['flash_error'] = $uploadResult['error'];
+    header("Location: ../profile/manage.php?id=$equ_id");
+    exit;
+  }
 }
 
-//ACTUALIZAR BASE DE DATOS
-$sql_update = "UPDATE equipo SET 
-               equ_nombre = '$nombre', 
-               jue_id = '$jue_id' 
-               $campo_logo 
-               WHERE equ_id = '$equ_id'";
+// Actualizar BD
+$sql_update = "UPDATE equipo SET
+               equ_nombre = ?,
+               jue_id = ?
+               $campo_logo
+               WHERE equ_id = ?";
 
-if (mysqli_query($conn, $sql_update)) {
-    // Éxito: Volvemos al manage.php con un mensaje (opcional)
-    header("Location: ../profile/manage.php?id=$equ_id&success=updated");
+$stmt_update = mysqli_prepare($conn, $sql_update);
+mysqli_stmt_bind_param($stmt_update, $params_types, ...$params_values);
+
+if (mysqli_stmt_execute($stmt_update)) {
+  $_SESSION['flash_msg'] = 'updated';
+  header("Location: ../profile/manage.php?id=$equ_id");
 } else {
-    echo "Error al actualizar: " . mysqli_error($conn);
+  $_SESSION['flash_error'] = 'db_error';
+  $_SESSION['debug_error'] = mysqli_error($conn);
+  header("Location: ../profile/manage.php?id=$equ_id");
 }
-?>
+
