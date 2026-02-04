@@ -10,10 +10,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/lucide@latest"></script>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" type="text/css" />
   <script>
     tailwind.config = {
-      // colores para usar en el sistema
       theme: {
         extend: {
           colors: {
@@ -31,6 +32,9 @@
             'success-light': '#d1fae5', // emerald-100
             'success-border': '#10b981', // emerald-500
             'success-text': '#047857', // emerald-700
+            'scrimsync': '#6375cb',
+            'scrimsync-dark': '#023047',
+            'scrimsync-light': '#b5bee6'
           },
           boxShadow: {
             'hard': '4px 4px 0px 0px #09090b',
@@ -45,8 +49,6 @@
       }
     }
   </script>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
-  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 
 <body class="<?php echo $bodyClass ?? 'bg-background font-sans'; ?>">

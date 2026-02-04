@@ -9,21 +9,37 @@
     - [x] Genero
 - [ ] Gestion de Usuario
     - [ ] Area Notificaciones
-        manejar solicitudes scrim -> aceptar/rechazar
+        - [ ] Solicitud de Scrim
+        - [x] Invitacion a Equipo
+        - [x] Notificaciones de Sistema
     - [x] Gestion de Perfil
     - [x] Gestion de Credenciales
     - [x] Asignacion Tipo Usuario
-- [ ] Gestion de Equipo
-    - [ ] Abandonar Equipo
-    - [ ] Invitar Miembro
+- [x] Gestion de Equipo
+    - [x] Abandonar Equipo
+    - [x] Invitar Miembro
     - [x] Crear Equipo
     - [x] Mantenedor Perfil Equipo
-    - [ ] Gestion de Miembros
+    - [x] Gestion de Miembros
     - [x] Gestionar Rol
+    - [x] Eliminar Equipo
 - [ ] Coordinacion de Scrim
     - [ ] Enviar Solicitud
     - [ ] Responder Solicitud
     - [ ] Cancelar Scrim
-- [ ] Gestion Disponibilidad
+- [x] Gestion Disponibilidad
 - [ ] Busqueda de Equipo
 - [ ] Vista Calendario
+    - [ ] Confirmadas / Pendientas
+
+# Funcionalidades extra
+- [ ] Busqueda en tiempo real?
+- [ ] Alertas/mensajes flotantes?
+
+# Diseño
+- Bordes rectos
+- Navbar mas chico
+- Quitar el sidebar
+
+# TODO
+- Refactor sql en php: mysqli procedural -> mysqli OOP, es mas facil de mantener y leer.
