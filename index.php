@@ -1,59 +1,46 @@
 <?php
 //index.php -- Pagina Principal
 session_start();
+require_once 'config/db.php';
 
 // LOGICA DE SEGURIDAD
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
-  if (isset($_SESSION['rol']) && $_SESSION['rol'] === 0) {
+  if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 0) {
     header("Location: modules/admin/dashboard.php");
     exit;
   }
 }
+
 $bodyClass = "bg-background text-primary font-sans antialiased selection:bg-black selection:text-white min-h-screen flex flex-col";
 include 'includes/header.php';
 ?>
 
-<nav class="fixed top-0 left-0 w-full h-16 bg-surface border-b-2 border-primary z-50 flex items-center justify-between gap-4 px-4 md:px-6">
-  <div class="flex items-center">
-    <a href="index.php" class="flex items-center gap-2">
-      <span class="text-2xl font-black tracking-tighter text-primary">SCRIMSYNC</span>
-    </a>
-  </div>
+<?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
+  <?php include "includes/user_navbar.php"; ?>
+<?php else: ?>
+  <nav class="fixed top-0 left-0 w-full h-10 bg-surface border-b-2 border-primary z-50">
+  <div class="max-w-6xl mx-auto h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center">
+      <a href="index.php" class="flex items-center gap-2">
+        <span class="text-2xl font-black tracking-tighter text-primary transition-colors hover:text-scrimsync">SCRIMSYNC</span>
+      </a>
+    </div>
 
-  <div class="flex items-center gap-4 md:gap-6">
-    <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
-      <a href="modules/user/profile/index.php" class="flex items-center gap-3 group">
-        <div class="md:flex flex-col items-end">
-          <span class="text-xs font-black text-primary"><?php echo htmlspecialchars($_SESSION['alias'] ?? ''); ?></span>
-        </div>
-        <div class="p-1.5 bg-subtle rounded-sm group-hover:bg-border transition-colors border border-border group-hover:border-primary">
-          <i data-lucide="user" class="w-4 h-4 text-primary"></i>
-        </div>
-      </a>
-      <a href="modules/user/notification/index.php" class="flex items-center gap-3 group">
-        <div class="p-1.5 bg-subtle rounded-sm group-hover:bg-border transition-colors border border-border group-hover:border-primary">
-          <i data-lucide="bell" class="w-4 h-4 text-primary"></i>
-        </div>
-      </a>
-      <a href="modules/auth/logout.php"
-        class="text-xs font-black text-secondary hover:text-error-text transition-colors uppercase tracking-widest flex items-center gap-2">
-        <i data-lucide="log-out" class="w-4 h-4"></i>
-        <span class="hidden md:inline">SALIR</span>
-      </a>
-    <?php else: ?>
-      <a href="modules/auth/login.php" class="text-xs font-black text-secondary hover:text-primary text-center transition-colors uppercase tracking-widest">
-        INICIAR SESIÓN
+    <div class="flex items-center gap-2">
+      <a href="modules/auth/login.php" class="text-xs text-primary font-bold hover:text-scrimsync text-center transition-colors  tracking-widest">
+        Iniciar Sesión
       </a>
       <a href="modules/auth/register.php"
-        class="bg-primary text-white px-4 py-2.5 text-xs font-black uppercase tracking-widest text-center hover:bg-primary-hover transition-all shadow-hard-sm">
-        CREAR CUENTA
+        class="bg-primary text-white px-2 py-1 text-xs font-bold tracking-widest text-center transition-all hover:bg-scrimsync">
+        Crear Cuenta
       </a>
-    <?php endif; ?>
+    </div>
   </div>
-</nav>
+  </nav>
+<?php endif; ?>
 
-<main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-20">
+<main class="flex-grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-12">
     <div class="flex flex-col items-start text-left">
       <span class="bg-subtle text-primary text-xs font-bold px-3 py-1 rounded-full border border-border mb-6 uppercase tracking-widest">
         Gestión de eSports
@@ -70,7 +57,7 @@ include 'includes/header.php';
 
       <?php if (!isset($_SESSION['loggedin'])): ?>
         <div class="flex flex-col sm:flex-row gap-4 w-full">
-          <a href="modules/auth/register.php" class="bg-primary text-white px-8 py-4 text-base font-bold rounded-lg hover:scale-105 transition-transform shadow-hard text-center">
+          <a href="modules/auth/register.php" class="bg-primary text-white px-8 py-4 text-base font-bold rounded-lg hover:scale-105 transition-transform text-center">
             EMPEZAR AHORA
           </a>
           <a href="#features" class="px-8 py-4 text-base font-bold text-primary border-2 border-border rounded-lg hover:border-primary hover:bg-surface transition-colors text-center">
@@ -133,7 +120,7 @@ include 'includes/header.php';
 
 </main>
 
-<footer id="footer" class="w-full border-t bg-white py-8 mt-auto">
+<footer id="footer" class="w-full border-t bg-white py-3 mt-auto">
   <div class="max-w-7xl mx-auto px-4 text-center text-muted text-sm font-medium">
     &copy; <?php echo date("Y"); ?> ScrimSync. Todos los derechos reservados.
   </div>

@@ -5,7 +5,7 @@ require_once '../../../config/db.php';
 include '../../../includes/header.php';
 
 // Validar Admin
-if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
   header("Location: ../../../modules/auth/login.php");
   exit;
 }
@@ -15,10 +15,10 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
 
 <div class="min-h-screen bg-background pt-16">
 
-  <?php include '../../../includes/admin_sidebar.php'; ?>
+  <?php # include '../../../includes/admin_sidebar.php'; ?>
 
-  <main class="md:ml-64 p-8">
-    <div class="max-w-5xl mx-auto">
+  <main class="p-8">
+    <div class="max-w-6xl mx-auto">
       <a href="../dashboard.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-8 inline-block">
         <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver al Dashboard
       </a>
@@ -32,7 +32,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-        <a href="../games/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-zinc-50 transition-all hover:-translate-y-1 shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]">
+        <a href="../games/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-subtle transition-all hover:-translate-y-1 shadow-hard">
           <div class="mb-4 text-primary group-hover:scale-110 transition-transform origin-left">
             <i data-lucide="gamepad-2" class="w-10 h-10"></i>
           </div>
@@ -40,7 +40,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
           <p class="text-xs text-secondary font-medium">Ver listado, crear y editar.</p>
         </a>
 
-        <a href="../roles/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-zinc-50 transition-all hover:-translate-y-1 shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]">
+        <a href="../roles/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-subtle transition-all hover:-translate-y-1 shadow-hard">
           <div class="mb-4 text-primary group-hover:scale-110 transition-transform origin-left">
             <i data-lucide="shield" class="w-10 h-10"></i>
           </div>
@@ -48,7 +48,7 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
           <p class="text-xs text-secondary font-medium">Roles predefinidos por juego</p>
         </a>
 
-        <a href="../genero/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-zinc-50 transition-all hover:-translate-y-1 shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]">
+        <a href="../genero/index.php" class="group block bg-surface border-2 border-primary p-8 hover:bg-subtle transition-all hover:-translate-y-1 shadow-hard">
           <div class="mb-4 text-primary group-hover:scale-110 transition-transform origin-left">
             <i data-lucide="tags" class="w-10 h-10"></i>
           </div>

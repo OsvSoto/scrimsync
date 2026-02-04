@@ -4,7 +4,7 @@ session_start();
 require_once '../../../config/db.php';
 
 // Validar Admin
-if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
   header("Location: ../../../modules/auth/login.php");
   exit;
 }
@@ -22,10 +22,10 @@ include '../../../includes/header.php';
 
 <div class="min-h-screen bg-background flex pt-16">
 
-  <?php include '../../../includes/admin_sidebar.php'; ?>
+  <?php # include '../../../includes/admin_sidebar.php'; ?>
 
-  <main class="w-full md:ml-64 p-8">
-    <div class="max-w-5xl mx-auto">
+  <main class="w-full p-8">
+    <div class="max-w-6xl mx-auto">
       <a href="../mantencion/index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-8 inline-block">
         <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver a Tablas Básicas
       </a>
@@ -47,18 +47,18 @@ include '../../../includes/header.php';
       <div class="bg-surface border-2 border-primary overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
-            <tr class="bg-zinc-50 border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary">
+            <tr class="bg-subtle border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary">
               <th class="p-4 font-black">ID</th>
               <th class="p-4 font-black">Nombre</th>
               <th class="p-4 font-black">Género</th>
               <th class="p-4 font-black text-right">Acciones</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-zinc-100">
+          <tbody class="divide-y divide-subtle">
             <?php if (mysqli_num_rows($result) > 0): ?>
               <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                <tr class="hover:bg-zinc-50 transition-colors">
-                  <td class="p-4 font-mono text-xs text-zinc-400">#<?php echo $row['jue_id']; ?></td>
+                <tr class="hover:bg-subtle transition-colors">
+                  <td class="p-4 font-mono text-xs text-muted">#<?php echo $row['jue_id']; ?></td>
                   <td class="p-4 font-bold text-primary"><?php echo $row['jue_nombre']; ?></td>
                   <td class="p-4 font-bold text-primary"><?php echo $row['gen_nombre']; ?></td>
                   <td class="p-4 text-right">
@@ -69,7 +69,7 @@ include '../../../includes/header.php';
                       <form action="controller_juego.php" method="POST" onsubmit="return confirm('¿Eliminar este juego?');">
                         <input type="hidden" name="p_op" value="E">
                         <input type="hidden" name="jue_id" value="<?php echo $row['jue_id']; ?>">
-                        <button type="submit" class="p-2 text-secondary hover:text-rose-600 transition-colors">
+                        <button type="submit" class="p-2 text-secondary hover:text-error-text transition-colors">
                           <i data-lucide="trash-2" class="w-4 h-4"></i>
                         </button>
                       </form>
@@ -79,7 +79,7 @@ include '../../../includes/header.php';
               <?php endwhile; ?>
             <?php else: ?>
               <tr>
-                <td colspan="3" class="p-8 text-center text-secondary">No hay juegos aún.</td>
+                <td colspan="4" class="p-8 text-center text-secondary">No hay juegos aún.</td>
               </tr>
             <?php endif; ?>
           </tbody>

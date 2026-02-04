@@ -4,7 +4,7 @@ session_start();
 require_once '../../../config/db.php';
 
 // Validar que vengan datos y usuario sea admin
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['rol']) && $_SESSION['rol'] == 0) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['tipo']) && $_SESSION['tipo'] == 0) {
 
     // ENTRADAS
     $p_op = $_POST['p_op']; // "C", "M", o "E"

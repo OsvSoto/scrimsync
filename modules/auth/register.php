@@ -15,7 +15,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     <div class="relative w-full max-w-lg">
         <?php if (isset($_GET['error'])): ?>
             <div class="absolute bottom-full left-0 w-full mb-4">
-                <div class="bg-rose-100 border-2 border-rose-500 text-rose-700 p-3 text-xs font-bold uppercase tracking-wide text-center shadow-[4px_4px_0px_0px_rgba(244,63,94,0.2)]">
+                <div class="bg-error-light border-2 border-error-border text-error-text p-3 text-xs font-bold uppercase tracking-wide text-center shadow-hard-error">
                     <?php
                         if ($_GET['error'] == 'db_error') echo "Error al registrar. El usuario o email ya existen.";
                         else echo "Ocurrió un error inesperado.";
@@ -24,7 +24,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
             </div>
         <?php endif; ?>
 
-        <div class="w-full bg-surface border-2 border-primary p-8 shadow-[8px_8px_0px_0px_rgba(9,9,11,1)]">
+        <div class="w-full bg-surface border-2 border-primary p-8 shadow-hard">
 
             <div class="text-center mb-8">
                 <h1 class="text-4xl font-black text-primary tracking-tighter mb-2">SCRIMSYNC</h1>
@@ -59,12 +59,12 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
             </div>
 
-            <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-zinc-800 transition-all mt-4 hover:translate-x-[2px] hover:translate-y-[2px] shadow-[4px_4px_0px_0px_rgba(0,0,0,0.2)] hover:shadow-none">
+            <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all mt-4 hover:translate-x-[2px] hover:translate-y-[2px] shadow-hard-sm hover:shadow-none">
                 Registrarse
             </button>
         </form>
 
-        <div class="mt-8 text-center border-t-2 border-zinc-100 pt-6">
+        <div class="mt-8 text-center border-t-2 border-subtle pt-6">
             <p class="text-xs text-secondary font-bold">
                 ¿Ya tienes cuenta?
                 <a href="login.php" class="text-primary hover:underline">Inicia Sesión</a>

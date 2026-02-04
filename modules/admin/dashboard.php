@@ -4,7 +4,7 @@ session_start();
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/db.php';
 
 // 1. Seguridad: Verificar Admin
-if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
   header("Location: ../../../modules/auth/login.php");
   exit;
 }
@@ -16,10 +16,10 @@ include '../../includes/header.php';
 
 <div class="min-h-screen pt-16 bg-background">
 
-  <?php include '../../includes/admin_sidebar.php'; ?>
+  <?php # include '../../includes/admin_sidebar.php'; ?>
 
-  <main class="md:ml-64 p-8">
-    <div class="max-w-5xl mx-auto">
+  <main class="p-8">
+    <div class="max-w-6xl mx-auto">
 
       <header class="mb-10">
         <h2 class="text-3xl font-black text-primary uppercase tracking-tight mb-2">Panel de Control</h2>
@@ -30,33 +30,33 @@ include '../../includes/header.php';
 
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-        <a href="mantencion/index.php" class="group flex flex-col p-8 bg-surface border-2 border-primary hover:bg-primary transition-all shadow-[4px_4px_0px_0px_rgba(9,9,11,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+        <a href="mantencion/index.php" class="group flex flex-col p-8 bg-surface border-2 border-primary hover:bg-primary transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
           <div class="flex justify-between items-start mb-4">
-            <div class="p-3 bg-zinc-100 group-hover:bg-zinc-800 transition-colors">
+            <div class="p-3 bg-subtle group-hover:bg-primary-hover transition-colors">
               <i data-lucide="database" class="w-8 h-8 text-primary group-hover:text-white"></i>
             </div>
-            <i data-lucide="arrow-right" class="w-5 h-5 text-zinc-300 group-hover:text-white opacity-0 group-hover:opacity-100 transition-all"></i>
+            <i data-lucide="arrow-right" class="w-5 h-5 text-muted group-hover:text-white opacity-0 group-hover:opacity-100 transition-all"></i>
           </div>
 
           <h4 class="text-lg font-black uppercase text-primary group-hover:text-white mb-2">
             Tablas Básicas
           </h4>
-          <p class="text-xs text-secondary group-hover:text-zinc-400 font-medium">
+          <p class="text-xs text-secondary group-hover:text-muted font-medium">
             Gestión centralizada de Juegos, Roles y Géneros.
           </p>
         </a>
 
-        <a href="usuarios/index.php" class="group flex flex-col p-8 bg-surface border-2 border-primary hover:bg-primary transition-all shadow-[4px_4px_0px_0px_rgba(9,9,11,1)] hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+        <a href="usuarios/index.php" class="group flex flex-col p-8 bg-surface border-2 border-primary hover:bg-primary transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
           <div class="flex justify-between items-start mb-4">
-            <div class="p-3 bg-zinc-100 group-hover:bg-zinc-800 transition-colors">
+            <div class="p-3 bg-subtle group-hover:bg-primary-hover transition-colors">
               <i data-lucide="users" class="w-8 h-8 text-primary group-hover:text-white"></i>
             </div>
-            <i data-lucide="arrow-right" class="w-5 h-5 text-zinc-300 group-hover:text-white opacity-0 group-hover:opacity-100 transition-all"></i>
+            <i data-lucide="arrow-right" class="w-5 h-5 text-muted group-hover:text-white opacity-0 group-hover:opacity-100 transition-all"></i>
           </div>
           <h4 class="text-lg font-black uppercase text-primary group-hover:text-white mb-2">
             Gestión de Usuarios
           </h4>
-          <p class="text-xs text-secondary group-hover:text-zinc-400 font-medium">
+          <p class="text-xs text-secondary group-hover:text-muted font-medium">
             Administrar permisos y roles de usuarios.
           </p>
         </a>

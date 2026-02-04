@@ -2,7 +2,7 @@
 session_start();
 require_once '../../../config/db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['rol']) && $_SESSION['rol'] == 0) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['tipo']) && $_SESSION['tipo'] == 0) {
     $p_op = $_POST['p_op']; // "C", "M", o "E"
     $jue_id     = isset($_POST['jue_id']) ? $_POST['jue_id'] : null;
     $jue_nombre = isset($_POST['jue_nombre']) ? trim($_POST['jue_nombre']) : '';

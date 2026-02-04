@@ -4,7 +4,7 @@ session_start();
 require_once '../../../config/db.php';
 
 // Validar Admin
-if (!isset($_SESSION['loggedin']) || $_SESSION['rol'] != 0) {
+if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
   header("Location: ../../../modules/auth/login.php");
   exit;
 }
@@ -30,10 +30,10 @@ include '../../../includes/header.php';
 
 <div class="min-h-screen pt-16 bg-background">
 
-  <?php include '../../../includes/admin_sidebar.php'; ?>
+  <?php # include '../../../includes/admin_sidebar.php'; ?>
 
-  <main class="md:ml-64 p-8">
-    <div class="max-w-5xl mx-auto">
+  <main class="p-8">
+    <div class="max-w-6xl mx-auto">
       <a href="../dashboard.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-8 inline-block">
         <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver al Dashboard
       </a>
@@ -48,28 +48,35 @@ include '../../../includes/header.php';
 
         <form action="" method="GET" class="flex gap-2 w-full md:w-auto">
           <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Buscar por usuario..."
-            class="bg-white border-2 border-zinc-200 p-2 text-sm focus:border-primary outline-none w-full md:w-64">
-          <button type="submit" class="bg-primary text-white p-2 hover:bg-zinc-800 transition-colors">
+            class="bg-surface border-2 border-border p-2 text-sm focus:border-primary outline-none w-full md:w-64">
+          <button type="submit" class="bg-primary text-white p-2 hover:bg-primary-hover transition-colors">
             <i data-lucide="search" class="w-5 h-5"></i>
           </button>
           <?php if (!empty($search)): ?>
-            <a href="index.php" class="bg-zinc-200 text-zinc-600 p-2 hover:bg-zinc-300 transition-colors" title="Limpiar búsqueda">
+            <a href="index.php" class="bg-subtle text-secondary p-2 hover:bg-border transition-colors" title="Limpiar búsqueda">
               <i data-lucide="x" class="w-5 h-5"></i>
             </a>
           <?php endif; ?>
         </form>
       </div>
 
-      <?php if (isset($_GET['msg'])): ?>
-        <div class="bg-emerald-100 text-emerald-800 p-4 mb-6 rounded font-bold text-sm">
-          <?php if ($_GET['msg'] == 'promovido') echo "Usuario promovido a Administrador exitosamente."; ?>
+      <?php if (isset($_SESSION['flash_msg'])): ?>
+        <div class="bg-success-light border-2 border-success-border p-4 mb-6 text-success-text font-bold text-sm uppercase tracking-widest flex justify-between items-center">
+          <div class="flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-5 h-5"></i>
+            <?php
+            if ($_SESSION['flash_msg'] == 'promovido') echo "Usuario promovido a administrador exitosamente";
+            ?>
+          </div>
+          <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer" viewBox="0 0 512 512"></i>
         </div>
+        <?php unset($_SESSION['flash_msg']); ?>
       <?php endif; ?>
 
       <div class="bg-surface border-2 border-primary overflow-hidden flex flex-col relative" style="max-height: 600px;">
         <div class="overflow-y-auto w-full">
           <table class="w-full text-left border-collapse table-fixed">
-            <thead class="sticky top-0 z-10 bg-zinc-50 border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary shadow-sm">
+            <thead class="sticky top-0 z-10 bg-subtle border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary shadow-sm">
               <tr>
                 <th class="p-4 font-black w-20">ID</th>
                 <th class="p-4 font-black w-90">Usuario</th>
@@ -77,18 +84,18 @@ include '../../../includes/header.php';
                 <th class="p-4 font-black w-auto text-right">Acciones</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-zinc-100">
+            <tbody class="divide-y divide-subtle">
               <?php if (mysqli_num_rows($result) > 0): ?>
                 <?php while ($row = mysqli_fetch_assoc($result)): ?>
-                  <tr class="hover:bg-zinc-50 transition-colors">
-                    <td class="p-4 font-mono text-xs text-zinc-400 truncate">#<?php echo $row['usu_id']; ?></td>
+                  <tr class="hover:bg-subtle transition-colors">
+                    <td class="p-4 font-mono text-xs text-muted truncate">#<?php echo $row['usu_id']; ?></td>
                     <td class="p-4">
                       <div class="flex items-center gap-3 font-bold text-primary truncate">
                         <?php if ($row['usu_foto']): ?>
                           <img src="<?php echo $row['usu_foto']; ?>" class="w-8 h-8 rounded-full object-cover shrink-0">
                         <?php else: ?>
-                          <div class="w-8 h-8 rounded-full bg-zinc-200 flex items-center justify-center shrink-0">
-                            <i data-lucide="user" class="w-4 h-4 text-zinc-400"></i>
+                          <div class="w-8 h-8 rounded-full bg-border flex items-center justify-center shrink-0">
+                            <i data-lucide="user" class="w-4 h-4 text-muted"></i>
                           </div>
                         <?php endif; ?>
                         <div class="truncate">
@@ -102,7 +109,7 @@ include '../../../includes/header.php';
                       <form action="controller_usuarios.php" method="POST" onsubmit="return confirm('¿Estás seguro de promover a <?php echo $row['usu_username']; ?> a Administrador? Esta acción otorgará control total sobre el sistema.');">
                         <input type="hidden" name="p_op" value="Asignar_Tipo_Usu">
                         <input type="hidden" name="usu_id" value="<?php echo $row['usu_id']; ?>">
-                        <button type="submit" class="bg-zinc-900 text-white px-3 py-2 text-xs font-bold uppercase tracking-wider hover:bg-emerald-600 transition-colors inline-flex items-center gap-2">
+                        <button type="submit" class="bg-primary text-white px-3 py-2 text-xs font-bold uppercase tracking-wider hover:bg-success-border transition-colors inline-flex items-center gap-2">
                           <i data-lucide="shield-check" class="w-3 h-3"></i>
                           <span class="hidden lg:inline">Hacer Admin</span>
                         </button>

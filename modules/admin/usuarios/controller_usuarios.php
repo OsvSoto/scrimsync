@@ -3,7 +3,7 @@
 session_start();
 require_once '../../../config/db.php';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['loggedin']) && $_SESSION['rol'] == 0) {
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['loggedin']) && $_SESSION['tipo'] == 0) {
 
     $p_op = $_POST['p_op'];
 
@@ -56,7 +56,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['loggedin']) && $_SE
 
                 // Commit
                 mysqli_commit($conn);
-                header("Location: index.php?msg=promovido");
+                $_SESSION['flash_msg'] = 'promovido';
+                header("Location: index.php");
+                /* header("Location: index.php?msg=promovido"); */
 
             } catch (Exception $e) {
                 mysqli_rollback($conn);

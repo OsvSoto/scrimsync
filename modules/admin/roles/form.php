@@ -49,7 +49,7 @@ if (isset($_GET['id'])) {
                 <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver al listado
             </a>
 
-            <div class="bg-surface border-2 border-primary p-8 shadow-[4px_4px_0px_0px_rgba(9,9,11,1)]">
+            <div class="bg-surface border-2 border-primary p-8 shadow-hard">
                 <h2 class="text-2xl font-black text-primary uppercase tracking-tight mb-8">
                     <?php echo $titulo; ?>
                 </h2>
@@ -86,7 +86,7 @@ if (isset($_GET['id'])) {
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-zinc-800 transition-all">
+                    <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all">
                         Guardar Cambios
                     </button>
                 </form>
