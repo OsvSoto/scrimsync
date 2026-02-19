@@ -18,13 +18,13 @@ include '../../../includes/header.php';
 
 <?php include '../../../includes/admin_navbar.php'; ?>
 
-<div class="min-h-screen bg-background pt-16">
+<div class="min-h-screen bg-background">
 
   <?php # include '../../../includes/admin_sidebar.php'; ?>
 
-  <main class="p-8">
-    <div class="max-w-6xl mx-auto">
-      <a href="../mantencion/index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-8 inline-block">
+  <main class="flex-1 w-full pt-16 pb-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <a href="../mantencion/index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-6 inline-block">
         <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver a Tablas Básicas
       </a>
 

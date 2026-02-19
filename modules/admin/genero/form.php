@@ -32,14 +32,12 @@ if (isset($_GET['id'])) {
 
 <?php include '../../../includes/admin_navbar.php'; ?>
 
-<div class="min-h-screen bg-background pt-16">
+<div class="min-h-screen bg-background flex flex-col">
 
-    <?php include '../../../includes/admin_sidebar.php'; ?>
+    <main class="flex-1 w-full pt-16 pb-8 flex flex-col items-center">
+        <div class="w-full max-w-lg px-4 sm:px-6 lg:px-8">
 
-    <main class="md:ml-64 p-8 flex justify-center">
-        <div class="w-full max-w-lg">
-
-            <a href="index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-6 inline-block">
+            <a href="index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-4 inline-block">
                 <i data-lucide="arrow-left" class="w-3 h-3 inline mr-1"></i> Volver al listado
             </a>
 
