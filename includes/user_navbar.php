@@ -23,20 +23,20 @@ if (isset($_SESSION['usu_id']) && isset($conn)) {
       <a href="/index.php" class="flex items-center gap-2">
         <span class="text-2xl font-black tracking-tighter text-primary transition-colors hover:text-scrimsync">SCRIMSYNC</span>
       </a>
-      <a href="#"
-        class="flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/scrim/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-scrimsync hover:border-primary'; ?>">
+      <a href="/modules/scrim/index.php"
+        class="hover:underline flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/scrim/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-primary hover:border-primary'; ?>">
         <i data-lucide="search" class="w-4 h-4 "></i>
-        <span class="hidden md:inline">Buscar Scrim</span>
+        <span class="hidden md:inline ">Buscar Scrim</span>
       </a>
 
       <a href="/modules/user/calendar/index.php"
-        class="flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/user/calendar/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-scrimsync hover:border-primary'; ?>">
+        class="hover:underline flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/user/calendar/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-primary hover:border-primary'; ?>">
         <i data-lucide="calendar" class="w-4 h-4"></i>
         <span class="hidden md:inline">Calendario</span>
       </a>
 
       <a href="/modules/team/profile/index.php"
-        class="flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/team/profile/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-scrimsync hover:border-primary'; ?>">
+        class="hover:underline flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/team/profile/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-primary hover:border-primary'; ?>">
         <i data-lucide="shield" class="w-4 h-4"></i>
         <span class="hidden md:inline">Mi Equipo</span>
       </a>
@@ -45,7 +45,7 @@ if (isset($_SESSION['usu_id']) && isset($conn)) {
     <!-- Notificaciones - Mi Perfil/Logout -->
     <div class="flex items-center gap-1">
       <a href="/modules/user/notification/index.php"
-        class="flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/user/notification/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-scrimsync hover:border-primary'; ?>">
+        class="flex items-center gap-1 px-2 py-2 text-sm transition-colors <?php echo (strpos($current_uri, 'modules/user/notification/') !== false) ? 'text-primary font-bold border-primary' : 'text-secondary border-transparent hover:text-primary hover:border-primary'; ?>">
         <div class="relative">
           <i data-lucide="bell" class="w-4 h-4"></i>
           <?php if ($unread_notifications): ?>
@@ -59,7 +59,7 @@ if (isset($_SESSION['usu_id']) && isset($conn)) {
 
       <div class="dropdown dropdown-end">
         <div tabindex="0" role="button"
-             class="bg-surface text-secondary hover:text-scrimsync shadow-none rounded-none" title="Perfil">
+             class="bg-surface text-secondary hover:text-primary shadow-none rounded-none" title="Perfil">
           <i data-lucide="user" class="w-4 h-4"></i>
         </div>
         <ul tabindex="0"
