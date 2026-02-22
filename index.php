@@ -107,8 +107,7 @@ include 'includes/header.php';
             </a>
 
 
-            <!-- <a href="modules/user/calendar/index.php"> -->
-            <a href="#">
+            <a href="modules/user/calendar/index.php">
                 <div class="bg-surface p-6 rounded-none border border-primary transition-all cursor-pointer group text-left shadow-hard-sm hover:shadow-hard">
                     <div class="flex items-center gap-2 mb-2 group-hover:underline">
                         <i data-lucide="calendar" class="w-5 h-5"></i>
