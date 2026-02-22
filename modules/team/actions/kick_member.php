@@ -22,9 +22,9 @@ if ($equ_id <= 0 || $target_usu_id <= 0) {
 }
 
 // Verificar permisos (per_enviar_scrim=1 como solicitado o per_elim_miembro)
-$sql_perm = "SELECT per_enviar_scrim, per_elim_miembro FROM permiso_equipo WHERE usu_id = '$usu_id' AND equ_id = '$equ_id'";
-$res_perm = mysqli_query($conn, $sql_perm);
-$perm = mysqli_fetch_assoc($res_perm);
+$sql_perm = "SELECT per_enviar_scrim, per_elim_miembro FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+$res_perm = $conn->execute_query($sql_perm, [$usu_id, $equ_id]);
+$perm = $res_perm->fetch_assoc();
 
 if (!$perm || ($perm['per_enviar_scrim'] != 1 && $perm['per_elim_miembro'] != 1)) {
     die("No tienes permisos para eliminar miembros.");
@@ -35,12 +35,15 @@ if ($usu_id == $target_usu_id) {
     die("No puedes eliminarte a ti mismo.");
 }
 
-// Eliminar
-$sql_delete = "DELETE FROM permiso_equipo WHERE usu_id = '$target_usu_id' AND equ_id = '$equ_id'";
-if (mysqli_query($conn, $sql_delete)) {
-
-    $stmt_notif = "INSERT INTO notificacion (usu_id, not_tipo, not_asunto, not_mensaje) VALUES ($target_usu_id, 'SISTEMA', 'Has sido kickeado', '$equ_nombre: kgaste prro')";
-    if ($conn->query($stmt_notif) === TRUE) {
+// Eliminar usuario del equipo + permisos
+$sql_delete = "DELETE FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+if ($conn->execute_query($sql_delete, [$target_usu_id, $equ_id])) {
+    $asunto = "$equ_nombre: Has sido expulsado";
+    $mensaje = "Te han expulsado del equipo";
+    $stmt_notif = "
+        INSERT INTO notificacion (usu_id, not_tipo, not_asunto, not_mensaje)
+        VALUES (?, 'SISTEMA', ?, ?)";
+    if ($conn->execute_query($stmt_notif, [$target_usu_id, $asunto, $mensaje]) === TRUE) {
         $_SESSION['flash_msg'] = 'kicked';
     }
     header("Location: ../profile/view.php?id=$equ_id");
@@ -48,4 +51,3 @@ if (mysqli_query($conn, $sql_delete)) {
     $_SESSION['flash_error'] = 'db_error';
     header("Location: ../profile/view.php?id=$equ_id");
 }
-?>
