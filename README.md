@@ -7,9 +7,9 @@
     - [x] Rol
     - [x] Juego
     - [x] Genero
-- [ ] Gestion de Usuario
-    - [ ] Area Notificaciones
-        - [ ] Solicitud de Scrim
+- [x] Gestion de Usuario
+    - [x] Area Notificaciones
+        - [x] Solicitud de Scrim
         - [x] Invitacion a Equipo
         - [x] Notificaciones de Sistema
     - [x] Gestion de Perfil
@@ -23,23 +23,23 @@
     - [x] Gestion de Miembros
     - [x] Gestionar Rol
     - [x] Eliminar Equipo
-- [ ] Coordinacion de Scrim
-    - [ ] Enviar Solicitud
-    - [ ] Responder Solicitud
-    - [ ] Cancelar Scrim
+- [x] Coordinacion de Scrim
+    - [x] Enviar Solicitud
+    - [x] Responder Solicitud
+    - [x] Cancelar Scrim
 - [x] Gestion Disponibilidad
-- [ ] Busqueda de Equipo
-- [ ] Vista Calendario
-    - [ ] Confirmadas / Pendientas
-
-# Funcionalidades extra
-- [ ] Busqueda en tiempo real?
-- [ ] Alertas/mensajes flotantes?
-
-# Diseño
-- Bordes rectos
-- Navbar mas chico
-- Quitar el sidebar
+- [x] Busqueda de Equipo
+    - [x] Filtros por juego
+    - [x] Filtros por nombre
+    - [x] Ver disponibilidad de cada equipo
+- [x] Vista Calendario
+    - [x] Confirmadas / Pendientas / Cancelados
 
 # TODO
-- Refactor sql en php: mysqli procedural -> mysqli OOP, es mas facil de mantener y leer.
+- [ ] Refactor sql en php: mysqli procedural -> mysqli OOP, es mas facil de mantener y leer.
+- [ ] Pulir mensajes flash -> Usar misma "class"
+
+## Funcionalidades extra?
+- [ ] Busqueda en tiempo real
+- [ ] Alertas/mensajes flotantes
+- [ ] Respaldo de database
