@@ -33,7 +33,7 @@ include '../../../includes/header.php';
       <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
           <h2 class="text-3xl font-black text-primary uppercase tracking-tight mb-2">
-            Juegos Registrados
+            Juegos
           </h2>
           <p class="text-secondary text-sm">Administra los títulos del sistema.</p>
         </div>

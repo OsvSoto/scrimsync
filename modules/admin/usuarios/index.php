@@ -77,7 +77,7 @@ include '../../../includes/header.php';
         <?php unset($_SESSION['flash_msg']); ?>
       <?php endif; ?>
 
-      <div class="bg-surface border-2 border-primary overflow-hidden flex flex-col relative" style="max-height: 600px;">
+      <div class="bg-surface border-2 border-primary overflow-hidden flex flex-col relative shadow-hard-sm" style="max-height: 600px;">
         <div class="overflow-y-auto w-full">
           <table class="w-full text-left border-collapse table-fixed">
             <thead class="sticky top-0 z-10 bg-subtle border-b-2 border-primary text-[10px] uppercase tracking-widest text-secondary shadow-sm">
