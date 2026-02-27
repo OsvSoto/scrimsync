@@ -17,7 +17,7 @@ include 'includes/header.php';
 
 <!-- Glow Gradient -->
 <div class="fixed inset-0 z-0 pointer-events-none" style="
-      background-image:
+    background-image:
         radial-gradient(circle at 30% 70%, rgba(181, 190, 230, 0.35), transparent 60%),
         radial-gradient(circle at 70% 30%, rgba(99, 117, 203, 0.25), transparent 60%);
 ">
