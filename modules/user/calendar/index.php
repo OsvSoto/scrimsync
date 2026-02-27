@@ -85,7 +85,7 @@ include '../../../includes/header.php';
                         <?php endforeach; ?>
                     </div>
 
-                    <div class="grid grid-cols-7 gap-px bg-border border-2 border-primary shadow-sm overflow-hidden rounded-sm">
+                    <div class="grid grid-cols-7 gap-px bg-border border-2 border-primary shadow-hard-sm overflow-hidden">
                         <?php for ($i = 0; $i < $dayOfWeek; $i++) {
                             echo '<div class="bg-subtle min-h-25 border border-border"></div>';
                         }
@@ -96,7 +96,7 @@ include '../../../includes/header.php';
                                 $d = strtotime($s['scr_fecha_juego']);
                                 return date('j', $d) == $day && date('n', $d) == $month && date('Y', $d) == $year;
                             }); ?>
-                            <div class="bg-surface border border-border min-h-35 p-2 relative group hover:bg-subtle transition-colors <?php echo $isToday ? 'ring-2 ring-inset ring-primary' : ''; ?>">
+                            <div class="bg-surface border border-border min-h-35 p-2 relative group hover:bg-subtle transition-colors <?php echo $isToday ? 'ring-1 ring-inset ring-primary' : ''; ?>">
                                 <div class="text-sm font-bold mb-2 <?php echo $isToday ? 'text-primary' : 'text-muted'; ?>"><?php echo $day; ?></div>
 
                                 <div class="grid gap-2">
@@ -176,7 +176,7 @@ include '../../../includes/header.php';
                         $timestamp = mktime(0, 0, 0, $month, $day, $year);
                         $dia_nombre = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'][date('w', $timestamp)];
                     ?>
-                        <div class="bg-surface border-2 border-primary p-4 <?php echo $isToday ? 'shadow-hard' : 'shadow-hard-sm'; ?>">
+                        <div class="bg-surface border-2 border-primary p-4 shadow-hard-sm">
                             <div class="flex items-center gap-3 mb-3 border-2 border-subtle pb-2">
                                 <span class="text-2xl font-black text-primary"><?php echo $day; ?></span>
                                 <div class="flex flex-col leading-none">

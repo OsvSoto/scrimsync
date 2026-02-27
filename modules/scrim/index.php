@@ -270,7 +270,7 @@ include '../../includes/user_navbar.php';
                                     </button>
 
                                     <dialog id="teamProfile_<?php echo $equipo['equ_id']; ?>"
-                                        class="rounded-none border-2 border-primary p-0 shadow-hard backdrop:bg-primary/20">
+                                        class="rounded-none border-2 border-primary p-0 shadow-hard">
                                         <div class="w-full max-w-2xl bg-surface p-6">
                                             <div class="flex justify-between items-center pb-4 mb-4 border-b-2 border-subtle">
                                                 <h3 class="text-xl font-black uppercase text-primary tracking-tight">HORARIOS</h3>
