@@ -23,6 +23,7 @@ $count_members = $stmt_count->get_result()->fetch_assoc()["c"];
 
 if ($soy_capitan && $count_members > 1) {
 
+  // TODO: asignar miembro como capitan antes de salir?
   $_SESSION['flash_error'] = 'cant_quit';
   header("Location: ../profile/view.php");
 } else if ($soy_capitan && $count_members == 1) {

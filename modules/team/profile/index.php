@@ -20,6 +20,7 @@ $sql = "SELECT
         LEFT JOIN juego j ON e.jue_id = j.jue_id
         WHERE pe.usu_id = '$usu_id'";
 
+// TODO: refactor a prepare->bind->execute
 $result = mysqli_query($conn, $sql);
 
 $mis_equipos = [];
