@@ -83,28 +83,68 @@ include '../../../includes/user_navbar.php';
         </div>
 
         <?php if (isset($_SESSION['flash_msg'])): ?>
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 bg-success-light border-2 border-success-border p-4 text-success-text font-bold text-sm uppercase tracking-widest flex justify-between items-center shadow-hard-success">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i>
-                    <?php
-                    if ($_SESSION['flash_msg'] == 'kicked') echo "Miembro eliminado correctamente.";
-                    if ($_SESSION['flash_msg'] == 'role_assigned') echo "Rol asignado correctamente.";
-                    ?>
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+                <div class="bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                            <?php
+                            switch ($_SESSION['flash_msg']) {
+                                case 'kicked':
+                                    echo "Miembro eliminado correctamente.";
+                                    break;
+                                case 'role_assigned':
+                                    echo "Rol asignado correctamente.";
+                                    break;
+                                case 'availability_added':
+                                    echo "Horario añadido correctamente.";
+                                    break;
+                                case 'availability_deleted':
+                                    echo "Horario eliminado correctamente.";
+                                    break;
+                            }
+                            ?>
+                        </p>
+                    </div>
+                    <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
-                <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer"></i>
             </div>
             <?php unset($_SESSION['flash_msg']); ?>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['flash_error'])): ?>
-            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 bg-error-light border-2 border-error-border p-4 text-error-text font-bold text-sm uppercase tracking-widest flex justify-between items-center shadow-hard-error">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
-                    <?php
-                    if ($_SESSION['flash_error'] == 'db_error') echo "Error al procesar la solicitud.";
-                    ?>
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+                <div class="bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                            <?php
+                            switch ($_SESSION['flash_error']){
+                                case 'db_error':
+                                    echo "Error al procesar la solicitud.";
+                                    break;
+                                case 'no_permission':
+                                    echo "No tienes permisos para realizar esta acción.";
+                                    break;
+                                case 'invalid_input':
+                                    echo "Datos de entrada inválidos.";
+                                    break;
+                                case 'invalid_time_range':
+                                    echo "Rango de tiempo inválido.";
+                                    break;
+                                case 'cant_quit':
+                                    echo "No puedes abandonar el equipo siendo el único capitán con miembros activos.";
+                                    break;
+                            }
+                            ?>
+                        </p>
+                    </div>
+                    <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
-                <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer"></i>
             </div>
             <?php unset($_SESSION['flash_error']); ?>
         <?php endif; ?>

@@ -5,9 +5,9 @@ include '../../includes/header.php';
 
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     if ($_SESSION['tipo'] == 0) {
-        header("Location: ../admin/dashboard.php");
+        header('Location: ../admin/dashboard.php');
     } else {
-        header("Location: ../../index.php");
+        header('Location: ../../index.php');
     }
     exit;
 }
@@ -17,20 +17,39 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
     <div class="relative w-full max-w-lg">
         <?php if (isset($_GET['error']) || (isset($_GET['msg']) && $_GET['msg'] == 'registered')): ?>
-            <div class="absolute bottom-full left-0 w-full mb-4">
+            <div class="absolute bottom-full left-0 w-full mb-4 space-y-2">
                 <?php if (isset($_GET['error'])): ?>
-                    <div class="bg-error-light border-2 border-error-border text-error-text p-3 text-xs font-bold uppercase tracking-wide text-center shadow-hard-error">
-                        <?php
-                            if ($_GET['error'] == 'invalid_credentials') echo "Usuario o contraseña incorrectos.";
-                            elseif ($_GET['error'] == 'unknown_op') echo "Operación no válida.";
-                            else echo "Ocurrió un error inesperado.";
-                        ?>
+                    <div class="bg-error-light border-2 border-error-border p-3 shadow-hard-error flex items-start justify-between gap-3">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                            <p class="text-error-text font-black uppercase text-[10px] tracking-widest leading-relaxed text-left">
+                                <?php
+                                if ($_GET['error'] == 'invalid_credentials')
+                                    echo 'Usuario o contraseña incorrectos.';
+                                elseif ($_GET['error'] == 'unknown_op')
+                                    echo 'Operación no válida.';
+                                else
+                                    echo 'Ocurrió un error inesperado.';
+                                ?>
+                            </p>
+                        </div>
+                        <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 <?php endif; ?>
 
                 <?php if (isset($_GET['msg']) && $_GET['msg'] == 'registered'): ?>
-                    <div class="bg-success-light border-2 border-success-border text-success-text p-3 text-xs font-bold uppercase tracking-wide text-center shadow-hard-success">
-                        ¡Registro exitoso! Ahora puedes ingresar.
+                    <div class="bg-success-light border-2 border-success-border p-3 shadow-hard-success flex items-start justify-between gap-3">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                            <p class="text-success-text font-black uppercase text-[10px] tracking-widest leading-relaxed text-left">
+                                ¡Registro exitoso! Ahora puedes ingresar.
+                            </p>
+                        </div>
+                        <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
                     </div>
                 <?php endif; ?>
             </div>

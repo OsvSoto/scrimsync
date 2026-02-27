@@ -11,28 +11,37 @@ include '../../../includes/header.php';
 
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <?php if (isset($_SESSION['flash_msg'])): ?>
-                <div class="mb-6 bg-emerald-50 border-2 border-emerald-500 p-4 text-emerald-700 font-bold text-sm uppercase tracking-widest flex justify-between items-center">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="check-circle" class="w-5 h-5"></i>
-                        <?php
-                        if ($_SESSION['flash_msg'] == 'scrim_cancelled')
-                            echo 'Scrim cancelado correctamente.';
-                        ?>
+                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                            <?php
+                            if ($_SESSION['flash_msg'] == 'scrim_cancelled')
+                                echo 'Scrim cancelado correctamente.';
+                            ?>
+                        </p>
                     </div>
-                    <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer"></i>
+                    <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
                 <?php unset($_SESSION['flash_msg']); ?>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['flash_error'])): ?>
-                <div class="mb-6 p-4 bg-error-light border-2 border-error-border text-error-text font-bold shadow-hard-error flex items-center gap-2 rounded-none">
-                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
-                    <span>
-                        <?php
-                        if ($_SESSION['flash_error'] == 'not_authorized')
-                            echo 'No tienes permisos para realizar esta acción.';
-                        ?>
-                    </span>
+                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                            <?php
+                            if ($_SESSION['flash_error'] == 'not_authorized')
+                                echo 'No tienes permisos para realizar esta acción.';
+                            ?>
+                        </p>
+                    </div>
+                    <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
                 <?php unset($_SESSION['flash_error']); ?>
             <?php endif; ?>

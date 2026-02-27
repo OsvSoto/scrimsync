@@ -15,11 +15,19 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
     <div class="relative w-full max-w-lg">
         <?php if (isset($_GET['error'])): ?>
             <div class="absolute bottom-full left-0 w-full mb-4">
-                <div class="bg-error-light border-2 border-error-border text-error-text p-3 text-xs font-bold uppercase tracking-wide text-center shadow-hard-error">
-                    <?php
-                        if ($_GET['error'] == 'db_error') echo "Error al registrar. El usuario o email ya existen.";
-                        else echo "Ocurrió un error inesperado.";
-                    ?>
+                <div class="bg-error-light border-2 border-error-border p-3 shadow-hard-error flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-error-text font-black uppercase text-[10px] tracking-widest leading-relaxed text-left">
+                            <?php
+                            if ($_GET['error'] == 'db_error') echo "Error al registrar. El usuario o email ya existen.";
+                            else echo "Ocurrió un error inesperado.";
+                            ?>
+                        </p>
+                    </div>
+                    <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-4 h-4"></i>
+                    </button>
                 </div>
             </div>
         <?php endif; ?>
@@ -33,44 +41,44 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
             <form action="controller_auth.php" method="POST" class="space-y-4">
 
-            <input type="hidden" name="p_op" value="Registro">
+                <input type="hidden" name="p_op" value="Registro">
 
-            <div>
-                <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Alias (Nick en juego)</label>
-                <input type="text" name="alias" required placeholder="Ej: Faker"
-                       class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Alias (Nick en juego)</label>
+                    <input type="text" name="alias" required placeholder="Ej: Faker"
+                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Nombre de Usuario</label>
+                    <input type="text" name="username" required placeholder="Sin espacios"
+                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Correo Electrónico</label>
+                    <input type="email" name="email" required
+                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                </div>
+
+                <div>
+                    <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Contraseña</label>
+                    <input type="password" name="password" required
+                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                </div>
+
+                <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all mt-4 hover:translate-x-[2px] hover:translate-y-[2px] shadow-hard-sm hover:shadow-none">
+                    Registrarse
+                </button>
+            </form>
+
+            <div class="mt-8 text-center border-t-2 border-subtle pt-6">
+                <p class="text-xs text-secondary font-bold">
+                    ¿Ya tienes cuenta?
+                    <a href="login.php" class="text-primary hover:underline">Inicia Sesión</a>
+                </p>
             </div>
-
-            <div>
-                <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Nombre de Usuario</label>
-                <input type="text" name="username" required placeholder="Sin espacios"
-                       class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Correo Electrónico</label>
-                <input type="email" name="email" required
-                       class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-black uppercase text-secondary mb-1 tracking-widest">Contraseña</label>
-                <input type="password" name="password" required
-                       class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
-            </div>
-
-            <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all mt-4 hover:translate-x-[2px] hover:translate-y-[2px] shadow-hard-sm hover:shadow-none">
-                Registrarse
-            </button>
-        </form>
-
-        <div class="mt-8 text-center border-t-2 border-subtle pt-6">
-            <p class="text-xs text-secondary font-bold">
-                ¿Ya tienes cuenta?
-                <a href="login.php" class="text-primary hover:underline">Inicia Sesión</a>
-            </p>
         </div>
     </div>
-</div>
 
-<?php include '../../includes/footer.php'; ?>
+    <?php include '../../includes/footer.php'; ?>

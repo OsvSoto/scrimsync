@@ -114,26 +114,28 @@ include '../../includes/user_navbar.php';
     <main class="flex-1 w-full pt-16 pb-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <?php if (isset($_SESSION['flash_msg'])): ?>
-                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="check-circle" class="text-success-text w-5 h-5"></i>
-                        <p class="text-success-text font-black uppercase text-xs tracking-widest">
+                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_SESSION['flash_msg'] == 'scrim_sent')
                                 echo '¡Solicitud de scrim enviada con éxito!';
                             ?>
                         </p>
                     </div>
-                    <i data-lucide="x" onclick="return this.parentNode.remove();" class="text-success-text w-5 h-5 cursor-pointer hover:opacity-70"></i>
+                    <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
                 <?php unset($_SESSION['flash_msg']); ?>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['flash_error'])): ?>
-                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-center justify-between gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5"></i>
-                        <p class="text-error-text font-black uppercase text-xs tracking-widest">
+                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             switch ($_SESSION['flash_error']) {
                                 case 'invalid_game':
@@ -152,7 +154,9 @@ include '../../includes/user_navbar.php';
                             ?>
                         </p>
                     </div>
-                    <i data-lucide="x" onclick="return this.parentNode.remove();" class="text-error-text w-5 h-5 cursor-pointer hover:opacity-70"></i>
+                    <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
                 <?php unset($_SESSION['flash_error']); ?>
             <?php endif; ?>

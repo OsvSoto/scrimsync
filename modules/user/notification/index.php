@@ -41,23 +41,31 @@ include '../../../includes/user_navbar.php';
     <main class="flex-1 w-full pt-16 pb-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <?php if (isset($_SESSION['flash_msg'])): ?>
-                <div class="mb-6 bg-success-light border-2 border-success-border p-4 text-success-text font-bold text-sm uppercase tracking-widest flex justify-between items-center shadow-hard-success">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="check-circle" class="w-5 h-5"></i>
-                        <?php echo htmlspecialchars($_SESSION['flash_msg']); ?>
+                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                            <?php echo htmlspecialchars($_SESSION['flash_msg']); ?>
+                        </p>
                     </div>
-                    <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer"></i>
+                    <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
                 <?php unset($_SESSION['flash_msg']); ?>
             <?php endif; ?>
 
             <?php if (isset($_SESSION['flash_error'])): ?>
-                <div class="mb-6 bg-error-light border-2 border-error-border p-4 text-error-text font-bold text-sm uppercase tracking-widest flex justify-between items-center shadow-hard-error">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="alert-circle" class="w-5 h-5"></i>
-                        <?php echo htmlspecialchars($_SESSION['flash_error']); ?>
+                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                        <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                            <?php echo htmlspecialchars($_SESSION['flash_error']); ?>
+                        </p>
                     </div>
-                    <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer"></i>
+                    <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
                 </div>
                 <?php unset($_SESSION['flash_error']); ?>
             <?php endif; ?>
@@ -112,7 +120,7 @@ include '../../../includes/user_navbar.php';
 
                             <div class="flex flex-col sm:flex-row gap-4">
 
-                                <div class="mt-1 flex-shrink-0 hidden sm:block">
+                                <div class="mt-1 shrink-0 hidden sm:block">
                                     <?php if ($notificacion['not_tipo'] === 'SCRIM'): ?>
                                         <i data-lucide="shield-alert" class="text-amber-500 w-6 h-6"></i>
                                     <?php elseif ($notificacion['not_tipo'] === 'INVITACION'): ?>

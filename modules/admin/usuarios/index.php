@@ -61,14 +61,18 @@ include '../../../includes/header.php';
       </div>
 
       <?php if (isset($_SESSION['flash_msg'])): ?>
-        <div class="bg-success-light border-2 border-success-border p-4 mb-6 text-success-text font-bold text-sm uppercase tracking-widest flex justify-between items-center">
-          <div class="flex items-center gap-3">
-            <i data-lucide="check-circle" class="w-5 h-5"></i>
-            <?php
-            if ($_SESSION['flash_msg'] == 'promovido') echo "Usuario promovido a administrador exitosamente";
-            ?>
+        <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
+          <div class="flex items-start gap-3">
+            <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+            <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
+              <?php
+              if ($_SESSION['flash_msg'] == 'promovido') echo "Usuario promovido a administrador exitosamente";
+              ?>
+            </p>
           </div>
-          <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer" viewBox="0 0 512 512"></i>
+          <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
         </div>
         <?php unset($_SESSION['flash_msg']); ?>
       <?php endif; ?>

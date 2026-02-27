@@ -33,33 +33,61 @@ if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 0) {
 <main class="max-w-6xl mx-auto pt-16 pb-16 px-4 sm:px-6 lg:px-8 transition-all duration-300">
     <div class="space-y-8">
         <?php if (isset($_SESSION['flash_msg'])): ?>
-            <div class="bg-success-light border-2 border-success-border text-success-text p-4 text-sm font-bold uppercase tracking-widest flex justify-between items-center shadow-hard-success">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="check-circle" class="w-5 h-5"></i>
-                    <?php
-                    if ($_SESSION['flash_msg'] == 'profile_updated') echo "Perfil actualizado con éxito.";
-                    if ($_SESSION['flash_msg'] == 'password_updated') echo "Contraseña actualizada con éxito.";
-                    ?>
+            <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                    <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                        <?php
+                        switch ($_SESSION['flash_msg']) {
+                            case 'profile_updated':
+                                echo "Perfil actualizado con éxito.";
+                                break;
+                            case 'password_updated':
+                                echo "Contraseña actualizada con éxito.";
+                                break;
+                        }
+                        ?>
+                    </p>
                 </div>
-                <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer" viewBox="0 0 512 512"></i>
+                <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             <?php unset($_SESSION['flash_msg']); ?>
         <?php endif; ?>
 
         <?php if (isset($_SESSION['flash_error'])): ?>
-            <div class="bg-error-light border-2 border-error-border text-error-text p-4 text-sm font-bold uppercase tracking-widest flex justify-between items-center shadow-hard-error">
-                <div class="flex items-center gap-3">
-                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
-                    <?php
-                    if ($_SESSION['flash_error'] == 'password_mismatch') echo "Las contraseñas no coinciden.";
-                    if ($_SESSION['flash_error'] == 'invalid_current_password') echo "La contraseña actual es incorrecta.";
-                    if ($_SESSION['flash_error'] == 'db_error') echo "Error al procesar la solicitud.";
-                    if ($_SESSION['flash_error'] == 'file_too_large') echo "La imagen es muy grande (Máx 5MB).";
-                    if ($_SESSION['flash_error'] == 'invalid_file_type') echo "Formato no válido. Solo JPG, PNG o WebP.";
-                    if ($_SESSION['flash_error'] == 'image_processing_error') echo "Error al procesar la imagen.";
-                    ?>
+            <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
+                <div class="flex items-start gap-3">
+                    <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                    <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
+                        <?php
+                        switch ($_SESSION['flash_error']) {
+                            case 'password_mismatch':
+                                echo "Las contraseñas no coinciden.";
+                                break;
+                            case 'invalid_current_password':
+                                echo "La contraseña actual es incorrecta.";
+                                break;
+                            case 'db_error':
+                                echo "Error al procesar la solicitud.";
+                                break;
+                            case 'file_too_large':
+                                echo "La imagen es muy grande (Máx 5MB).";
+                                break;
+                            case 'invalid_file_type':
+                                echo "Formato no válido. Solo JPG, PNG o WebP.";
+                                break;
+                            case 'image_processing_error':
+                                echo "Error al procesar la imagen.";
+                                break;
+                        }
+                        ?>
+                    </p>
                 </div>
-                <i data-lucide="x" onclick="return this.parentNode.remove();" class="inline w-5 h-4 fill-current ml-2 hover:opacity-80 cursor-pointer" viewBox="0 0 512 512"></i>
+                <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
             </div>
             <?php unset($_SESSION['flash_error']); ?>
         <?php endif; ?>
