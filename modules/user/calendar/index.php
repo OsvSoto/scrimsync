@@ -96,7 +96,7 @@ include '../../../includes/header.php';
 
                     <div class="grid grid-cols-7 gap-px bg-border border-2 border-primary shadow-hard-sm overflow-hidden">
                         <?php for ($i = 0; $i < $dayOfWeek; $i++) {
-                            echo '<div class="bg-subtle min-h-25 border border-border"></div>';
+                            echo '<div class="bg-subtle min-h-[80px] border border-border"></div>';
                         }
                         for ($day = 1; $day <= $numberDays; $day++) {
                             $currentDate = "$year-$month-" . str_pad($day, 2, '0', STR_PAD_LEFT);
@@ -105,22 +105,23 @@ include '../../../includes/header.php';
                                 $d = strtotime($s['scr_fecha_juego']);
                                 return date('j', $d) == $day && date('n', $d) == $month && date('Y', $d) == $year;
                             }); ?>
-                            <div class="bg-surface border border-border min-h-35 p-2 relative group hover:bg-subtle transition-colors <?php echo $isToday ? 'ring-1 ring-inset ring-primary' : ''; ?>">
+                            <div class="bg-surface border border-border min-h-[140px] p-2 relative group hover:bg-subtle transition-colors <?php echo $isToday ? 'ring-1 ring-inset ring-primary' : ''; ?>">
                                 <div class="text-sm font-bold mb-2 <?php echo $isToday ? 'text-primary' : 'text-muted'; ?>"><?php echo $day; ?></div>
 
-                                <div class="grid gap-2">
+                                <div class="grid gap-1.5">
                                     <?php foreach ($dayScrims as $scrim): ?>
                                         <?php
                                         $statusClass = 'bg-subtle text-secondary';
                                         $dotClass = 'bg-muted';
                                         $desc = strtolower($scrim['est_descripcion']);
                                         $is_cancelled = (str_contains($desc, 'cancel'));
-                                        $is_accepted = (str_contains($desc, 'confirm') || str_contains($desc, 'aceptad'));
+                                        $is_accepted = (str_contains($desc, 'aceptad'));
+                                        $is_pending = (str_contains($desc, 'pendient'));
 
                                         if ($is_accepted) {
                                             $statusClass = 'bg-success-light text-success-text border border-emerald-100';
                                             $dotClass = 'bg-emerald-500';
-                                        } elseif (str_contains($desc, 'pendient')) {
+                                        } elseif ($is_pending) {
                                             $statusClass = 'bg-amber-50 text-amber-700 border border-amber-100';
                                             $dotClass = 'bg-amber-500';
                                         } elseif ($is_cancelled) {
@@ -128,20 +129,22 @@ include '../../../includes/header.php';
                                             $dotClass = 'bg-rose-500';
                                         }
                                         ?>
-                                        <div class="flex items-center justify-between gap-1 p-1.5 rounded-none text-[10px] md:text-xs font-bold transition-colors <?php echo $statusClass; ?> <?php echo $is_accepted ? 'cursor-pointer' : ''; ?>">
+                                        <div class="relative group/scrim flex items-center justify-between gap-1 p-1.5 rounded-none text-[10px] md:text-xs font-bold transition-colors <?php echo $statusClass; ?> <?php echo ($is_accepted || $is_pending) ? 'cursor-pointer' : ''; ?> min-w-0 overflow-hidden">
                                             <button
                                                 type="button"
                                                 <?php if ($is_accepted): ?>
                                                 onclick="document.getElementById('scrim_modal_<?php echo $scrim['scr_id']; ?>').showModal()"
+                                                <?php elseif ($is_pending): ?>
+                                                onclick="window.location.href='../notification/index.php'"
                                                 <?php endif; ?>
-                                                class="flex flex-col gap-0.5 leading-tight text-left flex-1 truncate"
+                                                class="flex flex-col gap-0.5 leading-tight text-left flex-1 min-w-0"
                                                 title="<?php echo htmlspecialchars($scrim['opponent_name']) . ' @ ' . substr($scrim['scr_hora_inicio'], 0, 5); ?>">
 
-                                                <span class="text-[9px] font-medium opacity-70 truncate">
+                                                <span class="text-[9px] font-medium opacity-70 truncate w-full">
                                                     <?php echo htmlspecialchars(substr($scrim['scr_hora_inicio'], 0, 5)); ?>
                                                 </span>
 
-                                                <div class="flex items-center gap-1.5 truncate">
+                                                <div class="flex items-center gap-1.5 min-w-0 w-full">
                                                     <div class="shrink-0 w-1.5 h-1.5 <?php echo $dotClass; ?>"></div>
                                                     <span class="truncate font-semibold uppercase">
                                                         <?php echo htmlspecialchars($scrim['opponent_name']); ?>
@@ -152,11 +155,11 @@ include '../../../includes/header.php';
                                             <?php if ($is_accepted && $is_captain): ?>
                                                 <form action="../../scrim/controller_scrim.php" method="POST"
                                                     onsubmit="event.stopPropagation(); return confirm('¿ESTÁS SEGURO?');"
-                                                    class="opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                                                    class="opacity-0 group-hover/scrim:opacity-100 transition-opacity z-10 shrink-0">
                                                     <input type="hidden" name="action" value="cancelar">
                                                     <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
-                                                    <button type="submit" class="text-current hover:text-error-text p-1">
-                                                        <i data-lucide="x" class="w-3.5 h-3.5"></i>
+                                                    <button type="submit" class="text-current hover:text-error-text p-0.5">
+                                                        <i data-lucide="x" class="w-3 h-3"></i>
                                                     </button>
                                                 </form>
                                             <?php endif; ?>
@@ -204,11 +207,12 @@ include '../../../includes/header.php';
                                     $desc = strtolower($scrim['est_descripcion']);
                                     $is_cancelled = (str_contains($desc, 'cancel'));
                                     $is_accepted = (str_contains($desc, 'confirm') || str_contains($desc, 'aceptad'));
+                                    $is_pending = (str_contains($desc, 'pendient'));
 
                                     if ($is_accepted) {
                                         $statusClass = 'bg-success-light text-success-text border border-emerald-100';
                                         $dotClass = 'bg-emerald-500';
-                                    } elseif (str_contains($desc, 'pendient')) {
+                                    } elseif ($is_pending) {
                                         $statusClass = 'bg-amber-50 text-amber-700 border border-amber-100';
                                         $dotClass = 'bg-amber-500';
                                     } elseif ($is_cancelled) {
@@ -216,21 +220,23 @@ include '../../../includes/header.php';
                                         $dotClass = 'bg-rose-500';
                                     }
                                     ?>
-                                    <div class="flex items-center justify-between gap-3 p-3 rounded-none font-bold transition-colors <?php echo $statusClass; ?>"
+                                    <div class="flex items-center justify-between gap-3 p-3 rounded-none font-bold transition-colors <?php echo $statusClass; ?> min-w-0 <?php echo ($is_accepted || $is_pending) ? 'cursor-pointer' : ''; ?>"
                                         <?php if ($is_accepted): ?>
                                         onclick="document.getElementById('scrim_modal_<?php echo $scrim['scr_id']; ?>').showModal()"
+                                        <?php elseif ($is_pending): ?>
+                                        onclick="window.location.href='../notification/index.php'"
                                         <?php endif; ?>>
 
-                                        <div class="flex items-center gap-3 flex-1">
-                                            <span class="text-xs font-black"><?php echo substr($scrim['scr_hora_inicio'], 0, 5); ?></span>
-                                            <div class="w-2 h-2 <?php echo $dotClass; ?>"></div>
-                                            <span class="uppercase tracking-tight text-sm"><?php echo htmlspecialchars($scrim['opponent_name']); ?></span>
+                                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                                            <span class="text-xs font-black shrink-0"><?php echo substr($scrim['scr_hora_inicio'], 0, 5); ?></span>
+                                            <div class="w-2 h-2 shrink-0 <?php echo $dotClass; ?>"></div>
+                                            <span class="uppercase tracking-tight text-sm truncate"><?php echo htmlspecialchars($scrim['opponent_name']); ?></span>
                                         </div>
 
                                         <?php if ($is_accepted && $is_captain): ?>
                                             <form action="../../scrim/controller_scrim.php" method="POST"
                                                 onsubmit="event.stopPropagation(); return confirm('¿ESTÁS SEGURO?');"
-                                                class="z-10">
+                                                class="z-10 shrink-0">
                                                 <input type="hidden" name="action" value="cancelar">
                                                 <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
                                                 <button type="submit" class="text-current hover:text-error-text p-1">
