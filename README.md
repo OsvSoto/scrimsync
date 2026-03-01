@@ -37,7 +37,12 @@
 
 # TODO
 - [ ] Refactor sql en php: mysqli procedural -> mysqli OOP, es mas facil de mantener y leer.
-- [ ] Pulir mensajes flash -> Usar misma "class"
+- [x] Pulir mensajes flash -> Usar misma "class"
+    - [x] modules/admin
+    - [x] modules/auth
+    - [x] modules/scrim
+    - [x] modules/team
+    - [x] modules/user
 
 ## Funcionalidades extra?
 - [ ] Busqueda en tiempo real
