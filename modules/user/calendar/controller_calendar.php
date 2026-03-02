@@ -1,0 +1,77 @@
+<?php
+// modules/user/calendar/controller_calendar.php
+session_start();
+require_once '../../../config/db.php';
+
+if (!isset($_SESSION['loggedin'])) {
+    header("Location: ../../../modules/auth/login.php");
+    exit;
+}
+
+$usu_id = $_SESSION['usu_id'];
+
+$sql_team = "SELECT * FROM equipo WHERE usu_id = ? LIMIT 1";
+$result_team = $conn->execute_query($sql_team, [$usu_id]);
+$team = $result_team->fetch_assoc();
+$is_captain = true;
+
+if (!$team) {
+    $sql_member = "SELECT e.* FROM equipo e JOIN permiso_equipo pe ON e.equ_id = pe.equ_id WHERE pe.usu_id = ? LIMIT 1";
+    $result_team = $conn->execute_query($sql_member, [$usu_id]);
+    $team = $result_team->fetch_assoc();
+    $is_captain = false;
+}
+
+$month = isset($_GET['month']) ? intval($_GET['month']) : intval(date('m'));
+$year = isset($_GET['year']) ? intval($_GET['year']) : intval(date('Y'));
+
+if ($month < 1) {
+    $month = 12;
+    $year--;
+} elseif ($month > 12) {
+    $month = 1;
+    $year++;
+}
+
+$scrims = [];
+$availability = [];
+
+if ($team) {
+    $equ_id = $team['equ_id'];
+    $sql_scrims = "
+    SELECT s.*, es.est_descripcion,
+           e1.equ_nombre as emisor_nombre, e1.equ_logo as emisor_logo,
+           e2.equ_nombre as receptor_nombre, e2.equ_logo as receptor_logo
+    FROM scrim s
+    JOIN estado_scrim es ON s.est_id = es.est_id
+    JOIN equipo e1 ON s.equ_id_emisor = e1.equ_id
+    JOIN equipo e2 ON s.equ_id_receptor = e2.equ_id
+    WHERE (s.equ_id_emisor = ? OR s.equ_id_receptor = ?)
+      AND MONTH(s.scr_fecha_juego) = ? AND YEAR(s.scr_fecha_juego) = ?
+    ";
+
+    $res_scrims = $conn->execute_query($sql_scrims, [$equ_id, $equ_id, $month, $year]);
+
+    while ($row = $res_scrims->fetch_assoc()) {
+        if ($row['equ_id_emisor'] == $equ_id) {
+            $row['opponent_name'] = $row['receptor_nombre'];
+            $row['opponent_logo'] = $row['receptor_logo'];
+        } else {
+            $row['opponent_name'] = $row['emisor_nombre'];
+            $row['opponent_logo'] = $row['emisor_logo'];
+        }
+        $scrims[] = $row;
+    }
+
+    $sql_avail = "SELECT * FROM disponibilidad WHERE equ_id = ? ORDER BY dis_dia_semana, dis_hora_inicio";
+    $res_avail = $conn->execute_query($sql_avail, [$equ_id]);
+    while ($row = $res_avail->fetch_assoc()) {
+        $availability[] = $row;
+    }
+}
+
+$firstDayOfMonth = mktime(0, 0, 0, $month, 1, $year);
+$numberDays = date('t', $firstDayOfMonth);
+$dateComponents = getdate($firstDayOfMonth);
+$monthName = $dateComponents['month'];
+$dayOfWeek = $dateComponents['wday']; // 1:Lunes, 2:Martes

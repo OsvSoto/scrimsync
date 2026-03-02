@@ -3,12 +3,12 @@
 require_once '../../config/db.php';
 
 // Necesita PHPMailer -> instalar con composer
-// require_once __DIR__ . '/../../vendor/autoload.php';
-// require_once __DIR__ . '/../../config/db.php';
-//
-// use PHPMailer\PHPMailer\PHPMailer;
-// use PHPMailer\PHPMailer\SMTP;
-// use PHPMailer\PHPMailer\Exception;
+require_once __DIR__ . '/../../vendor/autoload.php';
+require_once __DIR__ . '/../../config/db.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
 function Autenticar_Usuario($conn, $p_credencial) {
     $username = $p_credencial['username'];
@@ -20,7 +20,7 @@ function Autenticar_Usuario($conn, $p_credencial) {
         mysqli_stmt_bind_param($stmt, "s", $username);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        if ($row = mysqli_fetch_assoc($result)) {
+        if ($row = $result->fetch_assoc()) {
             $hash_bd = $row['usu_password'];
             if (password_verify($password_input, $hash_bd)) {
                 return $row;
@@ -100,7 +100,7 @@ function Recuperacion_Credenciales($conn, $p_correo_recup) {
         mysqli_stmt_bind_param($stmt, "s", $p_correo_recup);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        if ($row = mysqli_fetch_assoc($result)) {
+        if ($row = $result->fetch_assoc()) {
             $id_usuario = $row['usu_id'];
             $username = $row['usu_username'];
             mysqli_stmt_close($stmt);
@@ -123,7 +123,7 @@ function Recuperacion_Credenciales($conn, $p_correo_recup) {
                     <h3 style='background-color: #f4f4f5; padding: 10px; display: inline-block;'>$pass_temporal</h3>
                     <p>Por favor, inicia sesión y cámbiala lo antes posible.</p>
                 </div>";
-                // return Enviar_Email_SMTP($p_correo_recup, $asunto, $mensaje);
+                return Enviar_Email_SMTP($p_correo_recup, $asunto, $mensaje);
             }
         } else {
              mysqli_stmt_close($stmt);
