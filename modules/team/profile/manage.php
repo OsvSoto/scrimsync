@@ -218,7 +218,8 @@ include '../../../includes/user_navbar.php';
                         </div>
 
                         <div class="mt-8 pt-6 border-t-2 border-subtle flex justify-end">
-                            <button type="submit" class="w-full sm:w-auto bg-primary text-white px-6 py-3 font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px]">
+                            <button type="submit" class="w-full sm:w-auto bg-primary text-white px-6 py-3 font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] flex items-center justify-center gap-2 cursor-pointer">
+                                <i data-lucide="save" class="w-4 h-4"></i>
                                 Guardar Cambios
                             </button>
                         </div>
@@ -236,7 +237,7 @@ include '../../../includes/user_navbar.php';
                     <form action="" method="GET" class="mb-6 relative">
                         <input type="hidden" name="id" value="<?php echo $equ_id; ?>">
                         <input type="text" name="search_user" value="<?php echo htmlspecialchars($busqueda); ?>" placeholder="Buscar por usuario o alias..."
-                            class="w-full bg-subtle border-2 border-border pl-10 pr-4 py-3 text-sm font-bold text-primary focus:outline-none focus:border-primary transition-colors">
+                            class="text-primary bg-surface border-2 border-border pl-10 pr-4 py-3 text-sm font-bold hover:border-primary focus:border-primary outline-none w-full shadow-hard-sm hover:shadow-hard focus:shadow-hard transition-all">
                         <i data-lucide="search" class="w-4 h-4 text-muted absolute left-3 top-3.5"></i>
                         <button type="submit" class="hidden">Buscar</button>
                     </form>

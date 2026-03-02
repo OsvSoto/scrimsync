@@ -129,7 +129,7 @@ include '../../../includes/header.php';
                                             $dotClass = 'bg-rose-500';
                                         }
                                         ?>
-                                        <div class="relative group/scrim flex items-center justify-between gap-1 p-1.5 rounded-none text-[10px] md:text-xs font-bold transition-colors <?php echo $statusClass; ?> <?php echo ($is_accepted || $is_pending) ? 'cursor-pointer' : ''; ?> min-w-0 overflow-hidden">
+                                        <div class="relative group/scrim flex items-center justify-between gap-1 p-1.5 rounded-none text-[10px] md:text-xs font-bold transition-colors <?php echo $statusClass; ?> min-w-0 overflow-hidden">
                                             <button
                                                 type="button"
                                                 <?php if ($is_accepted): ?>
@@ -146,7 +146,7 @@ include '../../../includes/header.php';
 
                                                 <div class="flex items-center gap-1.5 min-w-0 w-full">
                                                     <div class="shrink-0 w-1.5 h-1.5 <?php echo $dotClass; ?>"></div>
-                                                    <span class="truncate font-semibold uppercase">
+                                                    <span class="truncate font-semibold uppercase hover:underline cursor-pointer">
                                                         <?php echo htmlspecialchars($scrim['opponent_name']); ?>
                                                     </span>
                                                 </div>
@@ -220,7 +220,7 @@ include '../../../includes/header.php';
                                         $dotClass = 'bg-rose-500';
                                     }
                                     ?>
-                                    <div class="flex items-center justify-between gap-3 p-3 rounded-none font-bold transition-colors <?php echo $statusClass; ?> min-w-0 <?php echo ($is_accepted || $is_pending) ? 'cursor-pointer' : ''; ?>"
+                                    <div class="flex items-center justify-between gap-3 p-3 rounded-none font-bold transition-colors <?php echo $statusClass; ?> min-w-0"
                                         <?php if ($is_accepted): ?>
                                         onclick="document.getElementById('scrim_modal_<?php echo $scrim['scr_id']; ?>').showModal()"
                                         <?php elseif ($is_pending): ?>
@@ -230,7 +230,7 @@ include '../../../includes/header.php';
                                         <div class="flex items-center gap-3 flex-1 min-w-0">
                                             <span class="text-xs font-black shrink-0"><?php echo substr($scrim['scr_hora_inicio'], 0, 5); ?></span>
                                             <div class="w-2 h-2 shrink-0 <?php echo $dotClass; ?>"></div>
-                                            <span class="uppercase tracking-tight text-sm truncate"><?php echo htmlspecialchars($scrim['opponent_name']); ?></span>
+                                            <span class="uppercase tracking-tight text-sm truncate hover:underline cursor-pointer"><?php echo htmlspecialchars($scrim['opponent_name']); ?></span>
                                         </div>
 
                                         <?php if ($is_accepted && $is_captain): ?>
@@ -269,7 +269,7 @@ include '../../../includes/header.php';
                                     <?php echo htmlspecialchars($scrim['opponent_name']); ?>
                                 </h3>
                                 <form method="dialog">
-                                    <button class="text-secondary hover:text-primary transition-colors">
+                                    <button class="text-secondary hover:text-primary transition-colors cursor-pointer">
                                         <i data-lucide="x" class="w-5 h-5"></i>
                                     </button>
                                 </form>
@@ -289,7 +289,7 @@ include '../../../includes/header.php';
                                             <input type="hidden" name="action" value="cancelar">
                                             <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
                                             <button type="submit"
-                                                class="w-full transition-all text-xs text-secondary font-black uppercase tracking-widest px-6 py-3 hover:bg-error-text hover:text-surface flex justify-center">
+                                                class="w-full transition-all text-xs text-secondary font-black uppercase tracking-widest px-6 py-3 hover:bg-error-text hover:text-surface flex justify-center cursor-pointer">
                                                 <i data-lucide="x" class="w-4 h-4"></i>
                                                 Cancelar Scrim
                                             </button>

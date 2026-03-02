@@ -85,7 +85,7 @@ if (isset($_GET['id'])) {
             </div>
           </div>
 
-          <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all">
+          <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
             Guardar Cambios
           </button>
         </form>

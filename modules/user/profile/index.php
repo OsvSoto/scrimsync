@@ -49,7 +49,7 @@ if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 0) {
                         ?>
                     </p>
                 </div>
-                <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0">
+                <button onclick="this.parentElement.remove();" class="text-success-text hover:opacity-70 shrink-0 cursor-pointer">
                     <i data-lucide="x" class="w-5 h-5"></i>
                 </button>
             </div>
@@ -150,7 +150,7 @@ if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 0) {
                                 class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none"><?php echo htmlspecialchars($user['usu_descripcion'] ?? ''); ?></textarea>
                         </div>
                         <div class="flex justify-end mt-6">
-                            <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition-all">
+                            <button type="submit" class="flex items-center gap-2 px-6 py-3 bg-primary text-white font-black text-xs uppercase tracking-widest hover:bg-primary-hover transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
                                 <i data-lucide="save" class="w-4 h-4"></i> Guardar Cambios
                             </button>
                         </div>
@@ -183,7 +183,7 @@ if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 0) {
                             </div>
                         </div>
                         <div class="flex justify-end mt-6">
-                            <button type="submit" class="px-6 py-3 border-2 border-primary text-primary font-black text-xs uppercase tracking-widest hover:bg-subtle transition-all">
+                            <button type="submit" class="px-6 py-3 border-2 border-primary text-primary font-black text-xs uppercase tracking-widest hover:bg-subtle transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
                                 Actualizar Credenciales
                             </button>
                         </div>

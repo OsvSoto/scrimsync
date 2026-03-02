@@ -274,12 +274,12 @@ include '../../includes/user_navbar.php';
                                     </button>
 
                                     <dialog id="teamProfile_<?php echo $equipo['equ_id']; ?>"
-                                        class="rounded-none border-2 border-primary p-0 shadow-hard">
+                                        class="m-auto rounded-none border-2 border-primary p-0 shadow-hard">
                                         <div class="w-full max-w-2xl bg-surface p-6">
                                             <div class="flex justify-between items-center pb-4 mb-4 border-b-2 border-subtle">
                                                 <h3 class="text-xl font-black uppercase text-primary tracking-tight">HORARIOS</h3>
                                                 <button onclick="document.getElementById('teamProfile_<?php echo $equipo['equ_id']; ?>').close()"
-                                                    class="text-secondary hover:text-primary transition-colors">
+                                                    class="text-secondary hover:text-primary transition-colors cursor-pointer">
                                                     <i data-lucide="x" class="w-6 h-6"></i>
                                                 </button>
                                             </div>
@@ -337,7 +337,8 @@ include '../../includes/user_navbar.php';
                                                         </div>
                                                     <?php else: ?>
                                                         <button type="submit" name="action" value="enviar"
-                                                            class="w-full bg-primary text-white py-4 text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-colors shadow-hard-sm hover:shadow-hard border-2 border-primary">
+                                                            class="w-full bg-primary text-white py-4 text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-colors cursor-pointer flex items-center justify-center gap-2">
+                                                            <i data-lucide="send" class="w-4 h-4"></i>
                                                             Enviar Solicitud
                                                         </button>
                                                     <?php endif; ?>

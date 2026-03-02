@@ -242,11 +242,11 @@ include '../../../includes/user_navbar.php';
                                                 <?php echo htmlspecialchars($miembro['usu_alias'] ?? $miembro['usu_username']); ?>
                                             </button>
 
-                                            <dialog id="userModal_<?php echo $miembro['usu_id']; ?>" class="rounded-none border-2 border-primary p-0 shadow-hard ">
-                                                <div class="max-w-3xl bg-surface p-3">
+                                            <dialog id="userModal_<?php echo $miembro['usu_id']; ?>" class="m-auto rounded-none border-2 border-primary p-0 shadow-hard w-[95%] sm:w-full max-w-md">
+                                                <div class="bg-surface p-3">
                                                     <div class="flex justify-end">
                                                         <button onclick="document.getElementById('userModal_<?php echo $miembro['usu_id']; ?>').close()"
-                                                            class="text-secondary hover:text-primary transition-colors">
+                                                            class="text-secondary hover:text-primary transition-colors cursor-pointer">
                                                             <i data-lucide="x" class="w-5 h-5"></i>
                                                         </button>
                                                     </div>
@@ -268,15 +268,13 @@ include '../../../includes/user_navbar.php';
                                                                 <p class="text-sm font-bold text-secondary font-mono">@<?php echo htmlspecialchars($miembro['usu_username']); ?></p>
                                                             </div>
 
-                                                            <div class="w-full mt-2 p-4 bg-subtle border-2 border-border text-left">
+                                                            <div class="w-full mt-2 p-4 bg-subtle border-2 border-border text-left overflow-hidden">
                                                                 <p class="text-xs font-bold uppercase text-muted mb-2 tracking-widest">Descripcion</p>
-
-                                                                <!-- TODO: Limitar el ancho de la descripcion,
-                                                                en descripciones muy largas se ve mal la caja
-                                                                 -->
-                                                                <p class="text-sm text-primary leading-relaxed">
-                                                                    <?php echo $miembro['usu_descripcion'] ? nl2br(htmlspecialchars($miembro['usu_descripcion'])) : 'Sin descripción disponible.'; ?>
-                                                                </p>
+                                                                <div class="max-h-48 overflow-y-auto pr-1">
+                                                                    <p class="text-sm text-primary leading-relaxed break-words">
+                                                                        <?php echo $miembro['usu_descripcion'] ? nl2br(htmlspecialchars($miembro['usu_descripcion'])) : 'Sin descripción disponible.'; ?>
+                                                                    </p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -296,26 +294,23 @@ include '../../../includes/user_navbar.php';
                                 </div>
                                 <?php if ($soy_capitan): ?>
                                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
-                                        <div class="dropdown dropdown-end">
-                                            <div tabindex="0" role="button" class="transition-colors p-2 text-surface bg-primary hover:bg-primary-hover" title="Asignar Rol">
-                                                <i data-lucide="plus" class="w-3 h-3"></i>
-                                            </div>
-                                            <ul tabindex="0" class="dropdown-content z-1 menu p-2 shadow-lg bg-surface border-2 border-subtle w-52 rounded-none mt-1">
-                                                <li class="menu-title text-muted text-[10px] font-black uppercase tracking-widest px-2 py-1">Asignar Rol</li>
+                                        <form action="../actions/assign_role.php" method="POST" class="inline-block">
+                                            <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
+                                            <input type="hidden" name="target_usu_id" value="<?php echo $miembro['usu_id']; ?>">
+                                            <select name="rol_id" onchange="this.form.submit()"
+                                                class="bg-surface border-2 border-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 focus:outline-none cursor-pointer hover:bg-subtle transition-colors "
+                                                title="Asignar Rol">
+                                                <?php if (!$miembro['rol_id']): ?>
+                                                    <option value="" disabled selected>Asignar Rol</option>
+                                                <?php endif; ?>
                                                 <?php foreach ($roles_disponibles as $rol): ?>
-                                                    <li>
-                                                        <form action="../actions/assign_role.php" method="POST" class="p-0 hover:bg-subtle block">
-                                                            <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
-                                                            <input type="hidden" name="target_usu_id" value="<?php echo $miembro['usu_id']; ?>">
-                                                            <input type="hidden" name="rol_id" value="<?php echo $rol['rol_id']; ?>">
-                                                            <button type="submit" class="w-full text-left text-xs font-bold text-primary py-2 px-3 <?php echo ($rol['rol_id'] == $miembro['rol_id']) ? 'bg-subtle' : ''; ?>">
-                                                                <?php echo htmlspecialchars($rol['rol_nombre']); ?>
-                                                            </button>
-                                                        </form>
-                                                    </li>
+                                                    <option value="<?php echo $rol['rol_id']; ?>" <?php echo ($rol['rol_id'] == $miembro['rol_id']) ? 'selected' : ''; ?>>
+                                                        <?php echo htmlspecialchars($rol['rol_nombre']); ?>
+                                                    </option>
                                                 <?php endforeach; ?>
-                                            </ul>
-                                        </div>
+                                            </select>
+                                        </form>
+
                                         <form action="../actions/kick_member.php" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar a este miembro del equipo?');">
                                             <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
                                             <input type="hidden" name="equ_nombre" value="<?php echo $equipo['equ_nombre']; ?>">
@@ -399,23 +394,23 @@ include '../../../includes/user_navbar.php';
                                 <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
                                 <input type="hidden" name="action" value="add">
 
-                                <div class="form-control w-full md:col-span-3">
-                                    <label class="label py-1"><span class="label-text text-[10px] font-bold uppercase text-muted">Día</span></label>
-                                    <select name="day" class="select select-bordered select-xs w-full rounded-none focus:outline-none border-muted focus:border-primary bg-white text-xs" required>
+                                <div class="flex flex-col w-full md:col-span-3">
+                                    <label class="text-[10px] font-bold uppercase text-muted mb-1">Día</label>
+                                    <select name="day" class="w-full bg-white border-2 border-border p-2 text-xs font-bold text-primary focus:outline-none focus:border-primary" required>
                                         <?php foreach ($dias_semana as $num => $nombre): ?>
                                             <option value="<?php echo $num; ?>"><?php echo "$nombre"; ?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
 
-                                <div class="form-control w-full md:col-span-2">
-                                    <label class="label py-1"><span class="label-text text-[10px] font-bold uppercase text-muted">Inicio</span></label>
-                                    <input type="time" name="start_time" class="input input-bordered input-xs w-full rounded-none focus:outline-none border-muted focus:border-primary bg-white text-xs" required>
+                                <div class="flex flex-col w-full md:col-span-2">
+                                    <label class="text-[10px] font-bold uppercase text-muted mb-1">Inicio</label>
+                                    <input type="time" name="start_time" class="w-full bg-white border-2 border-border p-2 text-xs font-bold text-primary focus:outline-none focus:border-primary" required>
                                 </div>
 
-                                <div class="form-control w-full md:col-span-2">
-                                    <label class="label py-1"><span class="label-text text-[10px] font-bold uppercase text-muted">Fin</span></label>
-                                    <input type="time" name="end_time" class="input input-bordered input-xs w-full rounded-none focus:outline-none border-muted focus:border-primary bg-white text-xs" required>
+                                <div class="flex flex-col w-full md:col-span-2">
+                                    <label class="text-[10px] font-bold uppercase text-muted mb-1">Fin</label>
+                                    <input type="time" name="end_time" class="w-full bg-white border-2 border-border p-2 text-xs font-bold text-primary focus:outline-none focus:border-primary" required>
                                 </div>
 
                                 <div class="md:col-span-7 mt-2">
