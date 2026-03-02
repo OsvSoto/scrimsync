@@ -36,13 +36,14 @@
     - [x] Confirmadas / Pendientas / Cancelados
 
 # TODO
-- [ ] Refactor sql en php: mysqli procedural -> mysqli OOP, es mas facil de mantener y leer.
+- [x] Refactor sql en php: mysqli procedural -> mysqli OOP, es mas facil de mantener y leer.
 - [x] Pulir mensajes flash -> Usar misma "class"
     - [x] modules/admin
     - [x] modules/auth
     - [x] modules/scrim
     - [x] modules/team
     - [x] modules/user
+- [ ] sangrado a 4 espacios...
 
 ## Funcionalidades extra?
 - [ ] Busqueda en tiempo real
