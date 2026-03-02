@@ -195,7 +195,7 @@ include '../../../includes/user_navbar.php';
                                     <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
                                     <button type="submit"
                                         title="Eliminar Equipo"
-                                        class="transition-all text-xs text-secondary font-black uppercase tracking-widest px-3 py-3 hover:bg-error-text hover:text-surface flex items-center h-full">
+                                        class="transition-all text-xs text-secondary font-black uppercase tracking-widest px-3 py-3 hover:bg-error-text hover:text-surface flex items-center h-full cursor-pointer">
                                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                                     </button>
                                 </form>
@@ -298,8 +298,8 @@ include '../../../includes/user_navbar.php';
                                             <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
                                             <input type="hidden" name="target_usu_id" value="<?php echo $miembro['usu_id']; ?>">
                                             <select name="rol_id" onchange="this.form.submit()"
-                                                class="bg-surface border-2 border-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 focus:outline-none cursor-pointer hover:bg-subtle transition-colors "
-                                                title="Asignar Rol">
+                                                title="Asignar Rol"
+                                                class="bg-surface border-2 border-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 focus:outline-none cursor-pointer hover:bg-subtle transition-colors ">
                                                 <?php if (!$miembro['rol_id']): ?>
                                                     <option value="" disabled selected>Asignar Rol</option>
                                                 <?php endif; ?>
@@ -316,7 +316,8 @@ include '../../../includes/user_navbar.php';
                                             <input type="hidden" name="equ_nombre" value="<?php echo $equipo['equ_nombre']; ?>">
                                             <input type="hidden" name="target_usu_id" value="<?php echo $miembro['usu_id']; ?>">
                                             <button type="submit"
-                                                class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface" title="Eliminar Miembro">
+                                                title="Eliminar Miembro"
+                                                class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface cursor-pointer">
                                                 <i data-lucide="x" class="w-3 h-3"></i>
                                             </button>
                                         </form>
@@ -327,8 +328,8 @@ include '../../../includes/user_navbar.php';
                                         <input type="hidden" name="usu_id" value="<?php echo $usu_id; ?>">
                                         <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
                                         <button type="submit"
-                                            class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface"
-                                            title="Abandonar Equipo">
+                                            title="Abandonar Equipo"
+                                            class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface">
                                             <i data-lucide="log-out" class="w-3 h-3"></i>
                                         </button>
                                     </form>
@@ -371,7 +372,8 @@ include '../../../includes/user_navbar.php';
                                             <input type="hidden" name="dis_id" value="<?php echo $disp['dis_id']; ?>">
                                             <input type="hidden" name="action" value="delete">
                                             <button type="submit"
-                                                class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface" title="Eliminar">
+                                                title="Eliminar"
+                                                class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface cursor-pointer">
                                                 <i data-lucide="trash-2" class="w-4 h-4"></i>
                                             </button>
                                         </form>
@@ -415,7 +417,7 @@ include '../../../includes/user_navbar.php';
 
                                 <div class="md:col-span-7 mt-2">
                                     <button type="submit"
-                                        class="flex items-center justify-center p-2 gap-2 rounded-none text-sm text-surface font-black uppercase tracking-widest w-full bg-primary hover:bg-primary-hover transition-all">
+                                        class="flex items-center justify-center p-2 gap-2 rounded-none text-sm text-surface font-black uppercase tracking-widest w-full bg-primary hover:bg-primary-hover transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer">
                                         <i data-lucide="save" class="w-4 h-4"></i>Guardar
                                     </button>
                                 </div>

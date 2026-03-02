@@ -85,7 +85,7 @@ include '../../../includes/user_navbar.php';
                         <form action="controller_notification.php" method="POST">
                             <input type="hidden" name="action" value="mark_all_read">
                             <button type="submit"
-                                class="bg-primary transition-all hover:bg-primary-hover text-xs text-surface font-black uppercase tracking-widest px-3 py-3 flex items-center gap-1">
+                                class="bg-primary transition-all hover:bg-primary-hover text-xs text-surface font-black uppercase tracking-widest px-3 py-3 flex items-center gap-1 cursor-pointer">
                                 <i data-lucide="check-check" class="w-4 h-4"></i>
                                 Marcar leídos
                             </button>
@@ -96,7 +96,7 @@ include '../../../includes/user_navbar.php';
                         <form action="controller_notification.php" method="POST">
                             <input type="hidden" name="action" value="clear_notifications">
                             <button type="submit"
-                                class="transition-all text-xs text-secondary font-black uppercase tracking-widest px-3 py-3 hover:bg-error-text hover:text-surface flex items-center"
+                                class="transition-all text-xs text-secondary font-black uppercase tracking-widest px-3 py-3 hover:bg-error-text hover:text-surface flex items-center cursor-pointer"
                                 title="Eliminar Todo">
                                 <i data-lucide="trash" class="w-4 h-4"></i>
                             </button>
@@ -161,7 +161,7 @@ include '../../../includes/user_navbar.php';
                                                 <input type="hidden" name="action" value="mark_as_read">
                                                 <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
                                                 <button type="submit"
-                                                    class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline">
+                                                    class="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:underline cursor-pointer">
                                                     Marcar leído
                                                 </button>
                                             </form>
@@ -181,7 +181,9 @@ include '../../../includes/user_navbar.php';
                                                     <input type="hidden" name="action" value="accept_invite">
                                                     <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
                                                     <input type="hidden" name="equ_id" value="<?php echo $notificacion['equ_id']; ?>">
-                                                    <button type="submit" class="flex items-center justify-center w-8 h-8 border-2 border-success-border bg-surface text-success-text hover:bg-success-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]" title="Aceptar">
+                                                    <button type="submit"
+                                                        class="flex items-center justify-center w-8 h-8 border-2 border-success-border bg-surface text-success-text hover:bg-success-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] cursor-pointer"
+                                                        title="Aceptar">
                                                         <i data-lucide="check" class="w-4 h-4"></i>
                                                     </button>
                                                 </form>
@@ -190,7 +192,9 @@ include '../../../includes/user_navbar.php';
                                                     <input type="hidden" name="action" value="accept_scrim">
                                                     <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
                                                     <input type="hidden" name="scr_id" value="<?php echo $notificacion['scr_id']; ?>">
-                                                    <button type="submit" class="flex items-center justify-center w-8 h-8 border-2 border-success-border bg-surface text-success-text hover:bg-success-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]" title="Aceptar Scrim">
+                                                    <button type="submit"
+                                                        class="flex items-center justify-center w-8 h-8 border-2 border-success-border bg-surface text-success-text hover:bg-success-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] cursor-pointer"
+                                                        title="Aceptar Scrim">
                                                         <i data-lucide="check" class="w-4 h-4"></i>
                                                     </button>
                                                 </form>
@@ -202,7 +206,9 @@ include '../../../includes/user_navbar.php';
                                                 <?php if ($notificacion['not_tipo'] === 'SCRIM'): ?>
                                                     <input type="hidden" name="scr_id" value="<?php echo $notificacion['scr_id']; ?>">
                                                 <?php endif; ?>
-                                                <button type="submit" class="flex items-center justify-center w-8 h-8 border-2 border-error-border bg-surface text-error-text hover:bg-error-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px]" title="Rechazar">
+                                                <button type="submit"
+                                                    class="flex items-center justify-center w-8 h-8 border-2 border-error-border bg-surface text-error-text hover:bg-error-text hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] cursor-pointer"
+                                                    title="Rechazar">
                                                     <i data-lucide="x" class="w-4 h-4"></i>
                                                 </button>
                                             </form>
