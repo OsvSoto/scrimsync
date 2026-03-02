@@ -15,15 +15,10 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     $sql = "SELECT gen_id, gen_nombre FROM genero WHERE gen_id = ?";
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "i", $id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        if ($row = $result->fetch_assoc()) {
-            $gen_id = $row['gen_id'];
-            $gen_nombre = $row['gen_nombre'];
-        }
-        mysqli_stmt_close($stmt);
+    $result = $conn->execute_query($sql, [$id]);
+    if ($row = $result->fetch_assoc()) {
+        $gen_id = $row['gen_id'];
+        $gen_nombre = $row['gen_nombre'];
     }
 }
 ?>

@@ -12,23 +12,17 @@ $current_jue_id = '';
 
 $sql_juegos = "SELECT * FROM juego ORDER BY jue_nombre ASC";
 $result_juegos = mysqli_query($conn, $sql_juegos);
-
 if (isset($_GET['id'])) {
   $p_op = 'M';
   $titulo = "Modificar Rol";
   $id = $_GET['id'];
 
   $sql = "SELECT rol_id, rol_nombre, jue_id FROM rol_predefinido WHERE rol_id = ?";
-  if ($stmt = mysqli_prepare($conn, $sql)) {
-    mysqli_stmt_bind_param($stmt, "i", $id);
-    mysqli_stmt_execute($stmt);
-    $result = mysqli_stmt_get_result($stmt);
-    if ($row = $result->fetch_assoc()) {
-      $rol_id = $row['rol_id'];
-      $rol_nombre = $row['rol_nombre'];
-      $current_jue_id = $row['jue_id'];
-    }
-    mysqli_stmt_close($stmt);
+  $result = $conn->execute_query($sql, [$id]);
+  if ($row = $result->fetch_assoc()) {
+    $rol_id = $row['rol_id'];
+    $rol_nombre = $row['rol_nombre'];
+    $current_jue_id = $row['jue_id'];
   }
 }
 ?>

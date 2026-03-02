@@ -11,15 +11,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 $usu_id = isset($_POST['usu_id']) ? (int) $_POST['usu_id'] : 0;
 $equ_id = isset($_POST['equ_id']) ? (int) $_POST['equ_id'] : 0;
 
-$stmt_perm = $conn->prepare("SELECT per_elim_miembro as p FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?");
-$stmt_perm->bind_param("ii", $usu_id, $equ_id);
-$stmt_perm->execute();
-$soy_capitan = $stmt_perm->get_result()->fetch_assoc()["p"];
+$sql_perm = "SELECT per_elim_miembro as p FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+$res_perm = $conn->execute_query($sql_perm, [$usu_id, $equ_id]);
+$perm_data = $res_perm->fetch_assoc();
+$soy_capitan = $perm_data["p"];
 
-$stmt_count = $conn->prepare("SELECT COUNT(*) as c FROM permiso_equipo WHERE equ_id = ?");
-$stmt_count->bind_param("i", $equ_id);
-$stmt_count->execute();
-$count_members = $stmt_count->get_result()->fetch_assoc()["c"];
+$sql_count = "SELECT COUNT(*) as c FROM permiso_equipo WHERE equ_id = ?";
+$res_count = $conn->execute_query($sql_count, [$equ_id]);
+$count_data = $res_count->fetch_assoc();
+$count_members = $count_data["c"];
 
 if ($soy_capitan && $count_members > 1) {
 
@@ -29,9 +29,8 @@ if ($soy_capitan && $count_members > 1) {
 } else if ($soy_capitan && $count_members == 1) {
 
   // Borramos el equipo cuando queda un solo miembro (capitan)
-  $stmt_delete = $conn->prepare("DELETE FROM equipo WHERE equ_id = ?");
-  $stmt_delete->bind_param("i", $equ_id);
-  if ($stmt_delete->execute()) {
+  $sql_delete = "DELETE FROM equipo WHERE equ_id = ?";
+  if ($conn->execute_query($sql_delete, [$equ_id])) {
     $_SESSION['flash_msg'] = 'quit_delete';
     header("Location: ../profile/index.php");
   } else {
@@ -40,10 +39,8 @@ if ($soy_capitan && $count_members > 1) {
   }
 } else if (!$soy_capitan) {
 
-
-  $stmt_delete = $conn->prepare("DELETE FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?");
-  $stmt_delete->bind_param("ii", $usu_id, $equ_id);
-  if ($stmt_delete->execute()) {
+  $sql_delete_perm = "DELETE FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+  if ($conn->execute_query($sql_delete_perm, [$usu_id, $equ_id])) {
     $_SESSION['flash_msg'] = 'quit';
     header("Location: ../profile/index.php");
   } else {

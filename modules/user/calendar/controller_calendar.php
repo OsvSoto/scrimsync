@@ -11,20 +11,13 @@ if (!isset($_SESSION['loggedin'])) {
 $usu_id = $_SESSION['usu_id'];
 
 $sql_team = "SELECT * FROM equipo WHERE usu_id = ? LIMIT 1";
-// TODO: Usar execute_query o pasarlo a OOP
-$stmt = mysqli_prepare($conn, $sql_team);
-mysqli_stmt_bind_param($stmt, "i", $usu_id);
-mysqli_stmt_execute($stmt);
-$result_team = mysqli_stmt_get_result($stmt);
+$result_team = $conn->execute_query($sql_team, [$usu_id]);
 $team = $result_team->fetch_assoc();
 $is_captain = true;
 
 if (!$team) {
     $sql_member = "SELECT e.* FROM equipo e JOIN permiso_equipo pe ON e.equ_id = pe.equ_id WHERE pe.usu_id = ? LIMIT 1";
-    $stmt = mysqli_prepare($conn, $sql_member);
-    mysqli_stmt_bind_param($stmt, "i", $usu_id);
-    $stmt->execute();
-    $result_team = mysqli_stmt_get_result($stmt);
+    $result_team = $conn->execute_query($sql_member, [$usu_id]);
     $team = $result_team->fetch_assoc();
     $is_captain = false;
 }
@@ -57,10 +50,7 @@ if ($team) {
       AND MONTH(s.scr_fecha_juego) = ? AND YEAR(s.scr_fecha_juego) = ?
     ";
 
-    $stmt = mysqli_prepare($conn, $sql_scrims);
-    mysqli_stmt_bind_param($stmt, "iiii", $equ_id, $equ_id, $month, $year);
-    $stmt->execute();
-    $res_scrims = mysqli_stmt_get_result($stmt);
+    $res_scrims = $conn->execute_query($sql_scrims, [$equ_id, $equ_id, $month, $year]);
 
     while ($row = $res_scrims->fetch_assoc()) {
         if ($row['equ_id_emisor'] == $equ_id) {
@@ -72,17 +62,12 @@ if ($team) {
         }
         $scrims[] = $row;
     }
-    mysqli_stmt_close($stmt);
 
     $sql_avail = "SELECT * FROM disponibilidad WHERE equ_id = ? ORDER BY dis_dia_semana, dis_hora_inicio";
-    $stmt = mysqli_prepare($conn, $sql_avail);
-    mysqli_stmt_bind_param($stmt, "i", $equ_id);
-    $stmt->execute();
-    $res_avail = mysqli_stmt_get_result($stmt);
+    $res_avail = $conn->execute_query($sql_avail, [$equ_id]);
     while ($row = $res_avail->fetch_assoc()) {
         $availability[] = $row;
     }
-    mysqli_stmt_close($stmt);
 }
 
 $firstDayOfMonth = mktime(0, 0, 0, $month, 1, $year);

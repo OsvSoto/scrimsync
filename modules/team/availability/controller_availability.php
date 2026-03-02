@@ -45,27 +45,21 @@ if ($action === 'add') {
     exit;
   }
 
-  $stmt = $conn->prepare("INSERT INTO disponibilidad (equ_id, dis_dia_semana, dis_hora_inicio, dis_hora_fin) VALUES (?, ?, ?, ?)");
-  $stmt->bind_param("iiss", $equ_id, $dia, $hora_inicio, $hora_fin);
-
-  if ($stmt->execute()) {
+  $sql_insert = "INSERT INTO disponibilidad (equ_id, dis_dia_semana, dis_hora_inicio, dis_hora_fin) VALUES (?, ?, ?, ?)";
+  if ($conn->execute_query($sql_insert, [$equ_id, $dia, $hora_inicio, $hora_fin])) {
     $_SESSION['flash_msg'] = 'availability_added';
   } else {
     $_SESSION['flash_error'] = 'db_error';
   }
-  $stmt->close();
 } elseif ($action === 'delete') {
   $dis_id = (int)$_POST['dis_id'];
 
-  $stmt = $conn->prepare("DELETE FROM disponibilidad WHERE dis_id = ? AND equ_id = ?");
-  $stmt->bind_param("ii", $dis_id, $equ_id);
-
-  if ($stmt->execute()) {
+  $sql_delete = "DELETE FROM disponibilidad WHERE dis_id = ? AND equ_id = ?";
+  if ($conn->execute_query($sql_delete, [$dis_id, $equ_id])) {
     $_SESSION['flash_msg'] = 'availability_deleted';
   } else {
     $_SESSION['flash_error'] = 'db_error';
   }
-  $stmt->close();
 }
 
 header("Location: ../profile/view.php?id=$equ_id");

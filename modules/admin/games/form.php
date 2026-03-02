@@ -18,16 +18,11 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
     $sql = "SELECT jue_id, jue_nombre, gen_id FROM juego WHERE jue_id = ?";
 
-    if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "i", $id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        if ($row = $result->fetch_assoc()) {
-            $jue_id = $row['jue_id'];
-            $jue_nombre = $row['jue_nombre'];
-            $current_gen_id = $row['gen_id'];
-        }
-        mysqli_stmt_close($stmt);
+    $result = $conn->execute_query($sql, [$id]);
+    if ($row = $result->fetch_assoc()) {
+        $jue_id = $row['jue_id'];
+        $jue_nombre = $row['jue_nombre'];
+        $current_gen_id = $row['gen_id'];
     }
 }
 ?>

@@ -16,9 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['usu_id'])) {
       $descripcion = trim($_POST['usu_descripcion']);
 
       $sql = "UPDATE usuario SET usu_username = ?, usu_alias = ?, usu_email = ?, usu_descripcion = ? WHERE usu_id = ?";
-      if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "ssssi", $username, $alias, $email, $descripcion, $usu_id);
-        if (mysqli_stmt_execute($stmt)) {
+      if ($conn->execute_query($sql, [$username, $alias, $email, $descripcion, $usu_id])) {
           $_SESSION['username'] = $username;
           $_SESSION['alias'] = $alias;
 
@@ -26,22 +24,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['usu_id'])) {
             $uploadResult = uploadImage($_FILES['usu_foto'], 'profiles', 'profile', $usu_id);
 
             if ($uploadResult['success']) {
-              // Obtener foto anterior para eliminarla si es necesario
+              // Obtener foto anterior para eliminarla
               $sql_get_old = "SELECT usu_foto FROM usuario WHERE usu_id = ?";
-              $stmt_old = mysqli_prepare($conn, $sql_get_old);
-              mysqli_stmt_bind_param($stmt_old, "i", $usu_id);
-              mysqli_stmt_execute($stmt_old);
-              mysqli_stmt_bind_result($stmt_old, $old_photo_url);
-              mysqli_stmt_fetch($stmt_old);
-              mysqli_stmt_close($stmt_old);
+              $old_user = $conn->execute_query($sql_get_old, [$usu_id])->fetch_assoc();
+              $old_photo_url = $old_user['usu_foto'] ?? '';
 
               $webPath = '../../../' . $uploadResult['path'];
 
               $sql_photo = "UPDATE usuario SET usu_foto = ? WHERE usu_id = ?";
-              $stmt_photo = mysqli_prepare($conn, $sql_photo);
-              mysqli_stmt_bind_param($stmt_photo, "si", $webPath, $usu_id);
-
-              if (mysqli_stmt_execute($stmt_photo)) {
+              if ($conn->execute_query($sql_photo, [$webPath, $usu_id])) {
                 // Eliminar foto anterior si existe
                 if (!empty($old_photo_url)) {
                   $oldFileName = basename($old_photo_url);
@@ -51,7 +42,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['usu_id'])) {
                   }
                 }
               }
-              mysqli_stmt_close($stmt_photo);
             } else {
               $_SESSION['flash_error'] = $uploadResult['error'];
               header("Location: index.php");
@@ -60,11 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['usu_id'])) {
           }
           $_SESSION['flash_msg'] = 'profile_updated';
           header("Location: index.php");
-        } else {
+      } else {
           $_SESSION['flash_error'] = 'db_error';
           header("Location: index.php");
-        }
-        mysqli_stmt_close($stmt);
       }
       break;
 
@@ -81,31 +69,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['usu_id'])) {
 
       // Verificar contraseña actual
       $sql = "SELECT usu_password FROM usuario WHERE usu_id = ?";
-      if ($stmt = mysqli_prepare($conn, $sql)) {
-        mysqli_stmt_bind_param($stmt, "i", $usu_id);
-        mysqli_stmt_execute($stmt);
-        $result = mysqli_stmt_get_result($stmt);
-        $user = $result->fetch_assoc();
-        mysqli_stmt_close($stmt);
+      $user = $conn->execute_query($sql, [$usu_id])->fetch_assoc();
 
-        if (password_verify($current_password, $user['usu_password'])) {
-          $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
-          $sql_upd = "UPDATE usuario SET usu_password = ? WHERE usu_id = ?";
-          if ($stmt_upd = mysqli_prepare($conn, $sql_upd)) {
-            mysqli_stmt_bind_param($stmt_upd, "si", $hashed_password, $usu_id);
-            if (mysqli_stmt_execute($stmt_upd)) {
-              $_SESSION['flash_msg'] = 'password_updated';
-              header("Location: index.php");
-            } else {
-              $_SESSION['flash_error'] = 'db_error';
-              header("Location: index.php");
-            }
-            mysqli_stmt_close($stmt_upd);
-          }
+      if ($user && password_verify($current_password, $user['usu_password'])) {
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+        $sql_upd = "UPDATE usuario SET usu_password = ? WHERE usu_id = ?";
+        if ($conn->execute_query($sql_upd, [$hashed_password, $usu_id])) {
+          $_SESSION['flash_msg'] = 'password_updated';
+          header("Location: index.php");
         } else {
-          $_SESSION['flash_error'] = 'invalid_current_password';
+          $_SESSION['flash_error'] = 'db_error';
           header("Location: index.php");
         }
+      } else {
+        $_SESSION['flash_error'] = 'invalid_current_password';
+        header("Location: index.php");
       }
       break;
 

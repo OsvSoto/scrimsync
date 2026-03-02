@@ -9,47 +9,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['loggedin']) && $_SE
 
     if ($p_op == 'Asignar_Tipo_Usu') {
         $p_usu_objetivo = isset($_POST['usu_id']) ? intval($_POST['usu_id']) : 0;
-        $p_usu_admin = $_SESSION['usu_id'];
+        try {
+            $sql_check = "SELECT usu_tipo FROM usuario WHERE usu_id = ?";
+            $res_check = $conn->execute_query($sql_check, [$p_usu_admin]);
+            $row_check = $res_check->fetch_assoc();
 
-        if ($p_usu_objetivo > 0) {
-            mysqli_begin_transaction($conn);
-            try {
-                $sql_check = "SELECT usu_tipo FROM usuario WHERE usu_id = ?";
-                $stmt_check = mysqli_prepare($conn, $sql_check);
-                mysqli_stmt_bind_param($stmt_check, "i", $p_usu_admin);
-                mysqli_stmt_execute($stmt_check);
-                $result_check = mysqli_stmt_get_result($stmt_check);
-                $row_check = $result_check->fetch_assoc();
-                mysqli_stmt_close($stmt_check);
+            if ($row_check['usu_tipo'] != 0) {
+                throw new Exception("No tienes permisos de administrador.");
+            }
 
-                if ($row_check['usu_tipo'] != 0) {
-                    throw new Exception("No tienes permisos de administrador.");
-                }
+            // Actualizar tipo de usuario
+            $sql_update = "UPDATE usuario SET usu_tipo = 0 WHERE usu_id = ?";
+            if (!$conn->execute_query($sql_update, [$p_usu_objetivo])) {
+                throw new Exception("Error al actualizar usuario.");
+            }
 
-                $sql_update = "UPDATE usuario SET usu_tipo = 0 WHERE usu_id = ?";
-                $stmt_update = mysqli_prepare($conn, $sql_update);
-                mysqli_stmt_bind_param($stmt_update, "i", $p_usu_objetivo);
+            $not_tipo = "SISTEMA";
+            $not_asunto = "Cambio de Privilegios";
+            $not_mensaje = "Has sido ascendido a Administrador del sistema.";
 
-                if (!mysqli_stmt_execute($stmt_update)) {
-                    throw new Exception("Error al actualizar usuario.");
-                }
-                mysqli_stmt_close($stmt_update);
+            $sql_notif = "INSERT INTO notificacion (usu_id, not_tipo, not_asunto, not_mensaje) VALUES (?, ?, ?, ?)";
+            if (!$conn->execute_query($sql_notif, [$p_usu_objetivo, $not_tipo, $not_asunto, $not_mensaje])) {
+                throw new Exception("Error al registrar notificación.");
+            }
 
-                // Registrar_Notificacion(p_usu_objetivo, "Sistema", "Cambio de Privilegios", ...)
-                $not_tipo = "SISTEMA";
-                $not_asunto = "Cambio de Privilegios";
-                $not_mensaje = "Has sido ascendido a Administrador del sistema.";
-
-                $sql_notif = "INSERT INTO notificacion (usu_id, not_tipo, not_asunto, not_mensaje) VALUES (?, ?, ?, ?)";
-                $stmt_notif = mysqli_prepare($conn, $sql_notif);
-                mysqli_stmt_bind_param($stmt_notif, "isss", $p_usu_objetivo, $not_tipo, $not_asunto, $not_mensaje);
-
-                if (!mysqli_stmt_execute($stmt_notif)) {
-                    throw new Exception("Error al registrar notificación.");
-                }
-                mysqli_stmt_close($stmt_notif);
-
-                mysqli_commit($conn);
+            mysqli_commit($conn);
                 $_SESSION['flash_msg'] = 'promovido';
                 header("Location: index.php");
             } catch (Exception $e) {
@@ -66,7 +50,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['loggedin']) && $_SE
     mysqli_close($conn);
 
 } else {
-    // Si no es admin o no es POST
     header("Location: ../../../index.php");
 }
 ?>

@@ -26,63 +26,49 @@ if (isset($_POST['action']) && $_POST['action'] === 'accept_invite') {
   }
 
   // Verificar que la notificación sea válida y pertenezca al usuario
-  $stmt = $conn->prepare("SELECT not_id FROM notificacion WHERE not_id = ? AND usu_id = ? AND equ_id = ? AND not_tipo = 'INVITACION'");
-  $stmt->bind_param("iii", $not_id, $usu_id, $equ_id);
-  $stmt->execute();
-  $stmt->store_result();
+  $sql_notif_check = "SELECT not_id FROM notificacion WHERE not_id = ? AND usu_id = ? AND equ_id = ? AND not_tipo = 'INVITACION'";
+  $res_notif = $conn->execute_query($sql_notif_check, [$not_id, $usu_id, $equ_id]);
 
-  if ($stmt->num_rows == 0) {
-    $stmt->close();
+  if ($res_notif->num_rows == 0) {
     $_SESSION['flash_error'] = "Invitación no válida o expirada.";
     header("Location: ../../../modules/user/notification/index.php");
     exit;
   }
-  $stmt->close();
 
   // Verificar si ya es miembro
-  $stmt_check = $conn->prepare("SELECT per_id FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?");
-  $stmt_check->bind_param("ii", $usu_id, $equ_id);
-  $stmt_check->execute();
-  if ($stmt_check->fetch()) {
-    $stmt_check->close();
-    $conn->query("DELETE FROM notificacion WHERE not_id = $not_id");
+  $sql_check = "SELECT per_id FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+  $res_check = $conn->execute_query($sql_check, [$usu_id, $equ_id]);
+  if ($res_check->fetch_assoc()) {
+    $conn->execute_query("DELETE FROM notificacion WHERE not_id = ?", [$not_id]);
     $_SESSION['flash_msg'] = "Ya eres miembro de este equipo.";
     header("Location: ../../../modules/user/notification/index.php");
     exit;
   }
-  $stmt_check->close();
 
   // Añadir al equipo
   mysqli_begin_transaction($conn);
   try {
-    $stmt_jue = $conn->prepare("SELECT jue_id FROM equipo WHERE equ_id = ?");
-    $stmt_jue->bind_param("i", $equ_id);
-    $stmt_jue->execute();
-    $stmt_jue->bind_result($jue_id);
-    if (!$stmt_jue->fetch()) throw new Exception("Equipo no encontrado.");
-    $stmt_jue->close();
+    $sql_jue = "SELECT jue_id FROM equipo WHERE equ_id = ?";
+    $res_jue = $conn->execute_query($sql_jue, [$equ_id]);
+    $equipo_info = $res_jue->fetch_assoc();
+    if (!$equipo_info) throw new Exception("Equipo no encontrado.");
+    $jue_id = $equipo_info['jue_id'];
 
     $rol_id = 0;
     if ($jue_id) {
-      $stmt_rol = $conn->prepare("SELECT rol_id FROM rol_predefinido WHERE jue_id = ? LIMIT 1");
-      $stmt_rol->bind_param("i", $jue_id);
-      $stmt_rol->execute();
-      $stmt_rol->bind_result($rol_found);
-      if ($stmt_rol->fetch()) $rol_id = $rol_found;
-      $stmt_rol->close();
+      $sql_rol = "SELECT rol_id FROM rol_predefinido WHERE jue_id = ? LIMIT 1";
+      $res_rol = $conn->execute_query($sql_rol, [$jue_id]);
+      $rol_info = $res_rol->fetch_assoc();
+      if ($rol_info) $rol_id = $rol_info['rol_id'];
     }
 
     if ($rol_id <= 0) throw new Exception("No hay roles definidos para el juego.");
 
-    $stmt_ins = $conn->prepare("INSERT INTO permiso_equipo (usu_id, equ_id, rol_id, per_modif_horario, per_enviar_scrim, per_elim_miembro) VALUES (?, ?, ?, 0, 0, 0)");
-    $stmt_ins->bind_param("iii", $usu_id, $equ_id, $rol_id);
-    $stmt_ins->execute();
-    $stmt_ins->close();
+    $sql_ins = "INSERT INTO permiso_equipo (usu_id, equ_id, rol_id, per_modif_horario, per_enviar_scrim, per_elim_miembro) VALUES (?, ?, ?, 0, 0, 0)";
+    $conn->execute_query($sql_ins, [$usu_id, $equ_id, $rol_id]);
 
-    $stmt_del = $conn->prepare("DELETE FROM notificacion WHERE not_id = ?");
-    $stmt_del->bind_param("i", $not_id);
-    $stmt_del->execute();
-    $stmt_del->close();
+    $sql_del = "DELETE FROM notificacion WHERE not_id = ?";
+    $conn->execute_query($sql_del, [$not_id]);
 
     mysqli_commit($conn);
 
@@ -103,48 +89,40 @@ if (isset($_POST['action']) && $_POST['action'] === 'accept_invite') {
     header("Location: ../profile/index.php");
     exit;
   }
-  $stmt_perm = $conn->prepare("SELECT per_elim_miembro FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?");
-  $stmt_perm->bind_param("ii", $usu_id, $equ_id);
-  $stmt_perm->execute();
-  $stmt_perm->bind_result($puede_gestionar);
-  if (!$stmt_perm->fetch()) {
-    $stmt_perm->close();
+
+  $sql_perm = "SELECT per_elim_miembro FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+  $res_perm = $conn->execute_query($sql_perm, [$usu_id, $equ_id]);
+  $perm_info = $res_perm->fetch_assoc();
+
+  if (!$perm_info) {
     header("Location: ../profile/manage.php?id=$equ_id&error=no_permission");
     exit;
   }
-  $stmt_perm->close();
+
   try {
-    $stmt_check = $conn->prepare("SELECT per_id FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?");
-    $stmt_check->bind_param("ii", $target_usu_id, $equ_id);
-    $stmt_check->execute();
-    if ($stmt_check->fetch()) {
-      $stmt_check->close();
+    $sql_check = "SELECT per_id FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+    $res_check = $conn->execute_query($sql_check, [$target_usu_id, $equ_id]);
+    if ($res_check->fetch_assoc()) {
       $_SESSION['flash_error'] = "El usuario ya es miembro.";
       header("Location: ../profile/manage.php?id=$equ_id");
       exit;
     }
-    $stmt_check->close();
 
-    $stmt_info = $conn->prepare("SELECT equ_nombre FROM equipo WHERE equ_id = ?");
-    $stmt_info->bind_param("i", $equ_id);
-    $stmt_info->execute();
-    $stmt_info->bind_result($equ_nombre);
-    $stmt_info->fetch();
-    $stmt_info->close();
+    $sql_info = "SELECT equ_nombre FROM equipo WHERE equ_id = ?";
+    $res_info = $conn->execute_query($sql_info, [$equ_id]);
+    $equ_info = $res_info->fetch_assoc();
+    $equ_nombre = $equ_info['equ_nombre'];
 
     $not_tipo = 'INVITACION';
     $not_asunto = 'Invitación de Equipo';
     $not_mensaje = "Has sido invitado a unirte a $equ_nombre.";
 
-    $stmt_notif = $conn->prepare("INSERT INTO notificacion (usu_id, equ_id, not_tipo, not_asunto, not_mensaje) VALUES (?, ?, ?, ?, ?)");
-    $stmt_notif->bind_param("iisss", $target_usu_id, $equ_id, $not_tipo, $not_asunto, $not_mensaje);
-
-    if ($stmt_notif->execute()) {
+    $sql_notif = "INSERT INTO notificacion (usu_id, equ_id, not_tipo, not_asunto, not_mensaje) VALUES (?, ?, ?, ?, ?)";
+    if ($conn->execute_query($sql_notif, [$target_usu_id, $equ_id, $not_tipo, $not_asunto, $not_mensaje])) {
       $_SESSION['flash_msg'] = 'invited';
     } else {
       $_SESSION['flash_error'] = "Error al enviar invitación.";
     }
-    $stmt_notif->close();
 
     header("Location: ../profile/manage.php?id=$equ_id");
     exit;

@@ -11,11 +11,7 @@ if (!isset($_SESSION['loggedin'])) {
 $usu_id = $_SESSION['usu_id'];
 
 $sql = "SELECT * FROM usuario WHERE usu_id = ?";
-$stmt = mysqli_prepare($conn, $sql);
-mysqli_stmt_bind_param($stmt, "i", $usu_id);
-mysqli_stmt_execute($stmt);
-$result = mysqli_stmt_get_result($stmt);
-$user = $result->fetch_assoc();
+$user = $conn->execute_query($sql, [$usu_id])->fetch_assoc();
 
 include '../../../includes/header.php';
 ?>

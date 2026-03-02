@@ -48,21 +48,14 @@ mysqli_begin_transaction($conn);
 try {
   // Insertar el Equipo
   $sql_equipo = "INSERT INTO equipo (usu_id, jue_id, equ_nombre, equ_logo) VALUES (?, ?, ?, ?)";
-
-  $stmt_equipo = mysqli_prepare($conn, $sql_equipo);
-  mysqli_stmt_bind_param($stmt_equipo, "iiss", $usu_id, $jue_id, $nombre, $ruta_logo);
-
-  if (!mysqli_stmt_execute($stmt_equipo)) {
-    throw new Exception("Error al crear el equipo: " . mysqli_error($conn));
+  if (!$conn->execute_query($sql_equipo, [$usu_id, $jue_id, $nombre, $ruta_logo])) {
+    throw new Exception("Error al crear el equipo: " . $conn->error);
   }
 
-  $nuevo_equ_id = mysqli_insert_id($conn);
+  $nuevo_equ_id = $conn->insert_id;
 
   $sql_rol = "SELECT rol_id FROM rol_predefinido WHERE jue_id = ? LIMIT 1";
-  $stmt_rol = mysqli_prepare($conn, $sql_rol);
-  mysqli_stmt_bind_param($stmt_rol, "i", $jue_id);
-  mysqli_stmt_execute($stmt_rol);
-  $res_rol = mysqli_stmt_get_result($stmt_rol);
+  $res_rol = $conn->execute_query($sql_rol, [$jue_id]);
   $rol_data = $res_rol->fetch_assoc();
   $rol_id = $rol_data['rol_id'];
 
@@ -71,19 +64,7 @@ try {
                     VALUES (?, ?, ?, ?, ?, ?)";
   $permiso_si = 1; // 1 = Verdadero
 
-  $stmt_permisos = mysqli_prepare($conn, $sql_permisos);
-  mysqli_stmt_bind_param(
-    $stmt_permisos,
-    "iiiiii",
-    $usu_id,
-    $nuevo_equ_id,
-    $rol_id,
-    $permiso_si, // Puede modificar horario
-    $permiso_si, // Puede enviar scrims
-    $permiso_si  // Puede eliminar miembros
-  );
-
-  if (!mysqli_stmt_execute($stmt_permisos)) {
+  if (!$conn->execute_query($sql_permisos, [$usu_id, $nuevo_equ_id, $rol_id, $permiso_si, $permiso_si, $permiso_si])) {
     throw new Exception("Error al asignar permisos de capitán.");
   }
   mysqli_commit($conn);

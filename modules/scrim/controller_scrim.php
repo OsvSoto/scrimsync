@@ -117,16 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 try {
                     // Actualizar estado del scrim
                     $est_id = 2; // 2 -> Aceptado
-                    $stmt_scr = $conn->prepare('UPDATE scrim SET est_id = ? WHERE scr_id = ?');
-                    $stmt_scr->bind_param('ii', $est_id, $scr_id);
-                    $stmt_scr->execute();
-                    $stmt_scr->close();
+                    $conn->execute_query('UPDATE scrim SET est_id = ? WHERE scr_id = ?', [$est_id, $scr_id]);
 
                     // Eliminar la notificación
-                    $stmt_not = $conn->prepare('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?');
-                    $stmt_not->bind_param('ii', $not_id, $usu_id);
-                    $stmt_not->execute();
-                    $stmt_not->close();
+                    $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
 
                     mysqli_commit($conn);
                     $_SESSION['flash_msg'] = 'Scrim aceptado correctamente.';
@@ -147,16 +141,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 mysqli_begin_transaction($conn);
                 try {
                     // Eliminar el scrim
-                    $stmt_scr = $conn->prepare('DELETE FROM scrim WHERE scr_id = ?');
-                    $stmt_scr->bind_param('i', $scr_id);
-                    $stmt_scr->execute();
-                    $stmt_scr->close();
+                    $conn->execute_query('DELETE FROM scrim WHERE scr_id = ?', [$scr_id]);
 
                     // Eliminar la notificación
-                    $stmt_not = $conn->prepare('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?');
-                    $stmt_not->bind_param('ii', $not_id, $usu_id);
-                    $stmt_not->execute();
-                    $stmt_not->close();
+                    $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
 
                     mysqli_commit($conn);
                     $_SESSION['flash_msg'] = 'Scrim rechazado y eliminado.';
