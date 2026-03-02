@@ -67,7 +67,7 @@ try {
   mysqli_stmt_bind_param($stmt_rol, "i", $jue_id);
   mysqli_stmt_execute($stmt_rol);
   $res_rol = mysqli_stmt_get_result($stmt_rol);
-  $rol_data = mysqli_fetch_assoc($res_rol);
+  $rol_data = $res_rol->fetch_assoc();
   $rol_id = $rol_data['rol_id'];
 
   // Insertar los Permisos (Hacer al usuario Capitán)

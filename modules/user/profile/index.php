@@ -15,7 +15,7 @@ $stmt = mysqli_prepare($conn, $sql);
 mysqli_stmt_bind_param($stmt, "i", $usu_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
-$user = mysqli_fetch_assoc($result);
+$user = $result->fetch_assoc();
 
 include '../../../includes/header.php';
 ?>

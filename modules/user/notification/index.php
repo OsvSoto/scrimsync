@@ -18,14 +18,14 @@ $sql = "SELECT
           not_mensaje,
           not_estado_leido,
           not_fecha
-        FROM notificacion WHERE usu_id = '$usu_id'
+        FROM notificacion WHERE usu_id = ?
         ORDER BY not_fecha DESC;";
-$result = mysqli_query($conn, $sql);
+$result = $conn->execute_query($sql, [$usu_id]);
 $notificaciones = [];
 $hasUnread = false;
 
 if ($result) {
-    while ($row = mysqli_fetch_assoc($result)) {
+    while ($row = $result->fetch_assoc()) {
         $notificaciones[] = $row;
         if ($row['not_estado_leido'] == 0) {
             $hasUnread = true;

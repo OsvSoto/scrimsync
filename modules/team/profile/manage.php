@@ -3,7 +3,6 @@
 session_start();
 require_once '../../../config/db.php';
 
-// 1. SEGURIDAD DE SESIÓN
 if (!isset($_SESSION['loggedin'])) {
     header("Location: " . BASE_URL . "modules/auth/login.php");
     exit;
@@ -12,52 +11,45 @@ if (!isset($_SESSION['loggedin'])) {
 $usu_id = $_SESSION['usu_id'];
 $equ_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Si no hay ID, volver al inicio
 if ($equ_id <= 0) {
     header("Location: index.php");
     exit;
 }
 
-// 2. VERIFICAR PERMISOS (CRÍTICO)
-// Solo permitimos entrar si el usuario tiene permiso de capitán en ESTE equipo
+// Solo el capitan puede entrar
 $sql_permisos = "SELECT * FROM permiso_equipo
-                 WHERE usu_id = '$usu_id' AND equ_id = '$equ_id'
+                 WHERE usu_id = ? AND equ_id = ?
                  AND (per_modif_horario = 1 OR per_elim_miembro = 1) LIMIT 1";
-$res_permisos = mysqli_query($conn, $sql_permisos);
+$res_permisos = $conn->execute_query($sql_permisos, [$usu_id, $equ_id]);
 
 if (mysqli_num_rows($res_permisos) == 0) {
-    // Si no es capitán, lo mandamos a la vista pública del equipo (o al index)
     header("Location: view.php?id=$equ_id&error=no_permission");
     exit;
 }
 
-// 3. OBTENER DATOS DEL EQUIPO
-$sql_equipo = "SELECT * FROM equipo WHERE equ_id = '$equ_id'";
-$equipo = mysqli_fetch_assoc(mysqli_query($conn, $sql_equipo));
+$sql_equipo = "SELECT * FROM equipo WHERE equ_id = ?";
+$equipo = $conn->execute_query($sql_equipo, [$equ_id])->fetch_assoc();
 
-// 4. OBTENER JUEGOS (Para el select de edición)
 $sql_juegos = "SELECT * FROM juego ORDER BY jue_nombre ASC";
-$res_juegos = mysqli_query($conn, $sql_juegos);
+$res_juegos = $conn->query($sql_juegos);
 
-// 5. LÓGICA DE BÚSQUEDA DE USUARIOS (Para invitar)
-// Esta lógica se ejecuta cuando usas el buscador dentro de esta misma página
 $resultados_busqueda = [];
 $busqueda = '';
 
 if (isset($_GET['search_user']) && !empty($_GET['search_user'])) {
     $busqueda = trim($_GET['search_user']);
-    $busqueda_safe = mysqli_real_escape_string($conn, $busqueda);
 
-    // Buscar usuarios que coincidan con el nombre Y que NO estén ya en el equipo
+    // usuarios que coiniciden y no estan en el equipo
     $sql_search = "SELECT u.usu_id, u.usu_username, u.usu_alias
                    FROM usuario u
-                   WHERE (u.usu_username LIKE '%$busqueda_safe%' OR u.usu_alias LIKE '%$busqueda_safe%')
-                   AND u.usu_id NOT IN (SELECT usu_id FROM permiso_equipo WHERE equ_id = '$equ_id')
+                   WHERE (u.usu_username LIKE ? OR u.usu_alias LIKE ?)
+                   AND u.usu_id NOT IN (SELECT usu_id FROM permiso_equipo WHERE equ_id = ?)
                    LIMIT 5";
 
-    $res_search = mysqli_query($conn, $sql_search);
+    $search_param = "%$busqueda%";
+    $res_search = $conn->execute_query($sql_search, [$search_param, $search_param, $equ_id]);
     if ($res_search) {
-        while ($r = mysqli_fetch_assoc($res_search)) {
+        while ($r = $res_search->fetch_assoc()) {
             $resultados_busqueda[] = $r;
         }
     }
@@ -69,11 +61,7 @@ include '../../../includes/user_navbar.php';
 
 <div class="flex min-h-screen bg-zinc-50">
 
-    <div class="hidden md:block fixed left-0 top-0 h-full z-10 pt-16">
-        <?php # include '../../../includes/user_sidebar.php';
-        ?>
-    </div>
-
+    <div class="hidden md:block fixed left-0 top-0 h-full z-10 pt-16"></div>
     <main class="flex-1 w-full pt-16 pb-8">
 
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -85,7 +73,6 @@ include '../../../includes/user_navbar.php';
                     Gestionar: <span class="text-primary-hover"><?php echo htmlspecialchars($equipo['equ_nombre']); ?></span>
                 </h2>
             </div>
-
         </div>
 
         <?php if (isset($_SESSION['flash_msg'])): ?>
@@ -203,8 +190,8 @@ include '../../../includes/user_navbar.php';
                                     <div class="relative">
                                         <select name="jue_id" class="w-full bg-subtle border-2 border-border p-3 font-bold text-sm text-primary focus:outline-none focus:border-primary transition-colors appearance-none cursor-pointer">
                                             <?php
-                                            mysqli_data_seek($res_juegos, 0);
-                                            while ($j = mysqli_fetch_assoc($res_juegos)):
+                                            $res_juegos->data_seek(0);
+                                            while ($j = $res_juegos->fetch_assoc()):
                                             ?>
                                                 <option value="<?php echo $j['jue_id']; ?>" <?php echo ($j['jue_id'] == $equipo['jue_id']) ? 'selected' : ''; ?>>
                                                     <?php echo htmlspecialchars($j['jue_nombre']); ?>

@@ -18,16 +18,16 @@ $sql = "SELECT
         FROM permiso_equipo pe
         INNER JOIN equipo e ON pe.equ_id = e.equ_id
         LEFT JOIN juego j ON e.jue_id = j.jue_id
-        WHERE pe.usu_id = '$usu_id'";
+        WHERE pe.usu_id = ?";
 
 // TODO: refactor a prepare->bind->execute
-$result = mysqli_query($conn, $sql);
+$result = $conn->execute_query($sql, [$usu_id]);
 
 $mis_equipos = [];
 $team_ids = [];
 
 if ($result) {
-    while ($row = mysqli_fetch_assoc($result)) {
+    while ($row = $result->fetch_assoc()) {
         $mis_equipos[] = $row;
         $team_ids[] = $row['equ_id'];
     }
@@ -35,17 +35,17 @@ if ($result) {
 
 $member_counts = [];
 if (!empty($team_ids)) {
-    $ids_str = implode(',', array_map('intval', $team_ids));
+    $placeholders = implode(',', array_fill(0, count($team_ids), '?'));
 
     $sql_counts = "SELECT equ_id, COUNT(*) as total
                    FROM permiso_equipo
-                   WHERE equ_id IN ($ids_str)
+                   WHERE equ_id IN ($placeholders)
                    GROUP BY equ_id";
 
-    $res_counts = mysqli_query($conn, $sql_counts);
+    $res_counts = $conn->execute_query($sql_counts, $team_ids);
 
     if ($res_counts) {
-        while ($row = mysqli_fetch_assoc($res_counts)) {
+        while ($row = $res_counts->fetch_assoc()) {
             $member_counts[$row['equ_id']] = $row['total'];
         }
     }
@@ -59,12 +59,6 @@ include '../../../includes/user_navbar.php';
 ?>
 
 <div class="flex min-h-screen bg-zinc-50">
-
-    <!--
-  <div class="hidden md:block fixed left-0 top-0 h-full z-10 pt-16">
-    <?php include '../../../includes/user_sidebar.php'; ?>
-  </div> -->
-
     <main class="flex-1 w-full pt-16 pb-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -148,7 +142,7 @@ include '../../../includes/user_navbar.php';
                 echo '<div class="mb-6"><a href="index.php" class="inline-flex items-center gap-2 text-sm font-bold text-secondary hover:text-primary transition-colors"><i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a mis equipos</a></div>';
 
                 $sql_juegos = "SELECT * FROM juego ORDER BY jue_nombre ASC";
-                $result_juegos = mysqli_query($conn, $sql_juegos);
+                $result_juegos = $conn->query($sql_juegos);
 
                 include '../views/components/form_teams.php';
             } else {

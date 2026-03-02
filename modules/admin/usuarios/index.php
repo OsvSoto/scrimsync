@@ -12,16 +12,16 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
 // Búsqueda
 $search = isset($_GET['q']) ? trim($_GET['q']) : '';
 
-// CONSULTA: Solo listar usuarios que NO son admins (usu_tipo = 1)
 $sql = "SELECT * FROM usuario WHERE usu_tipo = 1";
+$params = [];
 
 if (!empty($search)) {
-  $search_safe = mysqli_real_escape_string($conn, $search);
-  $sql .= " AND usu_username LIKE '%$search_safe%'";
+  $sql .= " AND usu_username LIKE ?";
+  $params[] = "%$search%";
 }
 
 $sql .= " ORDER BY usu_id DESC";
-$result = mysqli_query($conn, $sql);
+$result = $conn->execute_query($sql, $params);
 
 include '../../../includes/header.php';
 ?>
@@ -29,9 +29,6 @@ include '../../../includes/header.php';
 <?php include '../../../includes/admin_navbar.php'; ?>
 
 <div class="min-h-screen bg-background">
-
-  <?php # include '../../../includes/admin_sidebar.php'; ?>
-
   <main class="flex-1 w-full pt-16 pb-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <a href="../dashboard.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-6 inline-block">
@@ -89,8 +86,8 @@ include '../../../includes/header.php';
               </tr>
             </thead>
             <tbody class="divide-y divide-subtle">
-              <?php if (mysqli_num_rows($result) > 0): ?>
-                <?php while ($row = mysqli_fetch_assoc($result)): ?>
+              <?php if ($result->num_rows > 0): ?>
+                <?php while ($row = $result->fetch_assoc()): ?>
                   <tr class="hover:bg-subtle transition-colors">
                     <td class="p-4 font-mono text-xs text-muted truncate">#<?php echo $row['usu_id']; ?></td>
                     <td class="p-4">

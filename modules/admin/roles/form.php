@@ -4,18 +4,15 @@ session_start();
 require_once '../../../config/db.php';
 include '../../../includes/header.php';
 
-// Variables por defecto (Modo Crear)
 $p_op = 'C';
 $titulo = "Nuevo Rol";
 $rol_id = '';
 $rol_nombre = '';
 $current_jue_id = '';
 
-// 1. CARGAR JUEGOS
 $sql_juegos = "SELECT * FROM juego ORDER BY jue_nombre ASC";
 $result_juegos = mysqli_query($conn, $sql_juegos);
 
-// 2. MODO EDICIÓN
 if (isset($_GET['id'])) {
   $p_op = 'M';
   $titulo = "Modificar Rol";
@@ -26,7 +23,7 @@ if (isset($_GET['id'])) {
     mysqli_stmt_bind_param($stmt, "i", $id);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    if ($row = mysqli_fetch_assoc($result)) {
+    if ($row = $result->fetch_assoc()) {
       $rol_id = $row['rol_id'];
       $rol_nombre = $row['rol_nombre'];
       $current_jue_id = $row['jue_id'];
@@ -70,9 +67,9 @@ if (isset($_GET['id'])) {
               <select name="jue_id" required class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none appearance-none">
                 <option value="" disabled <?php echo empty($current_jue_id) ? 'selected' : ''; ?>>Seleccione un juego...</option>
                 <?php
-                if (mysqli_num_rows($result_juegos) > 0) {
-                  mysqli_data_seek($result_juegos, 0);
-                  while ($jue = mysqli_fetch_assoc($result_juegos)):
+                if ($result_juegos->num_rows > 0) {
+                  $result_juegos->data_seek(0);
+                  while ($jue = $result_juegos->fetch_assoc()):
                     $selected = ($jue['jue_id'] == $current_jue_id) ? 'selected' : '';
                 ?>
                     <option value="<?php echo $jue['jue_id']; ?>" <?php echo $selected; ?>>

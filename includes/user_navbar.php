@@ -1,14 +1,13 @@
 <?php
 $current_uri = $_SERVER['REQUEST_URI'];
 
-// Check for unread notifications
 $unread_notifications = false;
 if (isset($_SESSION['usu_id']) && isset($conn)) {
     $sid_usu_id = $_SESSION['usu_id'];
-    $sid_sql = "SELECT COUNT(*) as c FROM notificacion WHERE usu_id = '$sid_usu_id' AND not_estado_leido = 0";
-    $sid_res = mysqli_query($conn, $sid_sql);
+    $sid_sql = "SELECT COUNT(*) as c FROM notificacion WHERE usu_id = ? AND not_estado_leido = 0";
+    $sid_res = $conn->execute_query($sid_sql, [$sid_usu_id]);
     if ($sid_res) {
-        $row = mysqli_fetch_assoc($sid_res);
+        $row = $sid_res->fetch_assoc();
         if ($row['c'] > 0) {
             $unread_notifications = true;
         }

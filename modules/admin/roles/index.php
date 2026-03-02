@@ -3,13 +3,11 @@
 session_start();
 require_once '../../../config/db.php';
 
-// Validar Admin
 if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
   header("Location: ../../../modules/auth/login.php");
   exit;
 }
 
-// CONSULTA
 $sql = "SELECT r.rol_id, r.rol_nombre, j.jue_nombre
         FROM rol_predefinido r
         INNER JOIN juego j ON r.jue_id = j.jue_id
@@ -22,9 +20,6 @@ include '../../../includes/header.php';
 <?php include '../../../includes/admin_navbar.php'; ?>
 
 <div class="min-h-screen bg-background">
-
-  <?php # include '../../../includes/admin_sidebar.php'; ?>
-
   <main class="flex-1 w-full pt-16 pb-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <a href="../mantencion/index.php" class="text-secondary hover:text-primary text-xs font-bold uppercase tracking-widest mb-6 inline-block">
@@ -56,8 +51,8 @@ include '../../../includes/header.php';
             </tr>
           </thead>
           <tbody class="divide-y divide-subtle">
-            <?php if (mysqli_num_rows($result) > 0): ?>
-              <?php while ($row = mysqli_fetch_assoc($result)): ?>
+            <?php if ($result->num_rows > 0): ?>
+              <?php while ($row = $result->fetch_assoc()): ?>
                 <tr class="hover:bg-subtle transition-colors">
                   <td class="p-4 font-mono text-xs text-muted">#<?php echo $row['rol_id']; ?></td>
                   <td class="p-4 font-bold text-primary"><?php echo $row['rol_nombre']; ?></td>

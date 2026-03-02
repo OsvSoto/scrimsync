@@ -4,13 +4,11 @@ session_start();
 require_once '../../../config/db.php';
 include '../../../includes/header.php';
 
-// Variables por defecto (Modo Crear)
 $p_op = 'C';
 $titulo = "Nuevo Género";
 $gen_id = '';
 $gen_nombre = '';
 
-// 2. MODO EDICIÓN
 if (isset($_GET['id'])) {
     $p_op = 'M';
     $titulo = "Modificar Género";
@@ -21,7 +19,7 @@ if (isset($_GET['id'])) {
         mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        if ($row = mysqli_fetch_assoc($result)) {
+        if ($row = $result->fetch_assoc()) {
             $gen_id = $row['gen_id'];
             $gen_nombre = $row['gen_nombre'];
         }

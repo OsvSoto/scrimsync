@@ -18,9 +18,9 @@ if ($equ_id <= 0 || $usu_id <= 0) {
 }
 
 $sql_perm = "SELECT per_modif_horario FROM permiso_equipo
-             WHERE usu_id = '$usu_id' AND equ_id = '$equ_id' LIMIT 1";
-$res_perm = mysqli_query($conn, $sql_perm);
-$perm = mysqli_fetch_assoc($res_perm);
+             WHERE usu_id = ? AND equ_id = ? LIMIT 1";
+$res_perm = $conn->execute_query($sql_perm, [$usu_id, $equ_id]);
+$perm = $res_perm->fetch_assoc();
 
 if (!$perm || $perm['per_modif_horario'] != 1) {
   $_SESSION['flash_error'] = 'no_permission';

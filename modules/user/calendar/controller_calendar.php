@@ -16,16 +16,16 @@ $stmt = mysqli_prepare($conn, $sql_team);
 mysqli_stmt_bind_param($stmt, "i", $usu_id);
 mysqli_stmt_execute($stmt);
 $result_team = mysqli_stmt_get_result($stmt);
-$team = mysqli_fetch_assoc($result_team);
+$team = $result_team->fetch_assoc();
 $is_captain = true;
 
 if (!$team) {
     $sql_member = "SELECT e.* FROM equipo e JOIN permiso_equipo pe ON e.equ_id = pe.equ_id WHERE pe.usu_id = ? LIMIT 1";
     $stmt = mysqli_prepare($conn, $sql_member);
     mysqli_stmt_bind_param($stmt, "i", $usu_id);
-    mysqli_stmt_execute($stmt);
+    $stmt->execute();
     $result_team = mysqli_stmt_get_result($stmt);
-    $team = mysqli_fetch_assoc($result_team);
+    $team = $result_team->fetch_assoc();
     $is_captain = false;
 }
 
@@ -59,10 +59,10 @@ if ($team) {
 
     $stmt = mysqli_prepare($conn, $sql_scrims);
     mysqli_stmt_bind_param($stmt, "iiii", $equ_id, $equ_id, $month, $year);
-    mysqli_stmt_execute($stmt);
+    $stmt->execute();
     $res_scrims = mysqli_stmt_get_result($stmt);
 
-    while ($row = mysqli_fetch_assoc($res_scrims)) {
+    while ($row = $res_scrims->fetch_assoc()) {
         if ($row['equ_id_emisor'] == $equ_id) {
             $row['opponent_name'] = $row['receptor_nombre'];
             $row['opponent_logo'] = $row['receptor_logo'];
@@ -77,9 +77,9 @@ if ($team) {
     $sql_avail = "SELECT * FROM disponibilidad WHERE equ_id = ? ORDER BY dis_dia_semana, dis_hora_inicio";
     $stmt = mysqli_prepare($conn, $sql_avail);
     mysqli_stmt_bind_param($stmt, "i", $equ_id);
-    mysqli_stmt_execute($stmt);
+    $stmt->execute();
     $res_avail = mysqli_stmt_get_result($stmt);
-    while ($row = mysqli_fetch_assoc($res_avail)) {
+    while ($row = $res_avail->fetch_assoc()) {
         $availability[] = $row;
     }
     mysqli_stmt_close($stmt);

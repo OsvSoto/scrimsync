@@ -10,7 +10,7 @@ $jue_nombre = '';
 $current_gen_id = '';
 
 $sql_generos = "SELECT * FROM genero ORDER BY gen_nombre ASC";
-$result_generos = mysqli_query($conn, $sql_generos);
+$result_generos = $conn->query($sql_generos);
 
 if (isset($_GET['id'])) {
     $p_op = 'M';
@@ -22,7 +22,7 @@ if (isset($_GET['id'])) {
         mysqli_stmt_bind_param($stmt, "i", $id);
         mysqli_stmt_execute($stmt);
         $result = mysqli_stmt_get_result($stmt);
-        if ($row = mysqli_fetch_assoc($result)) {
+        if ($row = $result->fetch_assoc()) {
             $jue_id = $row['jue_id'];
             $jue_nombre = $row['jue_nombre'];
             $current_gen_id = $row['gen_id'];
@@ -61,9 +61,9 @@ if (isset($_GET['id'])) {
                             <select name="gen_id" required class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none appearance-none">
                                 <option value="" disabled <?php echo empty($current_gen_id) ? 'selected' : ''; ?>>Seleccione un género...</option>
                                 <?php
-                                if(mysqli_num_rows($result_generos) > 0) {
-                                    mysqli_data_seek($result_generos, 0);
-                                    while($gen = mysqli_fetch_assoc($result_generos)):
+                                if($result_generos->num_rows > 0) {
+                                    $result_generos->data_seek(0);
+                                    while($gen = $result_generos->fetch_assoc()):
                                         $selected = ($gen['gen_id'] == $current_gen_id) ? 'selected' : '';
                                 ?>
                                     <option value="<?php echo $gen['gen_id']; ?>" <?php echo $selected; ?>>

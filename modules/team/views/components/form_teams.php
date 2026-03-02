@@ -1,6 +1,5 @@
 <?php
 // modules/team/profile/views/components/form_team.php
-// Nota: Este archivo asume que la variable $result_juegos ya está definida en el archivo padre.
 ?>
 
 <div class="bg-surface border-2 border-primary p-8 shadow-hard text-left">
@@ -19,12 +18,11 @@
             <option value="" disabled selected>Selecciona un juego...</option>
 
             <?php
-            // Reiniciamos el puntero del resultado por si se reutiliza la consulta
-            if (isset($result_juegos)) mysqli_data_seek($result_juegos, 0);
+            if (isset($result_juegos)) $result_juegos->data_seek(0);
             ?>
 
-            <?php if (isset($result_juegos) && mysqli_num_rows($result_juegos) > 0): ?>
-              <?php while ($juego = mysqli_fetch_assoc($result_juegos)): ?>
+            <?php if (isset($result_juegos) && $result_juegos->num_rows > 0): ?>
+              <?php while ($juego = $result_juegos->fetch_assoc()): ?>
                 <option value="<?php echo $juego['jue_id']; ?>">
                   <?php echo htmlspecialchars($juego['jue_nombre']); ?>
                 </option>

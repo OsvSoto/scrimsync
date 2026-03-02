@@ -14,20 +14,20 @@ $usu_id = $_SESSION['usu_id'] ?? 0;
 $sql_equipo = "SELECT e.*, j.jue_nombre
                FROM equipo e
                LEFT JOIN juego j ON e.jue_id = j.jue_id
-               WHERE e.equ_id = '$equ_id'";
-$res_equipo = mysqli_query($conn, $sql_equipo);
+               WHERE e.equ_id = ?";
+$res_equipo = $conn->execute_query($sql_equipo, [$equ_id]);
 
-if (mysqli_num_rows($res_equipo) == 0) {
+if ($res_equipo->num_rows == 0) {
     die("El equipo no existe.");
 }
-$equipo = mysqli_fetch_assoc($res_equipo);
+$equipo = $res_equipo->fetch_assoc();
 
 $roles_disponibles = [];
 if ($equipo['jue_id']) {
-    $sql_roles = "SELECT * FROM rol_predefinido WHERE jue_id = '{$equipo['jue_id']}' ORDER BY rol_nombre ASC";
-    $res_roles = mysqli_query($conn, $sql_roles);
+    $sql_roles = "SELECT * FROM rol_predefinido WHERE jue_id = ? ORDER BY rol_nombre ASC";
+    $res_roles = $conn->execute_query($sql_roles, [$equipo['jue_id']]);
     if ($res_roles) {
-        while ($r = mysqli_fetch_assoc($res_roles)) {
+        while ($r = $res_roles->fetch_assoc()) {
             $roles_disponibles[] = $r;
         }
     }
@@ -37,19 +37,19 @@ $sql_miembros = "SELECT u.usu_username, u.usu_alias, pe.*, r.rol_nombre, u.usu_f
                  FROM permiso_equipo pe
                  INNER JOIN usuario u ON pe.usu_id = u.usu_id
                  LEFT JOIN rol_predefinido r ON pe.rol_id = r.rol_id
-                 WHERE pe.equ_id = '$equ_id'";
-$res_miembros = mysqli_query($conn, $sql_miembros);
+                 WHERE pe.equ_id = ?";
+$res_miembros = $conn->execute_query($sql_miembros, [$equ_id]);
 
 $soy_capitan = false;
 $soy_miembro = false;
 
 if ($usu_id > 0) {
     $sql_mis_permisos = "SELECT * FROM permiso_equipo
-                       WHERE usu_id = '$usu_id' AND equ_id = '$equ_id' LIMIT 1";
-    $res_mis_permisos = mysqli_query($conn, $sql_mis_permisos);
+                       WHERE usu_id = ? AND equ_id = ? LIMIT 1";
+    $res_mis_permisos = $conn->execute_query($sql_mis_permisos, [$usu_id, $equ_id]);
 
-    if (mysqli_num_rows($res_mis_permisos) > 0) {
-        $mis_datos = mysqli_fetch_assoc($res_mis_permisos);
+    if ($res_mis_permisos->num_rows > 0) {
+        $mis_datos = $res_mis_permisos->fetch_assoc();
         $soy_miembro = true;
 
         if ($mis_datos['per_elim_miembro'] == 1 || $mis_datos['per_modif_horario'] == 1) {
@@ -57,8 +57,8 @@ if ($usu_id > 0) {
         }
     }
 }
-$sql_disp = "SELECT * FROM disponibilidad WHERE equ_id = '$equ_id' ORDER BY dis_dia_semana ASC, dis_hora_inicio ASC";
-$res_disp = mysqli_query($conn, $sql_disp);
+$sql_disp = "SELECT * FROM disponibilidad WHERE equ_id = ? ORDER BY dis_dia_semana ASC, dis_hora_inicio ASC";
+$res_disp = $conn->execute_query($sql_disp, [$equ_id]);
 $dias_semana = [
     1 => 'Lunes',
     2 => 'Martes',
@@ -218,9 +218,9 @@ include '../../../includes/user_navbar.php';
 
                 <div class="grid grid-cols-1 gap-2">
                     <?php
-                    if (mysqli_num_rows($res_miembros) > 0):
-                        mysqli_data_seek($res_miembros, 0);
-                        while ($miembro = mysqli_fetch_assoc($res_miembros)):
+                    if ($res_miembros->num_rows > 0):
+                        $res_miembros->data_seek(0);
+                        while ($miembro = $res_miembros->fetch_assoc()):
                             $es_lider = ($miembro['per_modif_horario'] == 1 || $miembro['per_elim_miembro'] == 1);
                     ?>
                             <div class="bg-surface p-3 border-2 border-primary flex flex-wrap sm:flex-nowrap items-center justify-between gap-3 shadow-hard-sm">
@@ -355,9 +355,9 @@ include '../../../includes/user_navbar.php';
                 </div>
 
                 <div class="p-6">
-                    <?php if (mysqli_num_rows($res_disp) > 0): ?>
+                    <?php if ($res_disp->num_rows > 0): ?>
                         <ul class="space-y-2 mb-6">
-                            <?php while ($disp = mysqli_fetch_assoc($res_disp)): ?>
+                            <?php while ($disp = $res_disp->fetch_assoc()): ?>
                                 <li class="flex items-center justify-between bg-white border border-border p-3">
                                     <div class="flex items-center gap-4">
                                         <span class="font-black text-primary uppercase w-24 text-sm"><?php echo $dias_semana[$disp['dis_dia_semana']]; ?></span>
