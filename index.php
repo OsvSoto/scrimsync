@@ -80,7 +80,7 @@ include 'includes/header.php';
                 <div class="bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">01</div>
                 <h3 class="font-black text-xl mb-4 uppercase italic tracking-tighter">Gestiona tu Equipo</h3>
                 <p class="text-secondary text-sm font-medium leading-relaxed">
-                    Registra tu roster, asigna roles específicos por juego y mantén la identidad de tu organización en un solo lugar.
+                    Registra tu equipo, asigna roles a tus jugadores en un solo lugar.
                 </p>
             </div>
 
@@ -91,7 +91,7 @@ include 'includes/header.php';
                 <div class="bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">02</div>
                 <h3 class="font-black text-xl mb-4 uppercase italic tracking-tighter">Sincroniza Horarios</h3>
                 <p class="text-secondary text-sm font-medium leading-relaxed">
-                    Define ventanas de tiempo precisas en las que tu equipo está listo para competir. Sin idas y vueltas por chat.
+                    Define tus propios horarios de disponibilidad en las que tu equipo está listo para jugar.
                 </p>
             </div>
 
@@ -102,7 +102,7 @@ include 'includes/header.php';
                 <div class="bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">03</div>
                 <h3 class="font-black text-xl mb-4 uppercase italic tracking-tighter">Encuentra Scrims</h3>
                 <p class="text-secondary text-sm font-medium leading-relaxed">
-                    Busca rivales según el juego y disponibilidad. Envía y recibe solicitudes de entrenamiento de forma centralizada.
+                    Busca rivales según el juego y disponibilidad. Envía y recibe solicitudes de entrenamiento en cualquier momento.
                 </p>
             </div>
         </div>
@@ -143,7 +143,7 @@ include 'includes/header.php';
                         <i data-lucide="shield" class="w-5 h-5"></i>
                         <h3 class="font-bold text-lg">Mi Equipo</h3>
                     </div>
-                    <p class="text-sm text-secondary">Gestiona roster y estrategias.</p>
+                    <p class="text-sm text-secondary">Gestiona equipo y roles.</p>
                 </div>
             </a>
 
