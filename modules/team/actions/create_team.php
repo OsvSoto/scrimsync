@@ -43,9 +43,6 @@ if (isset($_FILES['logo']) && $_FILES['logo']['error'] === UPLOAD_ERR_OK) {
     }
 }
 
-// =========================================================
-// 5. INICIO DE LA TRANSACCIÓN
-// =========================================================
 mysqli_begin_transaction($conn);
 
 try {
@@ -61,7 +58,6 @@ try {
 
   $nuevo_equ_id = mysqli_insert_id($conn);
 
-  // Obtener el primer rol disponible para este juego (placeholder)
   $sql_rol = "SELECT rol_id FROM rol_predefinido WHERE jue_id = ? LIMIT 1";
   $stmt_rol = mysqli_prepare($conn, $sql_rol);
   mysqli_stmt_bind_param($stmt_rol, "i", $jue_id);
@@ -70,12 +66,10 @@ try {
   $rol_data = $res_rol->fetch_assoc();
   $rol_id = $rol_data['rol_id'];
 
-  // Insertar los Permisos (Hacer al usuario Capitán)
-  // Tabla permiso_equipo con todos los poderes (1)
   $sql_permisos = "INSERT INTO permiso_equipo
                     (usu_id, equ_id, rol_id, per_modif_horario, per_enviar_scrim, per_elim_miembro)
                     VALUES (?, ?, ?, ?, ?, ?)";
-  $permiso_si = 1; // 1 = Verdadero (Tiene permiso)
+  $permiso_si = 1; // 1 = Verdadero
 
   $stmt_permisos = mysqli_prepare($conn, $sql_permisos);
   mysqli_stmt_bind_param(
@@ -102,7 +96,7 @@ try {
   // SI ALGO FALLA: Deshacemos todo
   mysqli_rollback($conn);
 
-  // Borramos la imagen si se subió, para no dejar basura
+  // Borramos la imagen si se subió
   if ($ruta_logo && file_exists(__DIR__ . '/../../../' . $ruta_logo)) {
     unlink(__DIR__ . '/../../../' . $ruta_logo);
   }
