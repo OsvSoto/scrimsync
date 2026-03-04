@@ -71,6 +71,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $day_name = $days[$disp['dis_dia_semana']];
                 $fecha_juego = date('Y-m-d', strtotime("next $day_name"));
 
+                // Verificar si ya existe un scrim pendiente o aceptado para este mismo slot entre estos equipos
+                $sql_check = "SELECT 1 FROM scrim
+                              WHERE equ_id_emisor = ? AND equ_id_receptor = ?
+                              AND scr_fecha_juego = ? AND scr_hora_inicio = ?
+                              AND est_id IN (1, 2) LIMIT 1";
+                $res_check = $conn->execute_query($sql_check, [
+                    $equ_id_emisor,
+                    $equ_id_receptor,
+                    $fecha_juego,
+                    $disp['dis_hora_inicio']
+                ]);
+
+                if ($res_check->num_rows > 0) {
+                    $_SESSION['flash_error'] = 'scrim_exists';
+                    header('Location: index.php');
+                    exit;
+                }
+
                 // Insertar el scrim
                 $sql_scrim = 'INSERT INTO scrim (equ_id_emisor, equ_id_receptor, est_id, scr_fecha_juego, scr_hora_inicio, scr_hora_fin)
                       VALUES (?, ?, ?, ?, ?, ?)';

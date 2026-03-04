@@ -147,6 +147,9 @@ include '../../includes/user_navbar.php';
                                 case 'invalid_availability':
                                     echo 'Error: El horario seleccionado ya no está disponible.';
                                     break;
+                                case 'scrim_exists':
+                                    echo 'Error: Ya existe una solicitud pendiente o aceptada para este horario entre estos equipos.';
+                                    break;
                                 default:
                                     echo 'Ocurrió un error al procesar la solicitud.';
                                     break;
