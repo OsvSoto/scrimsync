@@ -36,10 +36,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_SESSION['tipo']) && $_SESSIO
         // Case: ELIMINAR
         case 'E':
             $sql = "DELETE FROM rol_predefinido WHERE rol_id = ?";
-            if ($conn->execute_query($sql, [$rol_id])) {
-                header("Location: index.php?msg=eliminado");
-            } else {
-                header("Location: index.php?error=db");
+            try {
+                if ($conn->execute_query($sql, [$rol_id])) {
+                    header("Location: index.php?msg=eliminado");
+                } else {
+                    header("Location: index.php?error=db");
+                }
+            } catch (mysqli_sql_exception $e) {
+                if ($e->getCode() == 1451) { // error: no se puede eliminar por que es clave foranea en otra tabla
+                    header("Location: index.php?error=dependency");
+                } else {
+                    header("Location: index.php?error=db");
+                }
             }
             break;
 
