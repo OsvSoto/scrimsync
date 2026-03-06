@@ -7,6 +7,5 @@ Desktop.ini
 .vscode/
 .idea/
 
-# Si usas node_modules en el futuro para Tailwind
 node_modules/
-
+vendor/

@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $conn->execute_query($sql_scrim, [
                     $equ_id_emisor,
                     $equ_id_receptor,
-                    1,  // 1-> Pendiente, 2->Aceptado, 3->Cancelado
+                    1, // 1-> Pendiente, 2->Aceptado, 3->Cancelado
                     $fecha_juego,
                     $disp['dis_hora_inicio'],
                     $disp['dis_hora_fin']
@@ -119,7 +119,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $_SESSION['flash_msg'] = 'scrim_sent';
                 header('Location: index.php');
-            } else {
+            }
+            else {
                 $_SESSION['flash_error'] = 'invalid_availability';
                 header('Location: index.php');
             }
@@ -127,8 +128,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
 
         case 'accept_scrim':
-            $not_id = isset($_POST['not_id']) ? (int) $_POST['not_id'] : 0;
-            $scr_id = isset($_POST['scr_id']) ? (int) $_POST['scr_id'] : 0;
+            $not_id = isset($_POST['not_id']) ? (int)$_POST['not_id'] : 0;
+            $scr_id = isset($_POST['scr_id']) ? (int)$_POST['scr_id'] : 0;
 
             if ($not_id > 0 && $scr_id > 0) {
                 mysqli_begin_transaction($conn);
@@ -142,7 +143,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     mysqli_commit($conn);
                     $_SESSION['flash_msg'] = 'Scrim aceptado correctamente.';
-                } catch (Exception $e) {
+                }
+                catch (Exception $e) {
                     mysqli_rollback($conn);
                     $_SESSION['flash_error'] = 'Error al aceptar el scrim.';
                 }
@@ -152,8 +154,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             break;
 
         case 'reject_scrim':
-            $not_id = isset($_POST['not_id']) ? (int) $_POST['not_id'] : 0;
-            $scr_id = isset($_POST['scr_id']) ? (int) $_POST['scr_id'] : 0;
+            $not_id = isset($_POST['not_id']) ? (int)$_POST['not_id'] : 0;
+            $scr_id = isset($_POST['scr_id']) ? (int)$_POST['scr_id'] : 0;
 
             if ($not_id > 0 && $scr_id > 0) {
                 mysqli_begin_transaction($conn);
@@ -166,7 +168,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                     mysqli_commit($conn);
                     $_SESSION['flash_msg'] = 'Scrim rechazado y eliminado.';
-                } catch (Exception $e) {
+                }
+                catch (Exception $e) {
                     mysqli_rollback($conn);
                     $_SESSION['flash_error'] = 'Error al rechazar el scrim.';
                 }
@@ -212,16 +215,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $soy_emisor = false;
                         if ($scrim['capitan_emisor'] == $usu_id) {
                             $soy_emisor = true;
-                        } else {
+                        }
+                        else {
                             $check_emisor = $conn->execute_query("SELECT 1 FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?", [$usu_id, $scrim['equ_id_emisor']]);
-                            if ($check_emisor->num_rows > 0) $soy_emisor = true;
+                            if ($check_emisor->num_rows > 0)
+                                $soy_emisor = true;
                         }
 
                         if ($soy_emisor) {
                             $cancelador_nombre = $scrim['emisor_nombre'];
                             $destinatario_id = $scrim['capitan_receptor'];
                             $equ_id_noti = $scrim['equ_id_receptor'];
-                        } else {
+                        }
+                        else {
                             $cancelador_nombre = $scrim['receptor_nombre'];
                             $destinatario_id = $scrim['capitan_emisor'];
                             $equ_id_noti = $scrim['equ_id_emisor'];
@@ -235,7 +241,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $conn->execute_query($sql_notif, [$destinatario_id, $equ_id_noti, $scr_id, $asunto, $mensaje]);
 
                         $_SESSION['flash_msg'] = 'scrim_cancelled';
-                    } else {
+                    }
+                    else {
                         $_SESSION['flash_error'] = 'not_authorized';
                     }
                 }

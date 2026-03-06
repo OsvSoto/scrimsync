@@ -1,6 +1,7 @@
 <?php
 // modules/functions/process_image.php
-function uploadImage($file, $subfolder, $prefix, $id) {
+function uploadImage($file, $subfolder, $prefix, $id)
+{
     if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
         return ['success' => false, 'error' => 'upload_error'];
     }
@@ -49,7 +50,8 @@ function uploadImage($file, $subfolder, $prefix, $id) {
             'error' => null
         ];
 
-    } catch (Exception $e) {
+    }
+    catch (Exception $e) {
         error_log("Error Imagick: " . $e->getMessage());
         return ['success' => false, 'error' => 'image_processing_error'];
     }
