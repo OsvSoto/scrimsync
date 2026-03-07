@@ -134,11 +134,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $not_id = isset($_POST['not_id']) ? (int)$_POST['not_id'] : 0;
             $scr_id = isset($_POST['scr_id']) ? (int)$_POST['scr_id'] : 0;
 
-            if ($not_id > 0 && $scr_id > 0) {
+            if ($scr_id > 0) {
                 mysqli_begin_transaction($conn);
                 try {
                     // Obtener datos del scrim a aceptar
-                    $sql_data = "SELECT s.*, e1.usu_id as capitan_emisor, e2.equ_nombre as receptor_nombre
+                    $sql_data = "SELECT s.*, e1.usu_id as capitan_emisor, e2.equ_nombre as receptor_nombre, e2.usu_id as capitan_receptor
                                  FROM scrim s
                                  JOIN equipo e1 ON s.equ_id_emisor = e1.equ_id
                                  JOIN equipo e2 ON s.equ_id_receptor = e2.equ_id
@@ -147,6 +147,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $scrim = $res_data->fetch_assoc();
 
                     if (!$scrim) throw new Exception("scrim_not_found");
+
+                    // debe ser el capitán receptor o tener permiso_enviar_scrim en el equipo receptor
+                    $is_allowed = false;
+                    if ($scrim['capitan_receptor'] == $usu_id) {
+                        $is_allowed = true;
+                    } else {
+                        $sql_perm = "SELECT per_enviar_scrim FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+                        $res_perm = $conn->execute_query($sql_perm, [$usu_id, $scrim['equ_id_receptor']]);
+                        $perm = $res_perm->fetch_assoc();
+                        if ($perm && $perm['per_enviar_scrim'] == 1) {
+                            $is_allowed = true;
+                        }
+                    }
+                    if (!$is_allowed) throw new Exception("not_authorized");
 
                     // Verificar si alguno de los equipos ya tiene un scrim aceptado en este slot
                     $sql_booked = "SELECT 1 FROM scrim
@@ -220,8 +234,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $conn->execute_query($sql_notif_conflict, [$dest_usu, $dest_equ, $asunto_conf, $msg_conf]);
                         $conn->execute_query("DELETE FROM scrim WHERE scr_id = ?", [$conflict['scr_id']]);
                     }
-                    $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
-
+                    if ($not_id > 0) { // desde el area de notificaciones
+                        $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
+                    } else { // desde el calendario
+                        $conn->execute_query('DELETE FROM notificacion WHERE scr_id = ? AND usu_id = ? AND not_tipo = "SCRIM"', [$scr_id, $usu_id]);
+                    }
                     mysqli_commit($conn);
                     $_SESSION['flash_msg'] = 'Scrim aceptado correctamente.';
                 }
@@ -230,7 +247,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $_SESSION['flash_error'] = $e->getMessage();
                 }
             }
-            header('Location: ../user/notification/index.php');
+            header('Location: ' . ($_POST['redirect'] ?? '../user/notification/index.php'));
             exit;
             break;
 
@@ -238,11 +255,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $not_id = isset($_POST['not_id']) ? (int)$_POST['not_id'] : 0;
             $scr_id = isset($_POST['scr_id']) ? (int)$_POST['scr_id'] : 0;
 
-            if ($not_id > 0 && $scr_id > 0) {
+            if ($scr_id > 0) {
                 mysqli_begin_transaction($conn);
                 try {
                     // identificamos al emisor antes de borrar el scrim y la notificacion
-                    $sql_info = "SELECT s.equ_id_emisor, s.scr_fecha_juego, e2.equ_nombre as receptor_nombre, e1.usu_id as capitan_emisor
+                    $sql_info = "SELECT s.equ_id_emisor, s.equ_id_receptor, s.scr_fecha_juego, e2.equ_nombre as receptor_nombre, e1.usu_id as capitan_emisor, e2.usu_id as capitan_receptor
                                  FROM scrim s
                                  JOIN equipo e1 ON s.equ_id_emisor = e1.equ_id
                                  JOIN equipo e2 ON s.equ_id_receptor = e2.equ_id
@@ -251,6 +268,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $scrim = $res_info->fetch_assoc();
 
                     if ($scrim) {
+                        // debe ser el capitán receptor o tener permiso_enviar_scrim en el equipo receptor
+                        $is_allowed = false;
+                        if ($scrim['capitan_receptor'] == $usu_id) {
+                            $is_allowed = true;
+                        } else {
+                            $sql_perm = "SELECT per_enviar_scrim FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+                            $res_perm = $conn->execute_query($sql_perm, [$usu_id, $scrim['equ_id_receptor']]);
+                            $perm = $res_perm->fetch_assoc();
+                            if ($perm && $perm['per_enviar_scrim'] == 1) {
+                                $is_allowed = true;
+                            }
+                        }
+                        if (!$is_allowed) throw new Exception("not_authorized");
+
                         $asunto = 'Scrim Rechazado';
                         $mensaje = "El equipo " . $scrim['receptor_nombre'] . " ha rechazado tu solicitud de scrim para el " . $scrim['scr_fecha_juego'];
 
@@ -262,18 +293,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             $asunto,
                             $mensaje
                         ]);
+                        $conn->execute_query('DELETE FROM scrim WHERE scr_id = ?', [$scr_id]);
+
+                        if ($not_id > 0) { // desde notificaciones
+                            $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
+                        } else { // desde el calendario
+                            $conn->execute_query('DELETE FROM notificacion WHERE scr_id = ? AND usu_id = ? AND not_tipo = "SCRIM"', [$scr_id, $usu_id]);
+                        }
                     }
-                    $conn->execute_query('DELETE FROM scrim WHERE scr_id = ?', [$scr_id]);
-                    $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
                     mysqli_commit($conn);
                     $_SESSION['flash_msg'] = 'Scrim rechazado correctamente.';
                 }
                 catch (Exception $e) {
                     mysqli_rollback($conn);
-                    $_SESSION['flash_error'] = 'Error al rechazar el scrim.';
+                    $_SESSION['flash_error'] = $e->getMessage() == 'not_authorized' ? 'not_authorized' : 'Error al rechazar el scrim.';
                 }
             }
-            header('Location: ../user/notification/index.php');
+            header('Location: ' . ($_POST['redirect'] ?? '../user/notification/index.php'));
             exit;
             break;
 
