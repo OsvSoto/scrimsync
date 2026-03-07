@@ -48,16 +48,18 @@ SELECT
   e.equ_nombre,
   e.equ_logo,
   j.jue_nombre AS juego,
+  g.gen_nombre AS genero,
   COUNT(DISTINCT d.dis_id) AS horarios,
   COUNT(DISTINCT p.per_id) AS miembros
 FROM equipo e
 LEFT JOIN usuario u ON e.usu_id = u.usu_id
 LEFT JOIN juego j ON e.jue_id = j.jue_id
+LEFT JOIN genero g ON j.gen_id = g.gen_id
 LEFT JOIN disponibilidad d ON d.equ_id = e.equ_id
 LEFT JOIN permiso_equipo p ON p.equ_id = e.equ_id
 $where_sql
 GROUP BY
-  e.equ_id, capitan_id, capitan, e.jue_id, e.equ_nombre, e.equ_logo, juego
+  e.equ_id, capitan_id, capitan, e.jue_id, e.equ_nombre, e.equ_logo, juego, genero
 ORDER BY horarios DESC, e.equ_nombre ASC";
 
 $sql_horarios = "
@@ -238,6 +240,14 @@ include '../../includes/user_navbar.php';
                                     <?php echo htmlspecialchars($equipo['juego'] ?? 'General'); ?>
                                 </span>
                             </div>
+
+                            <?php if (!empty($equipo['genero'])): ?>
+                                <div class="absolute top-3 right-3 z-10">
+                                    <span class="bg-scrimsync border-2 border-primary text-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider">
+                                        <?php echo htmlspecialchars($equipo['genero']); ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
 
                             <div class="absolute -bottom-6 left-6">
                                 <div class="w-14 h-14 sm:w-16 sm:h-16 border-2 border-primary bg-surface shadow-sm overflow-hidden flex items-center justify-center">
