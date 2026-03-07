@@ -3,11 +3,6 @@ session_start();
 require_once '../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    /*
-     * NOTE: necesito usu_id: para saber quien envia el reto
-     * Pero como un usuario puede ser capitan de muchos equipos, necesito
-     * equ_id (desde emisor)
-     */
     $usu_id = $_SESSION['usu_id'];
     $action = $_POST['action'];
     switch ($action) {
@@ -71,25 +66,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $day_name = $days[$disp['dis_dia_semana']];
                 $fecha_juego = date('Y-m-d', strtotime("next $day_name"));
 
-                // Verificar si ya existe un scrim pendiente o aceptado para este mismo slot entre estos equipos
-                $sql_check = "SELECT 1 FROM scrim
-                              WHERE equ_id_emisor = ? AND equ_id_receptor = ?
-                              AND scr_fecha_juego = ? AND scr_hora_inicio = ?
-                              AND est_id IN (1, 2) LIMIT 1";
+                // buscar si ya hay un scrim aceptado o una soli pendiente entre los 2 equipos en este bloque horario
+                $sql_check = "SELECT est_id, equ_id_emisor, equ_id_receptor FROM scrim
+                              WHERE (equ_id_emisor IN (?, ?) OR equ_id_receptor IN (?, ?))
+                              AND scr_fecha_juego = ?
+                              AND (scr_hora_inicio < ? AND scr_hora_fin > ?)
+                              AND est_id IN (1, 2)";
                 $res_check = $conn->execute_query($sql_check, [
-                    $equ_id_emisor,
-                    $equ_id_receptor,
+                    $equ_id_emisor, $equ_id_receptor,
+                    $equ_id_emisor, $equ_id_receptor,
                     $fecha_juego,
+                    $disp['dis_hora_fin'],
                     $disp['dis_hora_inicio']
                 ]);
 
-                if ($res_check->num_rows > 0) {
-                    $_SESSION['flash_error'] = 'scrim_exists';
-                    header('Location: index.php');
-                    exit;
+                while ($row = $res_check->fetch_assoc()) {
+                    if ($row['est_id'] == 2) { // scrim pendiente
+                        $_SESSION['flash_error'] = 'slot_taken';
+                        header('Location: index.php');
+                        exit;
+                    }
+                    if ($row['est_id'] == 1 && $row['equ_id_emisor'] == $equ_id_emisor && $row['equ_id_receptor'] == $equ_id_receptor) {
+                        $_SESSION['flash_error'] = 'scrim_exists'; // scrim aceptado
+                        header('Location: index.php');
+                        exit;
+                    }
                 }
 
-                // Insertar el scrim
                 $sql_scrim = 'INSERT INTO scrim (equ_id_emisor, equ_id_receptor, est_id, scr_fecha_juego, scr_hora_inicio, scr_hora_fin)
                       VALUES (?, ?, ?, ?, ?, ?)';
                 $conn->execute_query($sql_scrim, [
@@ -134,11 +137,89 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($not_id > 0 && $scr_id > 0) {
                 mysqli_begin_transaction($conn);
                 try {
-                    // Actualizar estado del scrim
-                    $est_id = 2; // 2 -> Aceptado
-                    $conn->execute_query('UPDATE scrim SET est_id = ? WHERE scr_id = ?', [$est_id, $scr_id]);
+                    // Obtener datos del scrim a aceptar
+                    $sql_data = "SELECT s.*, e1.usu_id as capitan_emisor, e2.equ_nombre as receptor_nombre
+                                 FROM scrim s
+                                 JOIN equipo e1 ON s.equ_id_emisor = e1.equ_id
+                                 JOIN equipo e2 ON s.equ_id_receptor = e2.equ_id
+                                 WHERE s.scr_id = ?";
+                    $res_data = $conn->execute_query($sql_data, [$scr_id]);
+                    $scrim = $res_data->fetch_assoc();
 
-                    // Eliminar la notificación
+                    if (!$scrim) throw new Exception("scrim_not_found");
+
+                    // Verificar si alguno de los equipos ya tiene un scrim aceptado en este slot
+                    $sql_booked = "SELECT 1 FROM scrim
+                                   WHERE (equ_id_emisor IN (?, ?) OR equ_id_receptor IN (?, ?))
+                                   AND scr_fecha_juego = ?
+                                   AND (scr_hora_inicio < ? AND scr_hora_fin > ?)
+                                   AND est_id = 2 LIMIT 1";
+                    $res_booked = $conn->execute_query($sql_booked, [
+                        $scrim['equ_id_emisor'], $scrim['equ_id_receptor'],
+                        $scrim['equ_id_emisor'], $scrim['equ_id_receptor'],
+                        $scrim['scr_fecha_juego'],
+                        $scrim['scr_hora_fin'],
+                        $scrim['scr_hora_inicio']
+                    ]);
+
+                    if ($res_booked->num_rows > 0) {
+                        throw new Exception("slot_taken");
+                    }
+
+                    // aceptamos y notificamos al emisor
+                    $conn->execute_query('UPDATE scrim SET est_id = 2 WHERE scr_id = ?', [$scr_id]);
+                    $msg_acep = "¡El equipo " . $scrim['receptor_nombre'] . " ha aceptado tu solicitud de scrim para el " . $scrim['scr_fecha_juego'] . "!";
+                    $conn->execute_query("INSERT INTO notificacion (usu_id, equ_id, scr_id, not_tipo, not_asunto, not_mensaje)
+                                          VALUES (?, ?, ?, 'SISTEMA', ?, ?)", [
+                                              $scrim['capitan_emisor'],
+                                              $scrim['equ_id_emisor'],
+                                              $scr_id,
+                                              'Solicitud Aceptada',
+                                              $msg_acep
+                                          ]);
+
+                    // rechazamos todos los demas scrims pendientes
+                    $sql_conflicts = "SELECT s.scr_id, s.equ_id_emisor, s.equ_id_receptor,
+                                             e1.equ_nombre as nom_emisor, e1.usu_id as cap_emisor,
+                                             e2.equ_nombre as nom_receptor, e2.usu_id as cap_receptor
+                                      FROM scrim s
+                                      JOIN equipo e1 ON s.equ_id_emisor = e1.equ_id
+                                      JOIN equipo e2 ON s.equ_id_receptor = e2.equ_id
+                                      WHERE s.est_id = 1
+                                      AND s.scr_fecha_juego = ?
+                                      AND (s.scr_hora_inicio < ? AND s.scr_hora_fin > ?)
+                                      AND (s.equ_id_emisor IN (?, ?) OR s.equ_id_receptor IN (?, ?))
+                                      AND s.scr_id != ?";
+                    $res_conflicts = $conn->execute_query($sql_conflicts, [
+                        $scrim['scr_fecha_juego'],
+                        $scrim['scr_hora_fin'],
+                        $scrim['scr_hora_inicio'],
+                        $scrim['equ_id_emisor'], $scrim['equ_id_receptor'],
+                        $scrim['equ_id_emisor'], $scrim['equ_id_receptor'],
+                        $scr_id
+                    ]);
+
+                    $busy_teams = [$scrim['equ_id_emisor'], $scrim['equ_id_receptor']];
+
+                    while ($conflict = $res_conflicts->fetch_assoc()) {
+                        if (in_array($conflict['equ_id_receptor'], $busy_teams)) {
+                            $dest_usu = $conflict['cap_emisor'];
+                            $dest_equ = $conflict['equ_id_emisor'];
+                            $equ_ocupado = $conflict['nom_receptor'];
+                            $asunto_conf = "Scrim Rechazado";
+                            $msg_conf = "El equipo " . $equ_ocupado . " ha rechazado tu solicitud de scrim para el " . $scrim['scr_fecha_juego'];
+                        } else {
+                            $dest_usu = $conflict['cap_receptor'];
+                            $dest_equ = $conflict['equ_id_receptor'];
+                            $equ_ocupado = $conflict['nom_emisor'];
+                            $asunto_conf = "Scrim Cancelado";
+                            $msg_conf = "El equipo " . $equ_ocupado . " ha cancelado su solicitud de scrim para el " . $scrim['scr_fecha_juego'];
+                        }
+                        $sql_notif_conflict = "INSERT INTO notificacion (usu_id, equ_id, not_tipo, not_asunto, not_mensaje)
+                                               VALUES (?, ?, 'SISTEMA', ?, ?)";
+                        $conn->execute_query($sql_notif_conflict, [$dest_usu, $dest_equ, $asunto_conf, $msg_conf]);
+                        $conn->execute_query("DELETE FROM scrim WHERE scr_id = ?", [$conflict['scr_id']]);
+                    }
                     $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
 
                     mysqli_commit($conn);
@@ -146,7 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 catch (Exception $e) {
                     mysqli_rollback($conn);
-                    $_SESSION['flash_error'] = 'Error al aceptar el scrim.';
+                    $_SESSION['flash_error'] = $e->getMessage();
                 }
             }
             header('Location: ../user/notification/index.php');
@@ -160,14 +241,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             if ($not_id > 0 && $scr_id > 0) {
                 mysqli_begin_transaction($conn);
                 try {
-                    // Eliminar el scrim
+                    // identificamos al emisor antes de borrar el scrim y la notificacion
+                    $sql_info = "SELECT s.equ_id_emisor, s.scr_fecha_juego, e2.equ_nombre as receptor_nombre, e1.usu_id as capitan_emisor
+                                 FROM scrim s
+                                 JOIN equipo e1 ON s.equ_id_emisor = e1.equ_id
+                                 JOIN equipo e2 ON s.equ_id_receptor = e2.equ_id
+                                 WHERE s.scr_id = ?";
+                    $res_info = $conn->execute_query($sql_info, [$scr_id]);
+                    $scrim = $res_info->fetch_assoc();
+
+                    if ($scrim) {
+                        $asunto = 'Scrim Rechazado';
+                        $mensaje = "El equipo " . $scrim['receptor_nombre'] . " ha rechazado tu solicitud de scrim para el " . $scrim['scr_fecha_juego'];
+
+                        $sql_notif = "INSERT INTO notificacion (usu_id, equ_id, not_tipo, not_asunto, not_mensaje)
+                                      VALUES (?, ?, 'SISTEMA', ?, ?)";
+                        $conn->execute_query($sql_notif, [
+                            $scrim['capitan_emisor'],
+                            $scrim['equ_id_emisor'],
+                            $asunto,
+                            $mensaje
+                        ]);
+                    }
                     $conn->execute_query('DELETE FROM scrim WHERE scr_id = ?', [$scr_id]);
-
-                    // Eliminar la notificación
                     $conn->execute_query('DELETE FROM notificacion WHERE not_id = ? AND usu_id = ?', [$not_id, $usu_id]);
-
                     mysqli_commit($conn);
-                    $_SESSION['flash_msg'] = 'Scrim rechazado y eliminado.';
+                    $_SESSION['flash_msg'] = 'Scrim rechazado correctamente.';
                 }
                 catch (Exception $e) {
                     mysqli_rollback($conn);
@@ -207,7 +306,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     }
 
                     if ($is_allowed) {
-                        // Actualizar a estado 3 (Cancelado)
                         $sql_update = "UPDATE scrim SET est_id = 3 WHERE scr_id = ?";
                         $conn->execute_query($sql_update, [$scr_id]);
 

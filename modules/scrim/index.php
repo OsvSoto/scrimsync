@@ -42,7 +42,8 @@ if (!empty($where_clauses)) {
 $sql_teams = "
 SELECT
   e.equ_id,
-  e.usu_id AS capitan,
+  e.usu_id AS capitan_id,
+  u.usu_username AS capitan,
   e.jue_id,
   e.equ_nombre,
   e.equ_logo,
@@ -50,12 +51,13 @@ SELECT
   COUNT(DISTINCT d.dis_id) AS horarios,
   COUNT(DISTINCT p.per_id) AS miembros
 FROM equipo e
+LEFT JOIN usuario u ON e.usu_id = u.usu_id
 LEFT JOIN juego j ON e.jue_id = j.jue_id
 LEFT JOIN disponibilidad d ON d.equ_id = e.equ_id
 LEFT JOIN permiso_equipo p ON p.equ_id = e.equ_id
 $where_sql
 GROUP BY
-  e.equ_id, capitan, e.jue_id, e.equ_nombre, e.equ_logo, juego
+  e.equ_id, capitan_id, capitan, e.jue_id, e.equ_nombre, e.equ_logo, juego
 ORDER BY horarios DESC, e.equ_nombre ASC";
 
 $sql_horarios = "
@@ -120,7 +122,7 @@ include '../../includes/user_navbar.php';
                         <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_SESSION['flash_msg'] == 'scrim_sent')
-                                echo '¡Solicitud de scrim enviada con éxito!';
+                                echo 'Solicitud de scrim enviada con éxito';
                             ?>
                         </p>
                     </div>
@@ -148,7 +150,10 @@ include '../../includes/user_navbar.php';
                                     echo 'Error: El horario seleccionado ya no está disponible.';
                                     break;
                                 case 'scrim_exists':
-                                    echo 'Error: Ya existe una solicitud pendiente o aceptada para este horario entre estos equipos.';
+                                    echo 'Error: Ya existe una solicitud pendiente para este horario entre estos equipos.';
+                                    break;
+                                case 'slot_taken':
+                                    echo 'Error: Uno de los equipos ya tiene una partida en este horario.';
                                     break;
                                 default:
                                     echo 'Ocurrió un error al procesar la solicitud.';
@@ -261,8 +266,8 @@ include '../../includes/user_navbar.php';
                                 </div>
                                 <div class="w-px h-6 bg-border"></div>
                                 <div class="text-center flex-1">
-                                    <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Scrims</span>
-                                    <span class="font-black text-primary text-sm">0</span>
+                                    <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Capitan</span>
+                                    <span class="font-black text-primary text-sm truncate block max-w-[80px]"><?php echo htmlspecialchars($equipo['capitan'] ?? ''); ?></span>
                                 </div>
                             </div>
 
