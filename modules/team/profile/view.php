@@ -11,9 +11,10 @@ if (empty($_GET['id'])) {
 $equ_id = (int)$_GET['id'];
 $usu_id = $_SESSION['usu_id'] ?? 0;
 
-$sql_equipo = "SELECT e.*, j.jue_nombre
+$sql_equipo = "SELECT e.*, j.jue_nombre, g.gen_nombre
                FROM equipo e
                LEFT JOIN juego j ON e.jue_id = j.jue_id
+               LEFT JOIN genero g ON j.gen_id = g.gen_id
                WHERE e.equ_id = ?";
 $res_equipo = $conn->execute_query($sql_equipo, [$equ_id]);
 
@@ -159,10 +160,15 @@ include '../../../includes/user_navbar.php';
                         <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px;"></div>
                     <?php endif; ?>
 
-                    <div class="absolute top-4 right-4">
+                    <div class="absolute top-4 right-4 flex flex-col items-end gap-1">
                         <span class="bg-black/50 backdrop-blur text-white text-[10px] font-black px-3 py-1 border border-white/20 uppercase tracking-widest">
                             <?php echo htmlspecialchars($equipo['jue_nombre']); ?>
                         </span>
+                        <?php if (!empty($equipo['gen_nombre'])): ?>
+                            <span class="bg-scrimsync/50 backdrop-blur text-white text-[10px] font-black px-3 py-1 border border-white/20 uppercase tracking-widest">
+                                <?php echo htmlspecialchars($equipo['gen_nombre']); ?>
+                            </span>
+                        <?php endif; ?>
                     </div>
                 </div>
 

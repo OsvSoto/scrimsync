@@ -15,10 +15,12 @@ $sql = "SELECT
             e.equ_logo,
             e.equ_id,
             j.jue_nombre,
+            g.gen_nombre AS genero,
             u.usu_username AS capitan
         FROM permiso_equipo pe
         INNER JOIN equipo e ON pe.equ_id = e.equ_id
         LEFT JOIN juego j ON e.jue_id = j.jue_id
+        LEFT JOIN genero g ON j.gen_id = g.gen_id
         LEFT JOIN usuario u ON e.usu_id = u.usu_id
         WHERE pe.usu_id = ?";
 
