@@ -267,7 +267,7 @@ include '../../includes/user_navbar.php';
                                 <div class="w-px h-6 bg-border"></div>
                                 <div class="text-center flex-1">
                                     <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Capitan</span>
-                                    <span class="font-black text-primary text-sm truncate block max-w-[80px]"><?php echo htmlspecialchars($equipo['capitan'] ?? ''); ?></span>
+                                    <span class="font-black text-primary text-sm truncate block max-w-[80px] mx-auto"><?php echo htmlspecialchars($equipo['capitan'] ?? 'N/A'); ?></span>
                                 </div>
                             </div>
 
