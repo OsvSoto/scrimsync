@@ -238,7 +238,7 @@ include '../../../includes/user_navbar.php';
 
                                             <button
                                                 onclick="document.getElementById('userModal_<?php echo $miembro['usu_id']; ?>').showModal()"
-                                                class="font-black text-primary uppercase hover:underline tracking-tight text-sm text-left">
+                                                class="font-black text-primary uppercase hover:underline tracking-tight text-sm text-left cursor-pointer">
                                                 <?php echo htmlspecialchars($miembro['usu_alias'] ?? $miembro['usu_username']); ?>
                                             </button>
 
@@ -292,7 +292,38 @@ include '../../../includes/user_navbar.php';
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <?php if ($soy_capitan): ?>
+                                <?php if ($miembro['usu_id'] == $usu_id) : ?>
+                                    <div class="flex items-center gap-1 ml-auto sm:ml-0">
+                                        <?php if ($soy_capitan): ?>
+                                            <form action="../actions/assign_role.php" method="POST" class="inline-block">
+                                                <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
+                                                <input type="hidden" name="target_usu_id" value="<?php echo $miembro['usu_id']; ?>">
+                                                <select name="rol_id" onchange="this.form.submit()"
+                                                    title="Asignar Mi Rol"
+                                                    class="bg-surface border-2 border-primary text-[10px] font-black uppercase tracking-widest px-3 py-1.5 focus:outline-none cursor-pointer hover:bg-subtle transition-colors ">
+                                                    <?php if (!$miembro['rol_id']): ?>
+                                                        <option value="" disabled selected>Asignar Rol</option>
+                                                    <?php endif; ?>
+                                                    <?php foreach ($roles_disponibles as $rol): ?>
+                                                        <option value="<?php echo $rol['rol_id']; ?>" <?php echo ($rol['rol_id'] == $miembro['rol_id']) ? 'selected' : ''; ?>>
+                                                            <?php echo htmlspecialchars($rol['rol_nombre']); ?>
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </form>
+                                        <?php endif; ?>
+
+                                        <form action="../actions/abandon_team.php" method="POST" onsubmit="return handleAbandon(event);">
+                                            <input type="hidden" name="usu_id" value="<?php echo $usu_id; ?>">
+                                            <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
+                                            <button type="submit"
+                                                title="Abandonar Equipo"
+                                                class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface cursor-pointer">
+                                                <i data-lucide="log-out" class="w-3 h-3"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                <?php elseif ($soy_capitan): ?>
                                     <div class="flex items-center gap-1 ml-auto sm:ml-0">
                                         <form action="../actions/assign_role.php" method="POST" class="inline-block">
                                             <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
@@ -322,17 +353,6 @@ include '../../../includes/user_navbar.php';
                                             </button>
                                         </form>
                                     </div>
-
-                                <?php elseif ($miembro['usu_id'] == $usu_id) : ?>
-                                    <form action="../actions/abandon_team.php" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres abandonar el equipo?');">
-                                        <input type="hidden" name="usu_id" value="<?php echo $usu_id; ?>">
-                                        <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
-                                        <button type="submit"
-                                            title="Abandonar Equipo"
-                                            class="transition-colors p-2 text-secondary border-error bg-surface hover:bg-error-text hover:text-surface">
-                                            <i data-lucide="log-out" class="w-3 h-3"></i>
-                                        </button>
-                                    </form>
                                 <?php endif; ?>
 
                             </div>
@@ -427,6 +447,75 @@ include '../../../includes/user_navbar.php';
                 </div>
             </div>
         </div>
+
+        <?php if ($soy_capitan && mysqli_num_rows($res_miembros) > 1): ?>
+            <dialog id="transferModal" class="m-auto rounded-none border-2 border-primary p-0 shadow-hard w-[95%] sm:w-full max-w-md">
+                <div class="bg-surface p-6">
+                    <div class="flex justify-between items-center mb-6 border-b-2 border-subtle pb-4">
+                        <h3 class="text-xl font-black text-primary uppercase tracking-tight">Elige a un Capitan</h3>
+                        <button onclick="document.getElementById('transferModal').close()" class="text-secondary hover:text-primary cursor-pointer">
+                            <i data-lucide="x" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <p class="text-sm font-bold text-secondary mb-6 leading-relaxed">
+                        Debes elegir a un miembro como capitan para poder abandonar el equipo.
+                    </p>
+
+                    <form action="../actions/abandon_team.php" method="POST" class="space-y-6">
+                        <input type="hidden" name="equ_id" value="<?php echo $equipo['equ_id']; ?>">
+
+                        <div class="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto pr-2 custom-scrollbar">
+                            <?php
+                            $res_miembros->data_seek(0);
+                            while ($m = $res_miembros->fetch_assoc()):
+                                if ($m['usu_id'] == $usu_id) continue;
+                            ?>
+                                <label class="relative flex items-center p-4 bg-subtle border-2 border-transparent hover:border-primary cursor-pointer transition-all has-[:checked]:border-primary has-[:checked]:bg-white shadow-sm">
+                                    <input type="radio" name="new_captain_id" value="<?php echo $m['usu_id']; ?>" required class="mr-3 accent-primary">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm font-black text-primary uppercase tracking-tight">
+                                            <?php echo htmlspecialchars($m['usu_alias'] ?? $m['usu_username']); ?>
+                                        </span>
+                                        <span class="text-[10px] font-bold text-secondary font-mono">
+                                            @<?php echo htmlspecialchars($m['usu_username']); ?>
+                                        </span>
+                                    </div>
+                                </label>
+                            <?php endwhile; ?>
+                        </div>
+
+                        <div class="pt-4">
+                            <button type="submit" class="w-full bg-primary text-white py-4 text-xs font-black uppercase tracking-widest hover:bg-primary-hover transition-all shadow-hard hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] cursor-pointer flex items-center justify-center gap-2">
+                                <i data-lucide="crown" class="w-4 h-4"></i>
+                                Confirmar y Salir
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </dialog>
+
+            <script>
+                function handleAbandon(e) {
+                    const memberCount = <?php echo mysqli_num_rows($res_miembros); ?>;
+                    const isCaptain = <?php echo $soy_capitan ? 'true' : 'false'; ?>;
+
+                    if (isCaptain && memberCount > 1) {
+                        e.preventDefault();
+                        document.getElementById('transferModal').showModal();
+                        return false;
+                    }
+
+                    return confirm('¿Estás seguro de que quieres abandonar el equipo?');
+                }
+            </script>
+        <?php else: ?>
+            <script>
+                function handleAbandon(e) {
+                    return confirm('¿Estás seguro de que quieres abandonar el equipo?');
+                }
+            </script>
+        <?php endif; ?>
 
     </main>
 </div>

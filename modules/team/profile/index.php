@@ -14,13 +14,14 @@ $sql = "SELECT
             e.equ_nombre,
             e.equ_logo,
             e.equ_id,
-            j.jue_nombre
+            j.jue_nombre,
+            u.usu_username AS capitan
         FROM permiso_equipo pe
         INNER JOIN equipo e ON pe.equ_id = e.equ_id
         LEFT JOIN juego j ON e.jue_id = j.jue_id
+        LEFT JOIN usuario u ON e.usu_id = u.usu_id
         WHERE pe.usu_id = ?";
 
-// TODO: refactor a prepare->bind->execute
 $result = $conn->execute_query($sql, [$usu_id]);
 
 $mis_equipos = [];
