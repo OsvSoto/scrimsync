@@ -62,9 +62,9 @@ include '../../../includes/header.php';
       </div>
 
       <?php if (isset($_SESSION['flash_msg'])): ?>
-        <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
-          <div class="flex items-start gap-3">
-            <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+        <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0"></i>
             <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
               <?php
               if ($_SESSION['flash_msg'] == 'promovido') echo "Usuario promovido a administrador exitosamente";

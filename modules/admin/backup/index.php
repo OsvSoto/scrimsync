@@ -29,9 +29,9 @@ include '../../../includes/header.php';
             </header>
 
             <?php if (isset($_GET['msg'])): ?>
-                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0"></i>
                         <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_GET['msg'] == 'restored') echo "Base de datos restaurada correctamente.";
@@ -45,9 +45,9 @@ include '../../../includes/header.php';
             <?php endif; ?>
 
             <?php if (isset($_GET['error'])): ?>
-                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0"></i>
                         <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             Error: <?php echo htmlspecialchars($_GET['error']); ?>
                         </p>
