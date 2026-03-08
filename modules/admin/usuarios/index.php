@@ -11,16 +11,20 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['tipo'] != 0) {
 
 // Búsqueda
 $search = isset($_GET['q']) ? trim($_GET['q']) : '';
+$current_user_id = $_SESSION['usu_id'];
 
-$sql = "SELECT * FROM usuario WHERE usu_tipo = 1";
-$params = [];
+$sql = "SELECT * FROM usuario WHERE usu_id != ?";
+$params = [$current_user_id];
 
 if (!empty($search)) {
-  $sql .= " AND usu_username LIKE ?";
-  $params[] = "%$search%";
+  $sql .= " AND (usu_username LIKE ? OR usu_alias LIKE ? OR usu_email LIKE ?)";
+  $search_param = "%$search%";
+  $params[] = $search_param;
+  $params[] = $search_param;
+  $params[] = $search_param;
 }
 
-$sql .= " ORDER BY usu_id DESC";
+$sql .= " ORDER BY usu_tipo ASC, usu_id DESC";
 $result = $conn->execute_query($sql, $params);
 
 include '../../../includes/header.php';
@@ -44,7 +48,7 @@ include '../../../includes/header.php';
         </div>
 
         <form action="" method="GET" class="flex gap-2 w-full md:w-auto">
-          <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Buscar por usuario..."
+          <input type="text" name="q" value="<?php echo htmlspecialchars($search); ?>" placeholder="Buscar por usuario, alias o email..."
             class="text-primary bg-surface border-2 border-border p-2.5 text-sm hover:border-primary focus:border-primary outline-none w-full md:w-64 shadow-hard-sm hover:shadow-hard focus:shadow-hard transition-all">
           <button type="submit" class="bg-primary text-white p-2.5 hover:bg-primary-hover transition-all shadow-hard-sm hover:shadow-hard hover:border-primary cursor-pointer">
             <i data-lucide="search" class="w-5 h-5"></i>
@@ -64,6 +68,7 @@ include '../../../includes/header.php';
             <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
               <?php
               if ($_SESSION['flash_msg'] == 'promovido') echo "Usuario promovido a administrador exitosamente";
+              if ($_SESSION['flash_msg'] == 'demovido') echo "Privilegios de administrador removidos exitosamente";
               ?>
             </p>
           </div>
@@ -82,6 +87,7 @@ include '../../../includes/header.php';
                 <th class="p-4 font-black w-20">ID</th>
                 <th class="p-4 font-black w-90">Usuario</th>
                 <th class="p-4 font-black w-55">Email</th>
+                <th class="p-4 font-black w-32">Rol</th>
                 <th class="p-4 font-black w-auto text-right">Acciones</th>
               </tr>
             </thead>
@@ -106,22 +112,42 @@ include '../../../includes/header.php';
                       </div>
                     </td>
                     <td class="p-4 text-sm font-medium text-secondary truncate"><?php echo $row['usu_email']; ?></td>
+                    <td class="p-4">
+                        <?php if ($row['usu_tipo'] == 0): ?>
+                            <span class="bg-primary text-white text-[10px] font-black uppercase px-2 py-1 tracking-tighter">Admin</span>
+                        <?php else: ?>
+                            <span class="bg-subtle text-secondary text-[10px] font-black uppercase px-2 py-1 tracking-tighter">Usuario</span>
+                        <?php endif; ?>
+                    </td>
                     <td class="p-4 text-right">
-                      <form action="controller_usuarios.php" method="POST" onsubmit="return confirm('¿Estás seguro de promover a <?php echo $row['usu_username']; ?> a Administrador? Esta acción otorgará control total sobre el sistema.');">
-                        <input type="hidden" name="p_op" value="Asignar_Tipo_Usu">
-                        <input type="hidden" name="usu_id" value="<?php echo $row['usu_id']; ?>">
-                        <button type="submit" class="bg-primary text-white px-3 py-2 text-xs font-bold uppercase tracking-wider hover:bg-success-border transition-colors inline-flex items-center gap-2 cursor-pointer">
-                          <i data-lucide="shield-check" class="w-3 h-3"></i>
-                          <span class="hidden lg:inline">Hacer Admin</span>
-                        </button>
-                      </form>
+                      <?php if ($row['usu_tipo'] == 1): ?>
+                        <form action="controller_usuarios.php" method="POST" onsubmit="return confirm('¿Estás seguro de promover a <?php echo $row['usu_username']; ?> a Administrador? Esta acción otorgará control total sobre el sistema.');">
+                          <input type="hidden" name="p_op" value="Asignar_Tipo_Usu">
+                          <input type="hidden" name="usu_id" value="<?php echo $row['usu_id']; ?>">
+                          <input type="hidden" name="nuevo_tipo" value="0">
+                          <button type="submit" class="bg-primary text-white px-3 py-2 text-xs font-bold uppercase tracking-wider hover:bg-success-border transition-colors inline-flex items-center gap-2 cursor-pointer">
+                            <i data-lucide="shield-check" class="w-3 h-3"></i>
+                            <span class="hidden lg:inline">Hacer Admin</span>
+                          </button>
+                        </form>
+                      <?php else: ?>
+                        <form action="controller_usuarios.php" method="POST" onsubmit="return confirm('¿Estás seguro de quitar los privilegios de administrador a <?php echo $row['usu_username']; ?>?');">
+                          <input type="hidden" name="p_op" value="Asignar_Tipo_Usu">
+                          <input type="hidden" name="usu_id" value="<?php echo $row['usu_id']; ?>">
+                          <input type="hidden" name="nuevo_tipo" value="1">
+                          <button type="submit" class="bg-secondary text-white px-3 py-2 text-xs font-bold uppercase tracking-wider hover:bg-primary transition-colors inline-flex items-center gap-2 cursor-pointer">
+                            <i data-lucide="shield-off" class="w-3 h-3"></i>
+                            <span class="hidden lg:inline">Quitar Admin</span>
+                          </button>
+                        </form>
+                      <?php endif; ?>
                     </td>
                   </tr>
                 <?php endwhile; ?>
               <?php else: ?>
                 <tr>
-                  <td colspan="4" class="p-8 text-center text-secondary">
-                    <?php echo !empty($search) ? 'No se encontraron usuarios.' : 'No hay usuarios elegibles para promover.'; ?>
+                  <td colspan="5" class="p-8 text-center text-secondary">
+                    No se encontraron usuarios.
                   </td>
                 </tr>
               <?php endif; ?>
