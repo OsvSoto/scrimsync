@@ -42,20 +42,24 @@ if (!empty($where_clauses)) {
 $sql_teams = "
 SELECT
   e.equ_id,
-  e.usu_id AS capitan,
+  e.usu_id AS capitan_id,
+  u.usu_username AS capitan,
   e.jue_id,
   e.equ_nombre,
   e.equ_logo,
   j.jue_nombre AS juego,
+  g.gen_nombre AS genero,
   COUNT(DISTINCT d.dis_id) AS horarios,
   COUNT(DISTINCT p.per_id) AS miembros
 FROM equipo e
+LEFT JOIN usuario u ON e.usu_id = u.usu_id
 LEFT JOIN juego j ON e.jue_id = j.jue_id
+LEFT JOIN genero g ON j.gen_id = g.gen_id
 LEFT JOIN disponibilidad d ON d.equ_id = e.equ_id
 LEFT JOIN permiso_equipo p ON p.equ_id = e.equ_id
 $where_sql
 GROUP BY
-  e.equ_id, capitan, e.jue_id, e.equ_nombre, e.equ_logo, juego
+  e.equ_id, capitan_id, capitan, e.jue_id, e.equ_nombre, e.equ_logo, juego, genero
 ORDER BY horarios DESC, e.equ_nombre ASC";
 
 $sql_horarios = "
@@ -120,7 +124,7 @@ include '../../includes/user_navbar.php';
                         <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_SESSION['flash_msg'] == 'scrim_sent')
-                                echo '¡Solicitud de scrim enviada con éxito!';
+                                echo 'Solicitud de scrim enviada con éxito';
                             ?>
                         </p>
                     </div>
@@ -146,6 +150,12 @@ include '../../includes/user_navbar.php';
                                     break;
                                 case 'invalid_availability':
                                     echo 'Error: El horario seleccionado ya no está disponible.';
+                                    break;
+                                case 'scrim_exists':
+                                    echo 'Error: Ya existe una solicitud pendiente para este horario entre estos equipos.';
+                                    break;
+                                case 'slot_taken':
+                                    echo 'Error: Uno de los equipos ya tiene una partida en este horario.';
                                     break;
                                 default:
                                     echo 'Ocurrió un error al procesar la solicitud.';
@@ -231,6 +241,14 @@ include '../../includes/user_navbar.php';
                                 </span>
                             </div>
 
+                            <?php if (!empty($equipo['genero'])): ?>
+                                <div class="absolute top-3 right-3 z-10">
+                                    <span class="bg-scrimsync border-2 border-primary text-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider">
+                                        <?php echo htmlspecialchars($equipo['genero']); ?>
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+
                             <div class="absolute -bottom-6 left-6">
                                 <div class="w-14 h-14 sm:w-16 sm:h-16 border-2 border-primary bg-surface shadow-sm overflow-hidden flex items-center justify-center">
                                     <?php if ($equipo['equ_logo']): ?>
@@ -258,8 +276,8 @@ include '../../includes/user_navbar.php';
                                 </div>
                                 <div class="w-px h-6 bg-border"></div>
                                 <div class="text-center flex-1">
-                                    <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Scrims</span>
-                                    <span class="font-black text-primary text-sm">0</span>
+                                    <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Capitan</span>
+                                    <span class="font-black text-primary text-sm truncate block max-w-[80px] mx-auto"><?php echo htmlspecialchars($equipo['capitan'] ?? 'N/A'); ?></span>
                                 </div>
                             </div>
 

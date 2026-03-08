@@ -16,8 +16,11 @@ include '../../../includes/header.php';
                         <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
                         <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
-                            if ($_SESSION['flash_msg'] == 'scrim_cancelled')
+                            if ($_SESSION['flash_msg'] == 'scrim_cancelled') {
                                 echo 'Scrim cancelado correctamente.';
+                            } else {
+                                echo htmlspecialchars($_SESSION['flash_msg']);
+                            }
                             ?>
                         </p>
                     </div>
@@ -132,10 +135,8 @@ include '../../../includes/header.php';
                                         <div class="relative group/scrim flex items-center justify-between gap-1 p-1.5 rounded-none text-[10px] md:text-xs font-bold transition-colors <?php echo $statusClass; ?> min-w-0 overflow-hidden">
                                             <button
                                                 type="button"
-                                                <?php if ($is_accepted): ?>
+                                                <?php if ($is_accepted || $is_pending): ?>
                                                 onclick="document.getElementById('scrim_modal_<?php echo $scrim['scr_id']; ?>').showModal()"
-                                                <?php elseif ($is_pending): ?>
-                                                onclick="window.location.href='../notification/index.php'"
                                                 <?php endif; ?>
                                                 class="flex flex-col gap-0.5 leading-tight text-left flex-1 min-w-0"
                                                 title="<?php echo htmlspecialchars($scrim['opponent_name']) . ' @ ' . substr($scrim['scr_hora_inicio'], 0, 5); ?>">
@@ -221,10 +222,8 @@ include '../../../includes/header.php';
                                     }
                                     ?>
                                     <div class="flex items-center justify-between gap-3 p-3 rounded-none font-bold transition-colors <?php echo $statusClass; ?> min-w-0"
-                                        <?php if ($is_accepted): ?>
+                                        <?php if ($is_accepted || $is_pending): ?>
                                         onclick="document.getElementById('scrim_modal_<?php echo $scrim['scr_id']; ?>').showModal()"
-                                        <?php elseif ($is_pending): ?>
-                                        onclick="window.location.href='../notification/index.php'"
                                         <?php endif; ?>>
 
                                         <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -260,6 +259,9 @@ include '../../../includes/header.php';
 
                 <!-- modal flotante -->
                 <?php foreach ($scrims as $scrim):
+                    $is_modal_accepted = ($scrim['est_id'] == 2);
+                    $is_modal_pending = ($scrim['est_id'] == 1);
+                    $is_receptor = ($scrim['equ_id_receptor'] == $equ_id);
                 ?>
                     <dialog id="scrim_modal_<?php echo $scrim['scr_id']; ?>"
                         class="m-auto rounded-none border-2 border-primary p-0 shadow-hard">
@@ -285,15 +287,41 @@ include '../../../includes/header.php';
 
                                 <?php if ($is_captain): ?>
                                     <div class="pt-3 border-t-2 border-subtle">
-                                        <form action="../../scrim/controller_scrim.php" method="POST" onsubmit="return confirm('¿ESTÁS SEGURO?');">
-                                            <input type="hidden" name="action" value="cancelar">
-                                            <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
-                                            <button type="submit"
-                                                class="w-full transition-all text-xs text-secondary font-black uppercase tracking-widest px-6 py-3 hover:bg-error-text hover:text-surface flex justify-center cursor-pointer">
-                                                <i data-lucide="x" class="w-4 h-4"></i>
-                                                Cancelar Scrim
-                                            </button>
-                                        </form>
+                                        <?php if ($is_modal_accepted): ?>
+                                            <form action="../../scrim/controller_scrim.php" method="POST" onsubmit="return confirm('¿ESTÁS SEGURO?');">
+                                                <input type="hidden" name="action" value="cancelar">
+                                                <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
+                                                <button type="submit"
+                                                    class="w-full transition-all text-xs text-secondary font-black uppercase tracking-widest px-6 py-3 hover:bg-error-text hover:text-surface flex justify-center cursor-pointer">
+                                                    <i data-lucide="x" class="w-4 h-4"></i>
+                                                    Cancelar Scrim
+                                                </button>
+                                            </form>
+                                        <?php elseif ($is_modal_pending && $is_receptor): ?>
+                                            <div class="flex flex-col gap-2">
+                                                <form action="../../scrim/controller_scrim.php" method="POST">
+                                                    <input type="hidden" name="action" value="accept_scrim">
+                                                    <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
+                                                    <input type="hidden" name="redirect" value="../user/calendar/index.php">
+                                                    <button type="submit"
+                                                        class="w-full bg-black text-surface px-4 py-3 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-success-border cursor-pointer transition-all">
+                                                        <i data-lucide="check" class="w-4 h-4"></i>
+                                                        Aceptar Scrim
+                                                    </button>
+                                                </form>
+
+                                                <form action="../../scrim/controller_scrim.php" method="POST" onsubmit="return confirm('¿Rechazar este scrim?');">
+                                                    <input type="hidden" name="action" value="reject_scrim">
+                                                    <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
+                                                    <input type="hidden" name="redirect" value="../user/calendar/index.php">
+                                                    <button type="submit"
+                                                        class="w-full bg-subtle text-primary px-4 py-3 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-error-text hover:text-surface cursor-pointer transition-all">
+                                                        <i data-lucide="x" class="w-4 h-4"></i>
+                                                        Rechazar Scrim
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 <?php endif; ?>
                             </div>

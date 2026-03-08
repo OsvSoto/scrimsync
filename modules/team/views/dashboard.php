@@ -33,7 +33,7 @@
                     </span>
                 </div>
 
-                <div class="absolute top-3 right-3 z-10">
+                <div class="absolute top-3 right-3 z-10 flex flex-col items-end gap-1">
                     <?php if ($es_capitan): ?>
                         <span class="bg-primary text-white border-2 border-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider flex items-center gap-1">
                             <i data-lucide="crown" class="w-3 h-3"></i> <span class="hidden xs:inline">Capitán</span>
@@ -41,6 +41,12 @@
                     <?php else: ?>
                         <span class="bg-primary-hover text-white border-2 border-primary-hover text-[10px] font-black px-2 py-1 uppercase tracking-wider">
                             Miembro
+                        </span>
+                    <?php endif; ?>
+
+                    <?php if (!empty($equipo['genero'])): ?>
+                        <span class="bg-scrimsync border-2 border-primary text-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider">
+                            <?php echo htmlspecialchars($equipo['genero']); ?>
                         </span>
                     <?php endif; ?>
                 </div>
@@ -72,8 +78,8 @@
                     </div>
                     <div class="w-px h-6 bg-border"></div>
                     <div class="text-center flex-1">
-                        <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Scrims</span>
-                        <span class="font-black text-primary text-sm">0</span>
+                        <span class="block text-[10px] text-muted font-black uppercase tracking-widest">Capitan</span>
+                        <span class="font-black text-primary text-sm truncate block max-w-[80px] mx-auto"><?php echo htmlspecialchars($equipo['capitan'] ?? 'N/A'); ?></span>
                     </div>
                 </div>
 

@@ -163,19 +163,34 @@ if (isset($_SESSION['tipo']) && $_SESSION['tipo'] === 0) {
                         <input type="hidden" name="action" value="update_password">
                         <div>
                             <label class="block text-[10px] font-black uppercase text-muted mb-2 tracking-widest">Contraseña Actual</label>
-                            <input type="password" name="current_password" required placeholder="••••••••"
-                                class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                            <div class="relative">
+                                <input type="password" name="current_password" id="current_password" required placeholder="••••••••"
+                                    class="w-full bg-background border-2 border-border text-primary px-4 py-3 pr-12 font-bold text-sm focus:border-primary focus:outline-none">
+                                <button type="button" onclick="togglePassword('current_password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors focus:outline-none">
+                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                                </button>
+                            </div>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-[10px] font-black uppercase text-muted mb-2 tracking-widest">Nueva Contraseña</label>
-                                <input type="password" name="new_password" required placeholder="••••••••"
-                                    class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                                <div class="relative">
+                                    <input type="password" name="new_password" id="new_password" required placeholder="••••••••"
+                                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 pr-12 font-bold text-sm focus:border-primary focus:outline-none">
+                                    <button type="button" onclick="togglePassword('new_password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors focus:outline-none">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
                             </div>
                             <div>
                                 <label class="block text-[10px] font-black uppercase text-muted mb-2 tracking-widest">Confirmar Nueva Contraseña</label>
-                                <input type="password" name="confirm_password" required placeholder="••••••••"
-                                    class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none">
+                                <div class="relative">
+                                    <input type="password" name="confirm_password" id="confirm_password" required placeholder="••••••••"
+                                        class="w-full bg-background border-2 border-border text-primary px-4 py-3 pr-12 font-bold text-sm focus:border-primary focus:outline-none">
+                                    <button type="button" onclick="togglePassword('confirm_password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors focus:outline-none">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="flex justify-end mt-6">

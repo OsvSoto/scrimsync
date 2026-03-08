@@ -3,12 +3,17 @@
 session_start();
 require_once '../../../config/db.php';
 
+if (!isset($_SESSION['loggedin'])) {
+  header("Location: " . BASE_URL . "modules/auth/login.php");
+  exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
   header("Location: ../profile/view.php");
   exit;
 }
 
-$usu_id = isset($_POST['usu_id']) ? (int) $_POST['usu_id'] : 0;
+$usu_id = $_SESSION['usu_id'];
 $equ_id = isset($_POST['equ_id']) ? (int) $_POST['equ_id'] : 0;
 
 $sql_perm = "SELECT per_elim_miembro as p FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
@@ -22,15 +27,47 @@ $count_data = $res_count->fetch_assoc();
 $count_members = $count_data["c"];
 
 if ($soy_capitan && $count_members > 1) {
+  $new_captain_id = isset($_POST['new_captain_id']) ? (int)$_POST['new_captain_id'] : 0;
 
-  // TODO: asignar miembro como capitan antes de salir?
-  $_SESSION['flash_error'] = 'cant_quit';
-  header("Location: ../profile/view.php");
+  if ($new_captain_id <= 0) {
+    $_SESSION['flash_error'] = 'cant_quit';
+    header("Location: ../profile/view.php?id=$equ_id");
+    exit;
+  }
+
+  mysqli_begin_transaction($conn);
+  try {
+    $sql_transfer_owner = "UPDATE equipo SET usu_id = ? WHERE equ_id = ?";
+    $conn->execute_query($sql_transfer_owner, [$new_captain_id, $equ_id]);
+
+    $sql_update_perms = "UPDATE permiso_equipo SET per_modif_horario = 1, per_enviar_scrim = 1, per_elim_miembro = 1 WHERE usu_id = ? AND equ_id = ?";
+    $conn->execute_query($sql_update_perms, [$new_captain_id, $equ_id]);
+
+    $sql_delete_old = "DELETE FROM permiso_equipo WHERE usu_id = ? AND equ_id = ?";
+    $conn->execute_query($sql_delete_old, [$usu_id, $equ_id]);
+
+    mysqli_commit($conn);
+    $_SESSION['flash_msg'] = 'quit';
+    header("Location: ../profile/index.php");
+    exit;
+  } catch (Exception $e) {
+    mysqli_rollback($conn);
+    $_SESSION['flash_error'] = 'db_error';
+    header("Location: ../profile/view.php?id=$equ_id");
+    exit;
+  }
 } else if ($soy_capitan && $count_members == 1) {
 
-  // Borramos el equipo cuando queda un solo miembro (capitan)
+  $sql_info = "SELECT equ_logo FROM equipo WHERE equ_id = ?";
+  $res_info = $conn->execute_query($sql_info, [$equ_id]);
+  $equipo = $res_info->fetch_assoc();
+
+  // borramos todo cuando se va el ultimo miembro
   $sql_delete = "DELETE FROM equipo WHERE equ_id = ?";
   if ($conn->execute_query($sql_delete, [$equ_id])) {
+    if ($equipo && $equipo['equ_logo'] && file_exists(__DIR__ . '/../../../' . $equipo['equ_logo'])) {
+      unlink(__DIR__ . '/../../../' . $equipo['equ_logo']);
+    }
     $_SESSION['flash_msg'] = 'quit_delete';
     header("Location: ../profile/index.php");
   } else {

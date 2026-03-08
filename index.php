@@ -25,7 +25,8 @@ include 'includes/header.php';
 
 <?php if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true): ?>
     <?php include 'includes/user_navbar.php'; ?>
-<?php else: ?>
+<?php
+else: ?>
     <nav class="fixed top-0 left-0 w-full h-10 bg-surface border-b-2 border-primary z-50">
         <div class="max-w-6xl mx-auto h-full flex items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center">
@@ -51,7 +52,8 @@ include 'includes/header.php';
             </div>
         </div>
     </nav>
-<?php endif; ?>
+<?php
+endif; ?>
 
 <main class="relative z-10 grow w-full max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 md:pt-12 pb-16">
 
@@ -74,34 +76,34 @@ include 'includes/header.php';
     <section id="features" class="mb-12">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 text-left">
             <div class="bg-surface border-2 border-primary p-8 shadow-hard-sm hover:shadow-hard transition-all relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 transition-opacity rotate-12 text-primary">
+                <div class="absolute pointer-events-none -right-4 -top-4 transition-opacity rotate-12 text-primary" style="opacity: 0.15;" onmouseover="this.style.opacity='0.1'" onmouseout="this.style.opacity='0.05'">
                     <i data-lucide="shield" class="w-32 h-32"></i>
                 </div>
-                <div class="bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">01</div>
-                <h3 class="font-black text-xl mb-4 uppercase italic tracking-tighter">Gestiona tu Equipo</h3>
-                <p class="text-secondary text-sm font-medium leading-relaxed">
+                <div class="relative z-10 bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">01</div>
+                <h3 class="relative z-10 font-black text-xl mb-4 uppercase italic tracking-tighter">Gestiona tu Equipo</h3>
+                <p class="relative z-10 text-secondary text-sm font-medium leading-relaxed">
                     Registra tu equipo, asigna roles a tus jugadores en un solo lugar.
                 </p>
             </div>
 
             <div class="bg-surface border-2 border-primary p-8 shadow-hard-sm hover:shadow-hard transition-all relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 transition-opacity rotate-12 text-primary">
+                <div class="absolute pointer-events-none -right-4 -top-4 transition-opacity rotate-12 text-primary" style="opacity: 0.15;" onmouseover="this.style.opacity='0.1'" onmouseout="this.style.opacity='0.05'">
                     <i data-lucide="calendar" class="w-32 h-32"></i>
                 </div>
-                <div class="bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">02</div>
-                <h3 class="font-black text-xl mb-4 uppercase italic tracking-tighter">Sincroniza Horarios</h3>
-                <p class="text-secondary text-sm font-medium leading-relaxed">
+                <div class="relative z-10 bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">02</div>
+                <h3 class="relative z-10 font-black text-xl mb-4 uppercase italic tracking-tighter">Sincroniza Horarios</h3>
+                <p class="relative z-10 text-secondary text-sm font-medium leading-relaxed">
                     Define tus propios horarios de disponibilidad en las que tu equipo está listo para jugar.
                 </p>
             </div>
 
             <div class="bg-surface border-2 border-primary p-8 shadow-hard-sm hover:shadow-hard transition-all relative overflow-hidden group">
-                <div class="absolute -right-4 -top-4 opacity-[0.03] group-hover:opacity-10 transition-opacity rotate-12 text-primary">
+                <div class="absolute pointer-events-none -right-4 -top-4 transition-opacity rotate-12 text-primary" style="opacity: 0.15;" onmouseover="this.style.opacity='0.1'" onmouseout="this.style.opacity='0.05'">
                     <i data-lucide="gamepad-2" class="w-32 h-32"></i>
                 </div>
-                <div class="bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">03</div>
-                <h3 class="font-black text-xl mb-4 uppercase italic tracking-tighter">Encuentra Scrims</h3>
-                <p class="text-secondary text-sm font-medium leading-relaxed">
+                <div class="relative z-10 bg-primary text-white w-10 h-10 flex items-center justify-center font-black mb-6">03</div>
+                <h3 class="relative z-10 font-black text-xl mb-4 uppercase italic tracking-tighter">Encuentra Scrims</h3>
+                <p class="relative z-10 text-secondary text-sm font-medium leading-relaxed">
                     Busca rivales según el juego y disponibilidad. Envía y recibe solicitudes de entrenamiento en cualquier momento.
                 </p>
             </div>
@@ -124,7 +126,8 @@ include 'includes/header.php';
                 INICIAR SESIÓN
             </a>
         </div>
-    <?php endif; ?>
+    <?php
+endif; ?>
 
     <?php if (isset($_SESSION['loggedin'])): ?>
         <div class="w-full grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -167,7 +170,8 @@ include 'includes/header.php';
                 </div>
             </a>
         </div>
-    <?php endif; ?>
+    <?php
+endif; ?>
 
 </main>
 

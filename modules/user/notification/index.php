@@ -152,6 +152,47 @@ include '../../../includes/user_navbar.php';
                                         <?php echo htmlspecialchars($notificacion['not_mensaje']); ?>
                                     </p>
 
+                                    <?php if ($notificacion['not_tipo'] === 'INVITACION' || $notificacion['not_tipo'] === 'SCRIM'): ?>
+                                        <div class="flex items-center gap-3 mb-4">
+                                            <?php if ($notificacion['not_tipo'] === 'INVITACION'): ?>
+                                                <form action="../../../modules/team/actions/invite_member.php" method="POST">
+                                                    <input type="hidden" name="action" value="accept_invite">
+                                                    <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
+                                                    <input type="hidden" name="equ_id" value="<?php echo $notificacion['equ_id']; ?>">
+                                                    <button type="submit"
+                                                        class="bg-black text-surface px-4 py-2 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-success-border cursor-pointer">
+                                                        <i data-lucide="check" class="w-3 h-3"></i>
+                                                        Aceptar
+                                                    </button>
+                                                </form>
+                                            <?php elseif ($notificacion['not_tipo'] === 'SCRIM'): ?>
+                                                <form action="../../scrim/controller_scrim.php" method="POST">
+                                                    <input type="hidden" name="action" value="accept_scrim">
+                                                    <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
+                                                    <input type="hidden" name="scr_id" value="<?php echo $notificacion['scr_id']; ?>">
+                                                    <button type="submit"
+                                                        class="bg-black  text-surface px-4 py-2 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-success-border cursor-pointer transition-all ">
+                                                        <i data-lucide="check" class="w-3 h-3"></i>
+                                                        Aceptar
+                                                    </button>
+                                                </form>
+                                            <?php endif; ?>
+
+                                            <form action="<?php echo ($notificacion['not_tipo'] === 'SCRIM') ? '../../scrim/controller_scrim.php' : 'controller_notification.php'; ?>" method="POST">
+                                                <input type="hidden" name="action" value="<?php echo ($notificacion['not_tipo'] === 'SCRIM') ? 'reject_scrim' : 'reject_invite'; ?>">
+                                                <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
+                                                <?php if ($notificacion['not_tipo'] === 'SCRIM'): ?>
+                                                    <input type="hidden" name="scr_id" value="<?php echo $notificacion['scr_id']; ?>">
+                                                <?php endif; ?>
+                                                <button type="submit"
+                                                    class="bg-subtle text-primary px-4 py-2 text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-error-text hover:text-surface cursor-pointer transition-all ">
+                                                    <i data-lucide="x" class="w-3 h-3"></i>
+                                                    Rechazar
+                                                </button>
+                                            </form>
+                                        </div>
+                                    <?php endif; ?>
+
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <span class="text-[10px] font-black px-2 py-0.5 border border-border text-secondary uppercase tracking-widest">
                                             <?php echo htmlspecialchars($notificacion['not_tipo']); ?>
@@ -173,47 +214,6 @@ include '../../../includes/user_navbar.php';
                                     <span class="hidden sm:block text-[10px] font-black text-secondary uppercase tracking-widest whitespace-nowrap">
                                         <?php echo date('d/m/Y', strtotime($notificacion['not_fecha'])); ?>
                                     </span>
-
-                                    <?php if ($notificacion['not_tipo'] === 'INVITACION' || $notificacion['not_tipo'] === 'SCRIM'): ?>
-                                        <div class="flex gap-2 w-full sm:w-auto justify-end">
-                                            <?php if ($notificacion['not_tipo'] === 'INVITACION'): ?>
-                                                <form action="../../../modules/team/actions/invite_member.php" method="POST">
-                                                    <input type="hidden" name="action" value="accept_invite">
-                                                    <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
-                                                    <input type="hidden" name="equ_id" value="<?php echo $notificacion['equ_id']; ?>">
-                                                    <button type="submit"
-                                                        class="flex items-center justify-center w-8 h-8 border-2 border-success-border bg-surface text-success-text hover:bg-success-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] cursor-pointer"
-                                                        title="Aceptar">
-                                                        <i data-lucide="check" class="w-4 h-4"></i>
-                                                    </button>
-                                                </form>
-                                            <?php elseif ($notificacion['not_tipo'] === 'SCRIM'): ?>
-                                                <form action="../../scrim/controller_scrim.php" method="POST">
-                                                    <input type="hidden" name="action" value="accept_scrim">
-                                                    <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
-                                                    <input type="hidden" name="scr_id" value="<?php echo $notificacion['scr_id']; ?>">
-                                                    <button type="submit"
-                                                        class="flex items-center justify-center w-8 h-8 border-2 border-success-border bg-surface text-success-text hover:bg-success-border hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] cursor-pointer"
-                                                        title="Aceptar Scrim">
-                                                        <i data-lucide="check" class="w-4 h-4"></i>
-                                                    </button>
-                                                </form>
-                                            <?php endif; ?>
-
-                                            <form action="<?php echo ($notificacion['not_tipo'] === 'SCRIM') ? '../../scrim/controller_scrim.php' : 'controller_notification.php'; ?>" method="POST">
-                                                <input type="hidden" name="action" value="<?php echo ($notificacion['not_tipo'] === 'SCRIM') ? 'reject_scrim' : 'reject_invite'; ?>">
-                                                <input type="hidden" name="not_id" value="<?php echo $notificacion['not_id']; ?>">
-                                                <?php if ($notificacion['not_tipo'] === 'SCRIM'): ?>
-                                                    <input type="hidden" name="scr_id" value="<?php echo $notificacion['scr_id']; ?>">
-                                                <?php endif; ?>
-                                                <button type="submit"
-                                                    class="flex items-center justify-center w-8 h-8 border-2 border-error-border bg-surface text-error-text hover:bg-error-text hover:text-white transition-all shadow-hard-sm hover:shadow-none hover:translate-x-[1px] hover:translate-y-[1px] cursor-pointer"
-                                                    title="Rechazar">
-                                                    <i data-lucide="x" class="w-4 h-4"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>

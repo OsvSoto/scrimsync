@@ -74,8 +74,13 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] === true) {
 
             <div>
                 <label class="block text-[10px] font-black uppercase text-secondary mb-2 tracking-widest">Contraseña</label>
-                <input type="password" name="password" required
-                       class="w-full bg-background border-2 border-border text-primary px-4 py-3 font-bold text-sm focus:border-primary focus:outline-none transition-colors">
+                <div class="relative">
+                    <input type="password" name="password" id="password" required
+                           class="w-full bg-background border-2 border-border text-primary px-4 py-3 pr-12 font-bold text-sm focus:border-primary focus:outline-none transition-colors">
+                    <button type="button" onclick="togglePassword('password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary transition-colors focus:outline-none">
+                        <i data-lucide="eye" class="w-5 h-5"></i>
+                    </button>
+                </div>
             </div>
 
             <button type="submit" class="w-full bg-primary text-white py-4 font-black uppercase tracking-widest text-xs hover:bg-primary-hover transition-all hover:translate-x-[2px] hover:translate-y-[2px] shadow-hard-sm hover:shadow-none">

@@ -37,6 +37,23 @@ include '../../../includes/header.php';
         </a>
       </div>
 
+      <?php if (isset($_GET['error'])): ?>
+        <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
+          <div class="flex items-start gap-3">
+            <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+            <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
+              <?php 
+              if($_GET['error'] == 'dependency') echo "No se puede eliminar: existen registros vinculados a este elemento.";
+              else echo "Error al procesar la solicitud."; 
+              ?>
+            </p>
+          </div>
+          <button onclick="this.parentElement.remove();" class="text-error-text hover:opacity-70 shrink-0 cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      <?php endif; ?>
+
       <div class="bg-surface border-2 border-primary overflow-hidden">
         <table class="w-full text-left border-collapse">
           <thead>
