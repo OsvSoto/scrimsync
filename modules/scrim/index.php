@@ -235,6 +235,7 @@ include '../../includes/user_navbar.php';
                         class="bg-surface border-2 border-primary shadow-hard-sm hover:shadow-hard transition-all group flex flex-col h-full">
 
                         <div class="h-24 sm:h-28 bg-subtle relative border-b-2 border-primary">
+                            <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(var(--color-primary) 1px, transparent 1px); background-size: 8px 8px;"></div>
                             <div class="absolute top-3 left-3 z-10">
                                 <span class="bg-surface border-2 border-primary text-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider">
                                     <?php echo htmlspecialchars($equipo['juego'] ?? 'General'); ?>
@@ -243,14 +244,14 @@ include '../../includes/user_navbar.php';
 
                             <?php if (!empty($equipo['genero'])): ?>
                                 <div class="absolute top-3 right-3 z-10">
-                                    <span class="bg-scrimsync border-2 border-primary text-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider">
+                                    <span class="bg-surface border-2 border-primary text-primary text-[10px] font-black px-2 py-1 uppercase tracking-wider">
                                         <?php echo htmlspecialchars($equipo['genero']); ?>
                                     </span>
                                 </div>
                             <?php endif; ?>
 
                             <div class="absolute -bottom-6 left-6">
-                                <div class="w-14 h-14 sm:w-16 sm:h-16 border-2 border-primary bg-surface shadow-sm overflow-hidden flex items-center justify-center">
+                                <div class="w-14 h-14 sm:w-16 sm:h-16 border-2 border-primary bg-surface shadow-hard-sm overflow-hidden flex items-center justify-center">
                                     <?php if ($equipo['equ_logo']): ?>
                                         <img src="<?php echo '../../../' . $equipo['equ_logo']; ?>" class="w-full h-full object-cover">
                                     <?php else: ?>

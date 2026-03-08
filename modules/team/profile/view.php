@@ -161,20 +161,20 @@ include '../../../includes/user_navbar.php';
                     <?php endif; ?>
 
                     <div class="absolute top-4 right-4 flex flex-col items-end gap-1">
-                        <span class="bg-black/50 backdrop-blur text-white text-[10px] font-black px-3 py-1 border border-white/20 uppercase tracking-widest">
+                        <span class="bg-black text-white text-[10px] font-black px-3 py-1 border border-white/20 uppercase tracking-widest">
                             <?php echo htmlspecialchars($equipo['jue_nombre']); ?>
                         </span>
                         <?php if (!empty($equipo['gen_nombre'])): ?>
-                        <span class="bg-black/50 backdrop-blur text-white text-[10px] font-black px-3 py-1 border border-white/20 uppercase tracking-widest">
+                        <span class="bg-black text-white text-[10px] font-black px-3 py-1 border border-white/20 uppercase tracking-widest">
                                 <?php echo htmlspecialchars($equipo['gen_nombre']); ?>
                             </span>
                         <?php endif; ?>
                     </div>
                 </div>
 
-                <div class="px-4 pb-6 sm:px-6 lg:px-8 relative">
+                <div class="px-4 pb-6 sm:px-6 lg:px-8 relative border-t-2">
                     <div class="flex flex-col sm:flex-row items-center sm:items-end -mt-12 mb-6 gap-6">
-                        <div class="w-32 h-32 border-4 border-surface bg-surface shadow-lg overflow-hidden shrink-0">
+                        <div class="w-32 h-32 border-2 border-primary bg-surface shadow-hard-sm overflow-hidden shrink-0">
                             <?php if ($equipo['equ_logo']): ?>
                                 <img src="<?php echo "../../../" . $equipo['equ_logo']; ?>" class="w-full h-full object-cover">
                             <?php else: ?>
