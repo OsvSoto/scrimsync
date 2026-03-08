@@ -81,13 +81,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 ]);
 
                 while ($row = $res_check->fetch_assoc()) {
-                    if ($row['est_id'] == 2) { // scrim pendiente
+                    if ($row['est_id'] == 2) { // scrim aceptado
                         $_SESSION['flash_error'] = 'slot_taken';
                         header('Location: index.php');
                         exit;
                     }
                     if ($row['est_id'] == 1 && $row['equ_id_emisor'] == $equ_id_emisor && $row['equ_id_receptor'] == $equ_id_receptor) {
-                        $_SESSION['flash_error'] = 'scrim_exists'; // scrim aceptado
+                        $_SESSION['flash_error'] = 'scrim_exists'; // scrim pendiente
                         header('Location: index.php');
                         exit;
                     }

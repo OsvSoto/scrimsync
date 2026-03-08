@@ -118,9 +118,9 @@ include '../../includes/user_navbar.php';
     <main class="flex-1 w-full pt-16 pb-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <?php if (isset($_SESSION['flash_msg'])): ?>
-                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0"></i>
                         <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_SESSION['flash_msg'] == 'scrim_sent')
@@ -136,9 +136,9 @@ include '../../includes/user_navbar.php';
             <?php endif; ?>
 
             <?php if (isset($_SESSION['flash_error'])): ?>
-                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0"></i>
                         <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             switch ($_SESSION['flash_error']) {
