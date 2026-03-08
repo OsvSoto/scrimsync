@@ -11,9 +11,9 @@ include '../../../includes/header.php';
 
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <?php if (isset($_SESSION['flash_msg'])): ?>
-                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-start justify-between gap-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0 mt-0.5"></i>
+                <div class="mb-6 bg-success-light border-2 border-success-border p-4 shadow-hard-success flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="check-circle" class="text-success-text w-5 h-5 shrink-0"></i>
                         <p class="text-success-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_SESSION['flash_msg'] == 'scrim_cancelled') {
@@ -32,9 +32,9 @@ include '../../../includes/header.php';
             <?php endif; ?>
 
             <?php if (isset($_SESSION['flash_error'])): ?>
-                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-start justify-between gap-3">
-                    <div class="flex items-start gap-3">
-                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0 mt-0.5"></i>
+                <div class="mb-6 bg-error-light border-2 border-error-border p-4 shadow-hard-error flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="alert-circle" class="text-error-text w-5 h-5 shrink-0"></i>
                         <p class="text-error-text font-black uppercase text-xs tracking-widest leading-relaxed">
                             <?php
                             if ($_SESSION['flash_error'] == 'not_authorized')
@@ -51,7 +51,7 @@ include '../../../includes/header.php';
 
             <div class="flex flex-col md:flex-row justify-between items-center gap-4 bg-surface border-2 border-primary p-4 shadow-hard">
                 <div class="flex items-center gap-4">
-                    <a href="?month=<?php echo $month - 1; ?>&year=<?php echo $year; ?>"
+                    <a href="?month=<?php echo $month - 1; ?>&year=<?php echo $year; ?>&t=<?php echo $filter_team_id; ?>"
                         class="p-2 hover:bg-subtle rounded-sm text-muted hover:text-primary transition-colors">
                         <i data-lucide="chevron-left" class="w-5 h-5"></i>
                     </a>
@@ -61,24 +61,46 @@ include '../../../includes/header.php';
                         echo $meses[$month] . ' ' . $year;
                         ?>
                     </h2>
-                    <a href="?month=<?php echo $month + 1; ?>&year=<?php echo $year; ?>"
+                    <a href="?month=<?php echo $month + 1; ?>&year=<?php echo $year; ?>&t=<?php echo $filter_team_id; ?>"
                         class="p-2 hover:bg-subtle rounded-sm text-muted hover:text-primary transition-colors">
                         <i data-lucide="chevron-right" class="w-5 h-5"></i>
                     </a>
                 </div>
 
-                <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[10px] md:text-xs font-bold uppercase tracking-wider">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-emerald-500 rounded-none"></div>
-                        <span class="text-secondary">Confirmadas</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-amber-500 rounded-none"></div>
-                        <span class="text-secondary">Pendientes</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-rose-500 rounded-none"></div>
-                        <span class="text-secondary">Canceladas</span>
+                <div class="flex flex-col md:flex-row items-center gap-4">
+                    <!-- dropdown de equipos -->
+                    <form action="" method="GET" class="flex items-center gap-2">
+                        <input type="hidden" name="month" value="<?php echo $month; ?>">
+                        <input type="hidden" name="year" value="<?php echo $year; ?>">
+                        <div class="relative w-48">
+                            <select name="t" onchange="this.form.submit()"
+                                class="w-full bg-surface border-2 border-border p-2 font-bold text-xs text-primary appearance-none cursor-pointer focus:border-primary outline-none">
+                                <option value="0">Todos mis equipos</option>
+                                <?php foreach ($my_teams_list as $mt): ?>
+                                    <option value="<?php echo $mt['equ_id']; ?>" <?php echo ($filter_team_id == $mt['equ_id']) ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($mt['equ_nombre']); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-secondary">
+                                <i data-lucide="chevron-down" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-[10px] md:text-xs font-bold uppercase tracking-wider">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-emerald-500 rounded-none"></div>
+                            <span class="text-secondary">Confirmadas</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-amber-500 rounded-none"></div>
+                            <span class="text-secondary">Pendientes</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 bg-rose-500 rounded-none"></div>
+                            <span class="text-secondary">Canceladas</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -117,9 +139,9 @@ include '../../../includes/header.php';
                                         $statusClass = 'bg-subtle text-secondary';
                                         $dotClass = 'bg-muted';
                                         $desc = strtolower($scrim['est_descripcion']);
-                                        $is_cancelled = (str_contains($desc, 'cancel'));
-                                        $is_accepted = (str_contains($desc, 'aceptad'));
-                                        $is_pending = (str_contains($desc, 'pendient'));
+                                        $is_cancelled = ($scrim['est_id'] == 3);
+                                        $is_accepted = ($scrim['est_id'] == 2);
+                                        $is_pending = ($scrim['est_id'] == 1);
 
                                         if ($is_accepted) {
                                             $statusClass = 'bg-success-light text-success-text border border-emerald-100';
@@ -153,7 +175,7 @@ include '../../../includes/header.php';
                                                 </div>
                                             </button>
 
-                                            <?php if ($is_accepted && $is_captain): ?>
+                                            <?php if ($is_accepted && $scrim['user_can_manage']): ?>
                                                 <form action="../../scrim/controller_scrim.php" method="POST"
                                                     onsubmit="event.stopPropagation(); return confirm('¿ESTÁS SEGURO?');"
                                                     class="opacity-0 group-hover/scrim:opacity-100 transition-opacity z-10 shrink-0">
@@ -205,10 +227,9 @@ include '../../../includes/header.php';
                                     <?php
                                     $statusClass = 'bg-subtle text-secondary';
                                     $dotClass = 'bg-muted';
-                                    $desc = strtolower($scrim['est_descripcion']);
-                                    $is_cancelled = (str_contains($desc, 'cancel'));
-                                    $is_accepted = (str_contains($desc, 'confirm') || str_contains($desc, 'aceptad'));
-                                    $is_pending = (str_contains($desc, 'pendient'));
+                                    $is_cancelled = ($scrim['est_id'] == 3);
+                                    $is_accepted = ($scrim['est_id'] == 2);
+                                    $is_pending = ($scrim['est_id'] == 1);
 
                                     if ($is_accepted) {
                                         $statusClass = 'bg-success-light text-success-text border border-emerald-100';
@@ -232,7 +253,7 @@ include '../../../includes/header.php';
                                             <span class="uppercase tracking-tight text-sm truncate hover:underline cursor-pointer"><?php echo htmlspecialchars($scrim['opponent_name']); ?></span>
                                         </div>
 
-                                        <?php if ($is_accepted && $is_captain): ?>
+                                        <?php if ($is_accepted && $scrim['user_can_manage']): ?>
                                             <form action="../../scrim/controller_scrim.php" method="POST"
                                                 onsubmit="event.stopPropagation(); return confirm('¿ESTÁS SEGURO?');"
                                                 class="z-10 shrink-0">
@@ -261,7 +282,6 @@ include '../../../includes/header.php';
                 <?php foreach ($scrims as $scrim):
                     $is_modal_accepted = ($scrim['est_id'] == 2);
                     $is_modal_pending = ($scrim['est_id'] == 1);
-                    $is_receptor = ($scrim['equ_id_receptor'] == $equ_id);
                 ?>
                     <dialog id="scrim_modal_<?php echo $scrim['scr_id']; ?>"
                         class="m-auto rounded-none border-2 border-primary p-0 shadow-hard">
@@ -285,7 +305,7 @@ include '../../../includes/header.php';
                                     </p>
                                 </div>
 
-                                <?php if ($is_captain): ?>
+                                <?php if ($scrim['user_can_manage']): ?>
                                     <div class="pt-3 border-t-2 border-subtle">
                                         <?php if ($is_modal_accepted): ?>
                                             <form action="../../scrim/controller_scrim.php" method="POST" onsubmit="return confirm('¿ESTÁS SEGURO?');">
@@ -297,12 +317,12 @@ include '../../../includes/header.php';
                                                     Cancelar Scrim
                                                 </button>
                                             </form>
-                                        <?php elseif ($is_modal_pending && $is_receptor): ?>
+                                        <?php elseif ($is_modal_pending && $scrim['is_user_receptor']): ?>
                                             <div class="flex flex-col gap-2">
                                                 <form action="../../scrim/controller_scrim.php" method="POST">
                                                     <input type="hidden" name="action" value="accept_scrim">
                                                     <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
-                                                    <input type="hidden" name="redirect" value="../user/calendar/index.php">
+                                                    <input type="hidden" name="redirect" value="../user/calendar/index.php?month=<?php echo $month; ?>&year=<?php echo $year; ?>&t=<?php echo $filter_team_id; ?>">
                                                     <button type="submit"
                                                         class="w-full bg-black text-surface px-4 py-3 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-success-border cursor-pointer transition-all">
                                                         <i data-lucide="check" class="w-4 h-4"></i>
@@ -313,7 +333,7 @@ include '../../../includes/header.php';
                                                 <form action="../../scrim/controller_scrim.php" method="POST" onsubmit="return confirm('¿Rechazar este scrim?');">
                                                     <input type="hidden" name="action" value="reject_scrim">
                                                     <input type="hidden" name="scr_id" value="<?php echo $scrim['scr_id']; ?>">
-                                                    <input type="hidden" name="redirect" value="../user/calendar/index.php">
+                                                    <input type="hidden" name="redirect" value="../user/calendar/index.php?month=<?php echo $month; ?>&year=<?php echo $year; ?>&t=<?php echo $filter_team_id; ?>">
                                                     <button type="submit"
                                                         class="w-full bg-subtle text-primary px-4 py-3 text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-2 hover:bg-error-text hover:text-surface cursor-pointer transition-all">
                                                         <i data-lucide="x" class="w-4 h-4"></i>
