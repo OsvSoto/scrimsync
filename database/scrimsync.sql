@@ -169,9 +169,9 @@ CREATE TABLE `usuario` (
 --
 
 -- TODO: quitar en produccion
-INSERT INTO `usuario` (`usu_id`, `usu_tipo`, `usu_username`, `usu_email`, `usu_password`, `usu_alias`, `usu_descripcion`, `usu_foto`, `usu_fecha_registro`) VALUES
-(1, 0, 'Admin', 'admin@scrimsync.com', '$2y$10$kUijeCLGjn2INOqU.sXezeUPsaZFF4qNkf3dTz4qPQgctSr5kaQZS', 'SystemAdmin', 'Cuenta principal del sistema', NULL, '2026-01-20 22:44:57'),
-(2, 1, 'chucrut', 'chucrut@test.com', '$2y$10$qvjZ10SiiIYz8g4UgO/V1ejllQskhlqKJaloc4kuuVByZBoSWP9qm', 'chucrut', NULL, NULL, '2026-01-20 23:30:05');
+-- INSERT INTO `usuario` (`usu_id`, `usu_tipo`, `usu_username`, `usu_email`, `usu_password`, `usu_alias`, `usu_descripcion`, `usu_foto`, `usu_fecha_registro`) VALUES
+-- (1, 0, 'Admin', 'admin@scrimsync.com', '$2y$10$kUijeCLGjn2INOqU.sXezeUPsaZFF4qNkf3dTz4qPQgctSr5kaQZS', 'SystemAdmin', 'Cuenta principal del sistema', NULL, '2026-01-20 22:44:57'),
+-- (2, 1, 'chucrut', 'chucrut@test.com', '$2y$10$qvjZ10SiiIYz8g4UgO/V1ejllQskhlqKJaloc4kuuVByZBoSWP9qm', 'chucrut', NULL, NULL, '2026-01-20 23:30:05');
 
 -- Datos necesarios para la tabla estado_scrim
 INSERT INTO `estado_scrim` (`est_id`, `est_descripcion`) VALUES
