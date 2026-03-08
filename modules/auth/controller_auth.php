@@ -29,7 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 exit;
             } else {
-                header("Location: login.php?error=invalid_credentials");
+                $_SESSION['flash_error'] = "Usuario o contraseña incorrectos.";
+                header("Location: login.php");
             }
             break;
 
@@ -41,21 +42,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'alias'    => trim($_POST['alias'])
             ];
 
-            if (Registro_Usuario($conn, $p_usuario)) {
-                header("Location: login.php?msg=registered");
+            $registro_result = Registro_Usuario($conn, $p_usuario);
+
+            if ($registro_result === true) {
+                $_SESSION['flash_msg'] = "Registro exitoso. Ahora puedes ingresar.";
+                header("Location: login.php");
+            } elseif ($registro_result === false) {
+                $_SESSION['flash_error'] = "Error: El email ingresado no es válido.";
+                header("Location: register.php");
             } else {
-                header("Location: register.php?error=db_error");
+                $_SESSION['flash_error'] = "Error: El usuario o email ya existen.";
+                header("Location: register.php");
             }
             break;
 
         case 'Recuperar':
             $p_correo_recup = trim($_POST['email']);
-            Recuperacion_Credenciales($conn, $p_correo_recup);
-            header("Location: recover.php?msg=email_sent");
+            if (Recuperacion_Credenciales($conn, $p_correo_recup)) {
+                $_SESSION['flash_msg'] = "Si el correo existe, se ha enviado una nueva contraseña.";
+            } else {
+                $_SESSION['flash_error'] = "No se pudo procesar la solicitud.";
+            }
+            header("Location: recover.php");
             break;
 
         default:
-            header("Location: login.php?error=unknown_op");
+            $_SESSION['flash_error'] = "Operación no válida.";
+            header("Location: login.php");
             break;
     }
     mysqli_close($conn);

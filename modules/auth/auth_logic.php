@@ -32,8 +32,13 @@ function Registro_Usuario($conn, $p_usuario) {
     $password = password_hash($p_usuario['password'], PASSWORD_BCRYPT);
     $tipo      = 1;
 
-    $sql = "INSERT INTO usuario (usu_username, usu_password, usu_email, usu_alias, usu_tipo) VALUES (?, ?, ?, ?, ?)";
-    return $conn->execute_query($sql, [$username, $password, $email, $alias, $tipo]);
+    if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+        $sql = "INSERT INTO usuario (usu_username, usu_password, usu_email, usu_alias, usu_tipo) VALUES (?, ?, ?, ?, ?)";
+        return $conn->execute_query($sql, [$username, $password, $email, $alias, $tipo]);
+    } else {
+        return false;
+    }
+
 }
 
 function Generar_String_Aleatorio($length = 8) {
